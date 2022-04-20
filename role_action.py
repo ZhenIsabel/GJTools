@@ -28,16 +28,18 @@ close_btn = cv2.imread('img/close_btn.png')
 horse = cv2.imread('img/horse.png')
 
 # 点开藏宝地图模式位置
-open_box_map_pos = [500, 50]
+# open_box_map_pos = [500, 50]
+open_box_map_pos = [880, 191]
 
 # 要丢掉的首张图位值
-first_map_pos = [1750, 350]
+# first_map_pos = [1750, 350]
+first_map_pos = [2069, 522]
 
 # 确定按钮位置
 confirm_pos = [880, 450]
 
 # 打开藏宝图等待时间
-wait_open_time = 120
+wait_open_time = 80
 
 # 开始挖宝的坐标方向和大小
 begin_find_loc_1 = [-825, -525]
@@ -64,14 +66,14 @@ def match_img(template):
     return max_val, max_loc
 
 
-def clear_map(count=42):
+def clear_map(count=20):
     pyautogui.press('m')
     time.sleep(0.5)
     max_val, max_loc = match_img(map_title)
     # print(max_val)
-    if max_val < 0.95:
-        pyautogui.moveTo(open_box_map_pos[0], open_box_map_pos[1])
-        pyautogui.leftClick()
+    # if max_val < 0.95:
+    #     pyautogui.moveTo(open_box_map_pos[0], open_box_map_pos[1])
+    #     pyautogui.leftClick()
     for i in range(0, count):
         pyautogui.moveTo(first_map_pos[0], first_map_pos[1])
         pyautogui.rightClick()
@@ -99,7 +101,8 @@ def buy_map():
     if max_val <= 0.9:
         send_message_with_loc("Find Map NPC Error")
         return False
-    pyautogui.press('f')
+    pyautogui.press('g')
+    #  pyautogui.press('f')
     time.sleep(1)
     max_val, max_loc = match_img(map_in_store)
     if max_val <= 0.9:
@@ -113,7 +116,7 @@ def buy_map():
     max_val, max_loc = match_img(buy_map_tip)
     if max_val > 0.9:
         pyautogui.press('4')
-        pyautogui.press('2')
+        pyautogui.press('0')
         pyautogui.press('enter')
         # max_val, max_loc = match_img(confirm_btn)
         # if max_val > 0.9:
@@ -148,6 +151,9 @@ def open_map():
 def down_horse():
     if not is_on_horse():
         return
+    # pyautogui.keyDown('ctrl')
+    # pyautogui.press('r')
+    # pyautogui.keyUp('ctrl')
     pyautogui.press('t')
     pyautogui.press('shift')
     pyautogui.sleep(3)
@@ -156,6 +162,9 @@ def down_horse():
 def up_horse():
     if is_on_horse():
         return
+    # pyautogui.keyDown('ctrl')
+    # pyautogui.press('r')
+    # pyautogui.keyUp('ctrl')
     pyautogui.press('t')
     pyautogui.sleep(3)
 
@@ -245,7 +254,8 @@ def reset_to_store():
     pyautogui.moveTo(max_loc[0] + 24, max_loc[1] + 24)
     pyautogui.leftClick()
     pyautogui.sleep(5)
-    pyautogui.press('f')
+    pyautogui.press('g')
+    #  pyautogui.press('f')
     pyautogui.moveRel(-100, -100)
     time.sleep(1)
 
@@ -258,7 +268,8 @@ def reset_to_store():
     pyautogui.sleep(30)
 
     role_move.move(home_to_door[0], home_to_door[1])
-    pyautogui.press('f')
+    pyautogui.press('g')
+    #  pyautogui.press('f')
     time.sleep(1)
     max_val, max_loc = match_img(back_origin_btn)
     if max_val < 0.9:

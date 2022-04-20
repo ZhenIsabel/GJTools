@@ -6,22 +6,28 @@ import pyautogui
 night_tip = cv2.imread('img/night_tip.png')
 rain_tip = cv2.imread('img/rain_tip.png')
 
-weather_area = [1600, 33, 100, 50]
+weather_area = [1980, 160, 100, 50]
 
 # 盒子二值化参数
 threshold_value = [80, 60, 40]
 
 # 脚下可开盒子区域
-box_under_footer_area = [710, 580, 500, 250]
+box_under_footer_area = [1085, 735, 400, 250]
+'''
+# 脚下可开盒子区域
+box_under_footer_area = [1035, 735, 500, 250]
 
+# 脚下中心点
+footer_pos = [1285,790]
+'''
 # 测试值
 test_value = 60
 
 
 time.sleep(3)
-print("目前所用的天气区域参数为" + str(weather_area))
+# print("目前所用的天气区域参数为" + str(weather_area))
 image = cv2.cvtColor(np.asarray(pyautogui.screenshot(region=weather_area)), cv2.COLOR_RGB2BGR)
-cv2.imshow("Weather Area", image)
+# cv2.imshow("Weather Area", image)
 
 match_res = cv2.matchTemplate(image, night_tip, 3)
 min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(match_res)

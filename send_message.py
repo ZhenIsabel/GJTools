@@ -3,14 +3,14 @@ from email.mime.text import MIMEText
 
 import log_message
 
-receive_addr = "786979248@qq.com"
+receive_addr = ""
 
 
 def send_message(message):
     try:
         # 填写真实的发邮件服务器用户名、密码
-        user = 'xilingyuli_test@163.com'
-        password = 'PECWVHHACWBVLSBA'
+        user = 'liangtianning@outlook.com'
+        password = '.pby[f[hu_Ch57_q'
         # 邮件内容
         msg = MIMEText(message, 'plain', _charset="utf-8")
         msg["Subject"] = "GJTool"

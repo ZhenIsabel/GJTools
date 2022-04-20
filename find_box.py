@@ -14,10 +14,13 @@ night_tip = cv2.imread('img/night_tip.png')
 rain_tip = cv2.imread('img/rain_tip.png')
 
 # 脚下可开盒子区域
-box_under_footer_area = [710, 580, 500, 250]
+# box_under_footer_area = [710, 580, 500, 250]
+# box_under_footer_area = [1035, 735, 500, 250]
+box_under_footer_area = [1085, 735, 400, 250]
 
 # 脚下中心点
-footer_pos = [960, 635]
+# footer_pos = [960, 635]
+footer_pos = [1285,790]
 
 # 盒子二值化参数
 threshold_value = [80, 60, 40]
@@ -27,12 +30,14 @@ box_area_up = 1400
 box_area_down = 400
 
 # 开盒子时间
-open_box_time = 3.5
+open_box_time = 5
 
 # 太远了提示位置
-too_far_area = [550, 200, 150, 100]
+# too_far_area = [550, 200, 150, 100]
+too_far_area = [909, 353, 150, 100]
 
-weather_area = [1600, 33, 100, 50]
+# weather_area = [1600, 33, 100, 50]
+weather_area = [1980, 160, 100, 50]
 
 
 def find_box_in_area_color(region, weather_code=0):
