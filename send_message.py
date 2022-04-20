@@ -9,8 +9,8 @@ receive_addr = ""
 def send_message(message):
     try:
         # 填写真实的发邮件服务器用户名、密码
-        user = 'liangtianning@outlook.com'
-        password = '.pby[f[hu_Ch57_q'
+        user = ''
+        password = ''
         # 邮件内容
         msg = MIMEText(message, 'plain', _charset="utf-8")
         msg["Subject"] = "GJTool"
