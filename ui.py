@@ -1,5 +1,15 @@
+from distutils.command.config import config
 import tkinter as tk
-from tkinter import Entry, ttk
+from tkinter import ttk
+
+import os
+import config_io
+import main
+import pyautogui
+
+# 是否允许鼠标挪出界自动关闭
+pyautogui.FAILSAFE = True
+
 
 class App(ttk.Frame):
     def __init__(self, parent):
@@ -10,39 +20,60 @@ class App(ttk.Frame):
             self.columnconfigure(index=index, weight=1)
             self.rowconfigure(index=index, weight=1)
 
-        # Create value lists
-        self.parameter_option_list = ["", "OptionMenu", "Option 1", "Option 2"]
-        self.combo_list = ["Combobox", "Editable item 1", "Editable item 2"]
-        self.readonly_combo_list = ["Readonly combobox", "Item 1", "Item 2"]
-
         # Create control variables
-        self.var_0 = tk.BooleanVar()
-        self.var_1 = tk.BooleanVar(value=True)
-        self.var_2 = tk.BooleanVar()
-        self.var_3 = tk.IntVar(value=2)
-        self.var_4 = tk.StringVar(value=self.parameter_option_list[1])
-        self.var_5 = tk.DoubleVar(value=75.0)
+        self.is_yuanbo = tk.BooleanVar(value=False)  # 是否开启渊博
+        self.max_move_distance_var = tk.IntVar(value=50)  # 最长经过多少距离进行转向检测
+        self.move_speed_var = tk.DoubleVar(value=0.18)  # 步速（非扫图速度）
+        self.turn_speed_var = tk.DoubleVar(value=1.97)  # 转向速度
+        self.count_yuanbo = tk.IntVar(value=36)  # 渊博时最大持图数量
+        self.count_no_yuanbo = tk.IntVar(value=15)  # 非渊博时最大持图数量
+        self.open_box_time = tk.DoubleVar(value=5.5)  # 开盒子读条时间
+        self.move_distance_x = tk.DoubleVar(value=4.5)  # 地图搜索时x轴步距
+        self.move_distance_y = tk.DoubleVar(value=3)  # 地图搜索时y轴步距
 
-        # Create widgets :)
+        self.config = config_io.Config_Data(self.is_yuanbo.get(),
+                                            [self.max_move_distance_var.get(),
+                                             self.move_speed_var.get(),
+                                             self.turn_speed_var.get(),
+                                             self.count_yuanbo.get(),
+                                             self.count_no_yuanbo.get(),
+                                             self.open_box_time.get(),
+                                             self.move_distance_x.get(),
+                                             self.move_distance_y.get()
+                                             ])
+        # Create widgets :
         self.setup_widgets()
 
     def setup_widgets(self):
-       
-        # Accentbutton
-        self.accentbutton = ttk.Button(
+
+        # region 开始键
+        def start(event):
+            main.main_fun(config)
+
+        self.start_button = ttk.Button(
             self, text="开始运行", style="Accent.TButton"
         )
-        self.accentbutton.grid(row=7, column=0, padx=5, pady=10, sticky="nsew")
+        self.start_button.grid(row=8, column=0, padx=10,
+                               pady=10, sticky="nsew")
+        self.start_button.bind("<Button-1>", start)
+        # endregion
+
+        # region Progressbar
+        # self.progress = ttk.Progressbar(
+        #     self.tab_parameter, value=0, variable=self.var_5, mode="determinate"
+        # )
+        # self.progress.grid(row=0, column=1, padx=(
+        #     10, 20), pady=(20, 0), sticky="ew")
+        # endregion
 
         # Panedwindow
         self.paned = ttk.PanedWindow(self)
         self.paned.grid(row=0, column=0, pady=(
-            25, 5), sticky="nsew", rowspan=3)
+            0, 0), sticky="nsew", rowspan=3)
 
         # Pane #1
         self.pane_1 = ttk.Frame(self.paned, padding=5)
         self.paned.add(self.pane_1, weight=1)
-
 
         # Notebook, pane #2
         self.pane_2 = ttk.Frame(self.paned, padding=5)
@@ -52,59 +83,244 @@ class App(ttk.Frame):
         self.notebook = ttk.Notebook(self.pane_1)
         self.notebook.pack(fill="both", expand=True)
 
-        # Tab normal
+        # region Tab normal
         self.tab_normal = ttk.Frame(self.notebook)
         for index in [0, 1]:
             self.tab_normal.columnconfigure(index=index, weight=1)
             self.tab_normal.rowconfigure(index=index, weight=1)
         self.notebook.add(self.tab_normal, text="常规")
 
-         # 创建switch开关框架
-        self.switch_frame = ttk.LabelFrame(self, text="选项开关", padding=(20, 10))
+        # region 创建switch开关框架
+        self.switch_frame = ttk.LabelFrame(
+            self.tab_normal, text="选项开关", padding=(20, 10))
         self.switch_frame.grid(
-            row=0, column=2, padx=(20, 10), pady=(20, 10), sticky="nsew"
+            row=0, column=0, padx=(20, 10), pady=(20, 10), sticky="nsew"
         )
+        # endregion
 
-        # Switch
+        # region 渊博开关
         self.switch_yuanbo = ttk.Checkbutton(
-            self.tab_normal, text="渊博", style="Switch.TCheckbutton"
-        )
+            self.switch_frame, text="渊博", style="Switch.TCheckbutton",
+            onvalue=True, offvalue=False, variable=self.is_yuanbo)
+
         self.switch_yuanbo.grid(row=0, column=0, padx=5,
                                 pady=10, sticky="nsew")
+        # endregion
 
-        self.switch_learning = ttk.Checkbutton(
-            self.tab_normal, text="参数学习（无效）", style="Switch.TCheckbutton"
-        )
-        self.switch_learning.grid(
-            row=1, column=0, padx=5, pady=10, sticky="nsew")
+        # region 参数学习开关
+        # self.switch_learning = ttk.Checkbutton(
+        #     self.switch_frame, text="参数学习（无效）", style="Switch.TCheckbutton"
+        # )
+        # self.switch_learning.grid(
+        #     row=1, column=0, padx=5, pady=10, sticky="nsew")
+        # endregion
 
-        
-        # Tab parameter
+        # endregion
+
+        # region Tab parameter
         self.tab_parameter = ttk.Frame(self.notebook)
         self.notebook.add(self.tab_parameter, text="参数")
-        
-        # Scale
-        self.scale = ttk.Scale(
+
+        # region 步速
+        self.move_speed_scale_label = ttk.Label(
             self.tab_parameter,
-            from_=100,
-            to=0,
-            variable=self.var_5,
-            command=lambda event: self.var_5.set(self.scale.get()),
+            text="步速",
+            justify="left",
+            font=('microsoft yahei ui',  10,  "normal"),
         )
-        self.scale.grid(row=0, column=0, padx=(
-            20, 10), pady=(20, 0), sticky="ew")
-
-        # Progressbar
-        self.progress = ttk.Progressbar(
-            self.tab_parameter, value=0, variable=self.var_5, mode="determinate"
+        self.move_speed_scale_label.grid(row=0, column=0, pady=0)
+        self.move_speed_scale = ttk.Scale(
+            self.tab_parameter,
+            from_=0,
+            to=3,
+            variable=self.move_speed_var,
+            command=lambda event: self.move_speed_var.set(
+                self.move_speed_var.get()),
         )
-        self.progress.grid(row=0, column=1, padx=(
-            10, 20), pady=(20, 0), sticky="ew")
+        self.move_speed_scale.grid(row=0, column=0, padx=(
+            20, 10), pady=(50, 0), sticky="ew", columnspan=2)
 
-        # Tab 初始化
+        self.move_speed_entry = ttk.Entry(
+            self.tab_parameter, textvariable=self.move_speed_var
+        )
+        self.move_speed_entry.grid(row=0, column=1, padx=(
+            0, 10), pady=(0, 0), sticky="ew")
+        # endregion
+
+        # region 转向速度
+        self.turn_speed_scale_label = ttk.Label(
+            self.tab_parameter,
+            text="转向速度",
+            justify="left",
+            font=('microsoft yahei ui',  10,  "normal"),
+        )
+        self.turn_speed_scale_label.grid(row=1, column=0, pady=0)
+        self.turn_speed_scale = ttk.Scale(
+            self.tab_parameter,
+            from_=0,
+            to=5,
+            variable=self.turn_speed_var,
+            command=lambda event: self.turn_speed_var.set(
+                self.turn_speed_var.get()),
+        )
+        self.turn_speed_scale.grid(row=1, column=0, padx=(
+            20, 10), pady=(50, 0), sticky="ew", columnspan=2)
+
+        self.turn_speed_entry = ttk.Entry(
+            self.tab_parameter, textvariable=self.turn_speed_var
+        )
+        self.turn_speed_entry.grid(row=1, column=1, padx=(
+            0, 10), pady=(0, 0), sticky="ew")
+        # endregion
+
+        # region 最多移动多少距离后校准方向
+        self.max_move_distance_scale_label = ttk.Label(
+            self.tab_parameter,
+            text="最多移动多少距离后校准方向",
+            justify="left",
+            font=('microsoft yahei ui',  10,  "normal"),
+        )
+        self.max_move_distance_scale_label.grid(
+            row=2, column=0, pady=0, columnspan=1, padx=(20, 10))
+        self.max_move_distance_scale = ttk.Scale(
+            self.tab_parameter,
+            from_=20,
+            to=100,
+            variable=self.max_move_distance_var,
+            command=lambda event: self.max_move_distance_var.set(
+                self.max_move_distance_var.get()),
+        )
+        self.max_move_distance_scale.grid(row=2, column=0, padx=(
+            20, 10), pady=(50, 0), sticky="ew", columnspan=2)
+
+        self.max_move_distance_entry = ttk.Entry(
+            self.tab_parameter, textvariable=self.max_move_distance_var
+        )
+        self.max_move_distance_entry.grid(row=2, column=1, padx=(
+            0, 10), pady=(0, 0), sticky="ew")
+        # endregion
+
+        # region 读条时长
+        self.open_box_time_scale_label = ttk.Label(
+            self.tab_parameter,
+            text="开盒子读条",
+            justify="left",
+            font=('microsoft yahei ui',  10,  "normal"),
+        )
+        self.open_box_time_scale_label.grid(row=3, column=0, pady=0)
+        self.open_box_time_scale = ttk.Scale(
+            self.tab_parameter,
+            from_=0,
+            to=6,
+            variable=self.open_box_time,
+            command=lambda event: self.open_box_time.set(
+                self.open_box_time.get()),
+        )
+        self.open_box_time_scale.grid(row=3, column=0, padx=(
+            20, 10), pady=(50, 0), sticky="ew", columnspan=2)
+
+        self.open_box_time_entry = ttk.Entry(
+            self.tab_parameter, textvariable=self.open_box_time
+        )
+        self.open_box_time_entry.grid(row=3, column=1, padx=(
+            0, 10), pady=(0, 0), sticky="ew")
+
+        # endregion
+
+        # region 地图式搜索时的步距
+        # x轴
+        self.label_move_distance = ttk.Label(
+            self.tab_parameter,
+            text="搜索时步距\n(x,y)",
+            justify="center",
+            font=('microsoft yahei ui',  10,  "normal"),
+        )
+        self.label_move_distance.grid(row=2, column=5, pady=0)
+        self.entry_move_distance_x = ttk.Entry(
+            self.tab_parameter, textvariable=self.move_distance_x, width=6
+        )
+        self.entry_move_distance_x.grid(
+            row=2, column=6, padx=5, pady=(0, 10), sticky="w")
+
+        # y轴
+        self.entry_move_distance_y = ttk.Entry(
+            self.tab_parameter, textvariable=self.move_distance_y, width=6)
+        self.entry_move_distance_y.grid(
+            row=2, column=7, padx=5, pady=(0, 10), sticky="w")
+
+        # endregion
+
+        # region 最大拥有图数
+        self.label_count_yuanbo = ttk.Label(
+            self.tab_parameter,
+            text="渊博图数",
+            justify="left",
+            font=('microsoft yahei ui',  10,  "normal"),
+        )
+        self.label_count_yuanbo.grid(row=0, column=5, pady=0)
+        self.entry_count_yuanbo = ttk.Entry(
+            self.tab_parameter, textvariable=self.count_yuanbo, width=6)
+        self.entry_count_yuanbo.grid(
+            row=0, column=6, padx=5, pady=(0, 10), sticky="w")
+
+        self.label_count_no_yuanbo = ttk.Label(
+            self.tab_parameter,
+            text="无渊博图数",
+            justify="left",
+            font=('microsoft yahei ui',  10,  "normal"),
+        )
+        self.label_count_no_yuanbo.grid(row=1, column=5, pady=0)
+        self.entry_count_no_yuanbo = ttk.Entry(
+            self.tab_parameter, textvariable=self.count_no_yuanbo, width=6)
+        self.entry_count_no_yuanbo.grid(
+            row=1, column=6, padx=5, pady=(0, 10), sticky="w")
+
+        # endregion
+
+        # region 数值读取键
+
+        def para_load_fun(event):
+            self.max_move_distance_var.set(self.config.max_move_distance_var),
+            self.move_speed_var.set(self.config.move_speed_var),
+            self.turn_speed_var.set(self.config.turn_speed_var),
+            self.count_yuanbo.set(self.config.count_yuanbo),
+            self.count_no_yuanbo.set(self.config.count_no_yuanbo),
+            self.open_box_time.set(self.config.open_box_time),
+            self.move_distance_x.set(self.config.move_distance_x),
+            self.move_distance_y.set(self.config.move_distance_y)
+                           
+            self.config = config_io.load_config_from_file()
+            print("confirm")
+        self.para_load = ttk.Button(self.tab_parameter, text="读取参数")
+        self.para_load.grid(row=7, column=8, padx=10, pady=10, sticky="nsew")
+        self.para_load.bind("<Button-1>", para_load_fun)
+        # endregion
+
+        # region 数值保存键
+        def para_save_fun(event):
+            config_data = [self.max_move_distance_var.get(),
+                           self.move_speed_var.get(),
+                           self.turn_speed_var.get(),
+                           self.count_yuanbo.get(),
+                           self.count_no_yuanbo.get(),
+                           self.open_box_time.get(),
+                           self.move_distance_x.get(),
+                           self.move_distance_y.get()
+                           ]
+            config_io.write_config(config_data)
+            print("saved")
+        self.para_save = ttk.Button(self.tab_parameter, text="保存参数")
+        self.para_save.grid(row=8, column=8, padx=10,
+                            pady=10, sticky="nsew")
+        self.para_save.bind("<Button-1>", para_save_fun)
+        # endregion
+
+        # endregion
+
+        # region Tab 初始化
         self.tab_capture = ttk.Frame(self.notebook)
         self.notebook.add(self.tab_capture, text="初始化")
-        
+
         # 整个游戏画面截屏键
         self.button = ttk.Button(self.tab_capture, text="截取游戏画面")
         self.button.grid(row=0, column=0, padx=5, pady=10, sticky="nsew")
@@ -129,7 +345,8 @@ class App(ttk.Frame):
         # 背包一排格子数
         self.entry_bag_width = ttk.Entry(self.tab_capture)
         self.entry_bag_width.insert(0, "背包一行格子数")
-        self.entry_bag_width.grid(row=2, column=0, padx=5, pady=10, sticky="nsew")
+        self.entry_bag_width.grid(
+            row=2, column=0, padx=5, pady=10, sticky="nsew")
 
         # 如更改分辨率，则需改动以下值
         self.extra_capture_frame = ttk.LabelFrame(
@@ -139,72 +356,43 @@ class App(ttk.Frame):
         )
         self.extra_capture_frame.columnconfigure(index=0, weight=1)
 
-        
         # Scrollbar
         self.scrollbar = ttk.Scrollbar(self.extra_capture_frame)
         self.scrollbar.pack(side="right", fill="y")
 
-        # Treeview
-        self.treeview = ttk.Treeview(
-            self.extra_capture_frame,
-            selectmode="browse",
-            yscrollcommand=self.scrollbar.set,
-            columns=(1, 2),
-            height=10,
-        )
-        self.treeview.pack(expand=True, fill="both")
-        self.scrollbar.config(command=self.treeview.yview)
+        # # Select and scroll
+        # self.treeview.selection_set(10)
+        # self.treeview.see(7)
 
-        # Treeview columns
-        self.treeview.column("#0", anchor="w", width=120)
-        self.treeview.column(1, anchor="w", width=120)
-        self.treeview.column(2, anchor="w", width=120)
+        # endregion
 
-        # Define treeview data
-        treeview_data = [
-            ("", 1, "Parent", ("Item 1", "Value 1")),
-            (1, 2, "Child", ("Subitem 1.1", "Value 1.1")),
-            (1, 3, "Child", ("Subitem 1.2", "Value 1.2")),
-            (1, 4, "Child", ("Subitem 1.3", "Value 1.3")),
-            (1, 5, "Child", ("Subitem 1.4", "Value 1.4")),
-            ("", 6, "Parent", ("Item 2", "Value 2")),
-            (6, 7, "Child", ("Subitem 2.1", "Value 2.1")),
-            (6, 8, "Sub-parent", ("Subitem 2.2", "Value 2.2")),
-            (8, 9, "Child", ("Subitem 2.2.1", "Value 2.2.1")),
-            (8, 10, "Child", ("Subitem 2.2.2", "Value 2.2.2")),
-            (8, 11, "Child", ("Subitem 2.2.3", "Value 2.2.3")),
-            (6, 12, "Child", ("Subitem 2.3", "Value 2.3")),
-            (6, 13, "Child", ("Subitem 2.4", "Value 2.4")),
-            ("", 14, "Parent", ("Item 3", "Value 3")),
-            (14, 15, "Child", ("Subitem 3.1", "Value 3.1")),
-            (14, 16, "Child", ("Subitem 3.2", "Value 3.2")),
-            (14, 17, "Child", ("Subitem 3.3", "Value 3.3")),
-            (14, 18, "Child", ("Subitem 3.4", "Value 3.4")),
-            ("", 19, "Parent", ("Item 4", "Value 4")),
-            (19, 20, "Child", ("Subitem 4.1", "Value 4.1")),
-            (19, 21, "Sub-parent", ("Subitem 4.2", "Value 4.2")),
-            (21, 22, "Child", ("Subitem 4.2.1", "Value 4.2.1")),
-            (21, 23, "Child", ("Subitem 4.2.2", "Value 4.2.2")),
-            (21, 24, "Child", ("Subitem 4.2.3", "Value 4.2.3")),
-            (19, 25, "Child", ("Subitem 4.3", "Value 4.3")),
-        ]
-
-        # Insert treeview data
-        for item in treeview_data:
-            self.treeview.insert(
-                parent=item[0], index="end", iid=item[1], text=item[2], values=item[3]
-            )
-            if item[0] == "" or item[1] in {8, 21}:
-                self.treeview.item(item[1], open=True)  # Open parents
-
-        # Select and scroll
-        self.treeview.selection_set(10)
-        self.treeview.see(7)
-
-        # Tab about
+        # region Tab about
         self.tab_about = ttk.Frame(self.notebook)
         self.notebook.add(self.tab_about, text="帮助")
-        
+
+        # 帮助文档按钮
+        def press_help_button(event):
+            os.system('notepad readme.md')
+            print("open readme")
+
+        self.help_button = ttk.Button(self.tab_about, text="打开帮助文档")
+        self.help_button.grid(row=0, column=0, padx=5, pady=10, sticky="nsew")
+        self.help_button.bind("<Button-1>", press_help_button)
+
+        # 致谢
+        self.label_thanku = ttk.Label(
+            self.tab_about,
+            text='''
+            作者：西陵鱼璃 xilingyuli
+            UI：谢振衣
+            版本：beta 0.1
+            ''',
+            justify="left",
+            font=('microsoft yahei ui',  12,  "normal"),
+        )
+        self.label_thanku.grid(row=10, column=0, sticky="w")
+        # endregion
+
 
 if __name__ == "__main__":
     root = tk.Tk()

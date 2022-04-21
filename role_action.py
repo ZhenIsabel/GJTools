@@ -1,11 +1,13 @@
+import datetime
 import time
-import pyautogui
+
 import cv2
 import numpy as np
-import datetime
+import pyautogui
 import win32api
 import win32con
 
+import config_io
 import find_box
 import log_message
 import role_loc
@@ -27,6 +29,8 @@ new_day_tip = cv2.imread('img/new_day_tip.png')
 close_btn = cv2.imread('img/close_btn.png')
 horse = cv2.imread('img/horse.png')
 
+config=config_io.load_config_from_file()
+
 # 点开藏宝地图模式位置
 # open_box_map_pos = [500, 50]
 open_box_map_pos = [880, 191]
@@ -38,9 +42,14 @@ first_map_pos = [2069, 522]
 # 确定按钮位置
 confirm_pos = [880, 450]
 
+# 买图数量
+buy_count = int(
+    config.count_yuanbo if config.is_yuanbo else config.count_no_yuanbo)
+
 # 打开藏宝图等待时间
 # wait_open_time = 148 # 无渊博75
-wait_open_time = 75
+# wait_open_time = 75
+wait_open_time = buy_count*5
 
 # 开始挖宝的坐标方向和大小
 begin_find_loc_1 = [-825, -525]
@@ -67,7 +76,8 @@ def match_img(template):
     return max_val, max_loc
 
 
-def clear_map(count=20):
+# def clear_map(count=20):
+def clear_map():
     pyautogui.press('m')
     time.sleep(0.5)
     max_val, max_loc = match_img(map_title)
@@ -75,7 +85,7 @@ def clear_map(count=20):
     # if max_val < 0.95:
     #     pyautogui.moveTo(open_box_map_pos[0], open_box_map_pos[1])
     #     pyautogui.leftClick()
-    for i in range(0, count):
+    for i in range(0, buy_count):
         pyautogui.moveTo(first_map_pos[0], first_map_pos[1])
         pyautogui.rightClick()
         pyautogui.moveTo(first_map_pos[0] + 50, first_map_pos[1] + 30)
@@ -115,9 +125,14 @@ def buy_map():
     pyautogui.rightClick()
     pyautogui.keyUp('shift')
     max_val, max_loc = match_img(buy_map_tip)
+    # 确定买图数量
+    buy_count_string = str(buy_count)
     if max_val > 0.9:
-        pyautogui.press('4')
-        pyautogui.press('0')
+        # pyautogui.press('4')
+        # pyautogui.press('0')
+        print(buy_count_string)
+        for i in range(len(buy_count_string)):
+            pyautogui.press(buy_count_string[i])
         pyautogui.press('enter')
         # max_val, max_loc = match_img(confirm_btn)
         # if max_val > 0.9:
@@ -197,10 +212,12 @@ def find_boxs():
     count = 0
     role_move.move_to(begin_find_loc_1, None, 1, 5)
     role_move.turn_to(begin_find_direct_1)
-    count += role_move.move_map(find_area_1[0], find_area_1[1], find_box.find_box_under_footer)
+    count += role_move.move_map(find_area_1[0],
+                                find_area_1[1], find_box.find_box_under_footer)
     role_move.move_to(begin_find_loc_2, None, 1, 5)
     role_move.turn_to(begin_find_direct_2)
-    count += role_move.move_map(find_area_2[0], find_area_2[1], find_box.find_box_under_footer)
+    count += role_move.move_map(find_area_2[0],
+                                find_area_2[1], find_box.find_box_under_footer)
     role_move.move_to([-850, -560], None, 3, 3)
     print("开盒次数" + str(count))
     if count <= 0:
@@ -232,10 +249,12 @@ def clear_bag():
     pyautogui.keyDown('shift')
     for j in range(0, 3):
         for i in range(0, bag_width):
-            pyautogui.moveTo(first_loc[0] + i * bag_item_size, first_loc[1] + j * bag_item_size)
+            pyautogui.moveTo(
+                first_loc[0] + i * bag_item_size, first_loc[1] + j * bag_item_size)
             pyautogui.rightClick()
     for i in range(0, 10):
-        pyautogui.moveTo(first_loc[0] + i * bag_item_size, first_loc[1] + 3 * bag_item_size + 25)
+        pyautogui.moveTo(first_loc[0] + i * bag_item_size,
+                         first_loc[1] + 3 * bag_item_size + 25)
         pyautogui.rightClick()
     pyautogui.keyUp('shift')
 

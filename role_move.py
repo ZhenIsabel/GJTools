@@ -2,19 +2,24 @@ import math
 import time
 import pyautogui
 
+import config_io
 import role_action
 import role_loc
 
+config=config_io.load_config_from_file()
+
 # 速度值
-move_speed = 0.095169
-# move_speed = 0.18
+# move_speed = 0.095169
+move_speed = config.move_speed_var
 move_back_speed = 2.5
-turn_speed = 1.9
-# turn_speed = 1.97
+# turn_speed = 1.9
+turn_speed = config.turn_speed_var
 
 # 地图式搜索时的步距
-move_distance_x = 4.5
-move_distance_y = 3
+# move_distance_x = 4.5
+# move_distance_y = 3
+move_distance_x=config.move_distance_x
+move_distance_y=config.move_distance_y
 
 # 转动可识别的最小角度
 turn_min = 0.025
@@ -23,7 +28,8 @@ turn_min = 0.025
 move_min = 1
 
 # 最多移动多少距离后校准方向
-max_move_distance = 50
+# max_move_distance = 50
+max_move_distance = config.max_move_distance_var
 
 
 def move(x, y):

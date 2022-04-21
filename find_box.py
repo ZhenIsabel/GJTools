@@ -13,8 +13,7 @@ too_far_tip = cv2.imread('img/too_far.png')
 night_tip = cv2.imread('img/night_tip.png')
 rain_tip = cv2.imread('img/rain_tip.png')
 
-# 是否允许鼠标挪出界自动关闭
-pyautogui.FAILSAFE=False
+
 
 # 脚下可开盒子区域
 # box_under_footer_area = [710, 580, 500, 250]
