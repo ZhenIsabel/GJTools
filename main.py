@@ -3,10 +3,10 @@ from distutils.command.config import config
 import time
 
 import role_action
-import config_io
+# import config_io
 
-def main_fun234(config:config_io.Config_Data):
-    config.printhhh()
+# def main_fun234(config:config_io.Config_Data):
+#     config.printhhh()
 
 
 # role_action.buy_map()
@@ -17,7 +17,7 @@ def main_fun234(config:config_io.Config_Data):
 # role_action.back_to_store()
 
 
-def main_fun(config:config_io.Config_Data):
+def main_fun():
     
     time.sleep(3)
 
@@ -43,7 +43,7 @@ def main_fun(config:config_io.Config_Data):
         if not role_action.find_boxs():
             role_action.try_reset()
             continue
-        if not role_action.clear_map(config.count_yuanbo if config.is_yuanbo else config.count_no_yuanbo):
+        if not role_action.clear_map():
             role_action.try_reset()
             continue
         if not role_action.back_to_store():

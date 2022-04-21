@@ -48,7 +48,7 @@ class App(ttk.Frame):
 
         # region 开始键
         def start(event):
-            main.main_fun(config)
+            main.main_fun(self.config)
 
         self.start_button = ttk.Button(
             self, text="开始运行", style="Accent.TButton"
@@ -280,6 +280,8 @@ class App(ttk.Frame):
         # region 数值读取键
 
         def para_load_fun(event):
+            self.config = config_io.load_config_from_file()
+
             self.max_move_distance_var.set(self.config.max_move_distance_var),
             self.move_speed_var.set(self.config.move_speed_var),
             self.turn_speed_var.set(self.config.turn_speed_var),
@@ -288,9 +290,7 @@ class App(ttk.Frame):
             self.open_box_time.set(self.config.open_box_time),
             self.move_distance_x.set(self.config.move_distance_x),
             self.move_distance_y.set(self.config.move_distance_y)
-                           
-            self.config = config_io.load_config_from_file()
-            print("confirm")
+            print("applied")
         self.para_load = ttk.Button(self.tab_parameter, text="读取参数")
         self.para_load.grid(row=7, column=8, padx=10, pady=10, sticky="nsew")
         self.para_load.bind("<Button-1>", para_load_fun)
