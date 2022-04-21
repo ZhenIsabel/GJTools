@@ -39,7 +39,8 @@ first_map_pos = [2069, 522]
 confirm_pos = [880, 450]
 
 # 打开藏宝图等待时间
-wait_open_time = 80
+# wait_open_time = 148 # 无渊博75
+wait_open_time = 75
 
 # 开始挖宝的坐标方向和大小
 begin_find_loc_1 = [-825, -525]

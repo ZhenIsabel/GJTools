@@ -6,10 +6,10 @@ import role_action
 import role_loc
 
 # 速度值
-move_speed = 0.1
+move_speed = 0.095169
 # move_speed = 0.18
 move_back_speed = 2.5
-turn_speed = 1.86
+turn_speed = 1.9
 # turn_speed = 1.97
 
 # 地图式搜索时的步距

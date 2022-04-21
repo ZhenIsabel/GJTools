@@ -13,10 +13,13 @@ too_far_tip = cv2.imread('img/too_far.png')
 night_tip = cv2.imread('img/night_tip.png')
 rain_tip = cv2.imread('img/rain_tip.png')
 
+# 是否允许鼠标挪出界自动关闭
+pyautogui.FAILSAFE=False
+
 # 脚下可开盒子区域
 # box_under_footer_area = [710, 580, 500, 250]
 # box_under_footer_area = [1035, 735, 500, 250]
-box_under_footer_area = [1085, 735, 400, 250]
+box_under_footer_area = [1035, 735, 500, 250]
 
 # 脚下中心点
 # footer_pos = [960, 635]
@@ -30,7 +33,7 @@ box_area_up = 1400
 box_area_down = 400
 
 # 开盒子时间
-open_box_time = 5
+open_box_time = 4
 
 # 太远了提示位置
 # too_far_area = [550, 200, 150, 100]
@@ -105,6 +108,7 @@ def find_box_under_footer():
         weather_code = 2
     elif is_rain:
         weather_code = 1
+        # print("下雨了")
     first_check = find_box_in_area_color(box_under_footer_area, weather_code)
     if not first_check:
         return False

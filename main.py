@@ -34,7 +34,7 @@ for i in range(0, 100):
     if not role_action.find_boxs():
         role_action.try_reset()
         continue
-    if not role_action.clear_map():
+    if not role_action.clear_map(20):# 非渊博20
         role_action.try_reset()
         continue
     if not role_action.back_to_store():
