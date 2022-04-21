@@ -48,7 +48,7 @@ class App(ttk.Frame):
 
         # region 开始键
         def start(event):
-            main.main_fun(self.config)
+            main.main_fun()
 
         self.start_button = ttk.Button(
             self, text="开始运行", style="Accent.TButton"
