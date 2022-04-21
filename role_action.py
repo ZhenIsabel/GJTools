@@ -130,7 +130,6 @@ def buy_map():
     if max_val > 0.9:
         # pyautogui.press('4')
         # pyautogui.press('0')
-        print(buy_count_string)
         for i in range(len(buy_count_string)):
             pyautogui.press(buy_count_string[i])
         pyautogui.press('enter')
@@ -354,7 +353,7 @@ def is_on_horse():
 
 
 def reset_visual_field():
-    x, y = 1000, 100
+    x, y = 1000, 300
     win32api.SetCursorPos((x, y))
     time.sleep(0.5)
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, x, y)

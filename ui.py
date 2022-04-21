@@ -4,7 +4,7 @@ from tkinter import ttk
 
 import os
 import config_io
-import main
+# import main
 import pyautogui
 
 # 是否允许鼠标挪出界自动关闭
@@ -48,10 +48,20 @@ class App(ttk.Frame):
 
         # region 开始键
         def start(event):
-            main.main_fun()
+            # main.main_fun()
+            config_io.write_config([self.max_move_distance_var.get(),
+                                             self.move_speed_var.get(),
+                                             self.turn_speed_var.get(),
+                                             self.count_yuanbo.get(),
+                                             self.count_no_yuanbo.get(),
+                                             self.open_box_time.get(),
+                                             self.move_distance_x.get(),
+                                             self.move_distance_y.get()
+                                             ])
+            os.system('python main.py')
 
         self.start_button = ttk.Button(
-            self, text="开始运行", style="Accent.TButton"
+            self, text="保存并运行", style="Accent.TButton"
         )
         self.start_button.grid(row=8, column=0, padx=10,
                                pady=10, sticky="nsew")
