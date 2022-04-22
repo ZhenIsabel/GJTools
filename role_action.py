@@ -75,7 +75,7 @@ def match_img(template):
 
 # def clear_map(count=20):
 def clear_map():
-    pyautogui.press('m')
+    pyautogui.press(config_model.config['key_map'])
     time.sleep(0.5)
     max_val, max_loc = match_img(map_title)
     # print(max_val)
@@ -94,7 +94,7 @@ def clear_map():
         # pyautogui.leftClick()
     pyautogui.moveTo(first_map_pos[0] - 50, first_map_pos[1] - 50)
     pyautogui.leftClick()
-    pyautogui.press('m')
+    pyautogui.press(config_model.config['key_map'])
     return True
 
 
@@ -111,7 +111,7 @@ def buy_map():
     if max_val <= 0.9:
         send_message_with_loc("Find Map NPC Error")
         return False
-    pyautogui.press('g')
+    pyautogui.press(config_model.config['key_commu'])
     #  pyautogui.press('f')
     time.sleep(1)
     max_val, max_loc = match_img(map_in_store)
@@ -174,7 +174,7 @@ def down_horse():
     # pyautogui.keyDown('ctrl')
     # pyautogui.press('r')
     # pyautogui.keyUp('ctrl')
-    pyautogui.press('t')
+    pyautogui.press(config_model.config['key_horse'])
     pyautogui.press('shift')
     pyautogui.sleep(3)
 
@@ -185,7 +185,7 @@ def up_horse():
     # pyautogui.keyDown('ctrl')
     # pyautogui.press('r')
     # pyautogui.keyUp('ctrl')
-    pyautogui.press('t')
+    pyautogui.press(config_model.config['key_horse'])
     pyautogui.sleep(3)
 
 
@@ -278,7 +278,7 @@ def reset_to_store():
     pyautogui.moveTo(max_loc[0] + 24, max_loc[1] + 24)
     pyautogui.leftClick()
     pyautogui.sleep(5)
-    pyautogui.press('g')
+    pyautogui.press(config_model.config['key_commu'])
     #  pyautogui.press('f')
     pyautogui.moveRel(-100, -100)
     time.sleep(1)
@@ -292,7 +292,7 @@ def reset_to_store():
     pyautogui.sleep(30)
 
     role_move.move(home_to_door[0], home_to_door[1])
-    pyautogui.press('g')
+    pyautogui.press(config_model.config['key_commu'])
     #  pyautogui.press('f')
     time.sleep(1)
     max_val, max_loc = match_img(back_origin_btn)

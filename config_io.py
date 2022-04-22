@@ -9,11 +9,14 @@ def load_config_from_file():
     # config = np.loadtxt('config.txt', delimiter=',')
     f=open(file='config.txt', mode='r', encoding="utf-8")
     file_data = f.readlines()
+    index=0
     for each_line in file_data:
+        index+=1
         each_line = each_line.strip('\n')
         item_pair = each_line.split(',')
         if item_pair[0] in config_model.config:
-            if item_pair[0]=='email_add':
+            # if item_pair[0]=='email_add':
+            if index>10:
                 config_model.config[item_pair[0]] = item_pair[1]
             else:
                 config_model.config[item_pair[0]] = float(item_pair[1])

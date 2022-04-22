@@ -1,4 +1,3 @@
-from operator import contains
 import string
 import win32gui
 import win32con
