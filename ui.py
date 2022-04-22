@@ -1,14 +1,54 @@
-from distutils.command.config import config
+import os
 import tkinter as tk
+from functools import singledispatch
 from tkinter import ttk
 
-import os
-import config_io
 # import main
 import pyautogui
 
+import calculate
+import config_io
+import config_model
+
 # 是否允许鼠标挪出界自动关闭
 pyautogui.FAILSAFE = True
+
+# region 数据格式转换
+@singledispatch
+def tk_value_to_value(data):
+    result = []
+    for item in data:
+        result.append(item.get())
+    return result
+
+
+@tk_value_to_value.register(dict)
+def _(data):
+    result = dict()
+    for index,pair in enumerate(data.items()):
+        result[pair[0]]=data[pair[0]].get()
+    return result
+
+# @singledispatch
+# def value_to_tk_value(data):
+#     result = []
+#     for item in data:
+#         result.append(item)
+#     return result
+
+
+# @value_to_tk_value.register(dict)
+# def _(data):
+#     result = dict()
+#     for index,pair in enumerate(data.items()):
+#         # result.update({pair[0]: data[pair[0]]})
+#         # try:
+#             result[pair[0]].set(data[pair[0]])
+#         # except Exception as e :
+#         #     print("config_model中的数据与ui中的默认形式不匹配")
+
+#     return result
+# endregion
 
 
 class App(ttk.Frame):
@@ -21,51 +61,71 @@ class App(ttk.Frame):
             self.rowconfigure(index=index, weight=1)
 
         # Create control variables
-        self.is_yuanbo = tk.BooleanVar(value=False)  # 是否开启渊博
-        self.max_move_distance_var = tk.IntVar(value=50)  # 最长经过多少距离进行转向检测
-        self.move_speed_var = tk.DoubleVar(value=0.18)  # 步速（非扫图速度）
-        self.turn_speed_var = tk.DoubleVar(value=1.97)  # 转向速度
-        self.count_yuanbo = tk.IntVar(value=36)  # 渊博时最大持图数量
-        self.count_no_yuanbo = tk.IntVar(value=15)  # 非渊博时最大持图数量
-        self.open_box_time = tk.DoubleVar(value=5.5)  # 开盒子读条时间
-        self.move_distance_x = tk.DoubleVar(value=4.5)  # 地图搜索时x轴步距
-        self.move_distance_y = tk.DoubleVar(value=3)  # 地图搜索时y轴步距
+        self.variables = {'is_yuanbo': tk.IntVar(),            # 是否是渊博状态
+                          'max_move_distance': tk.DoubleVar(),  # 最长经过多少距离进行转向检测
+                          'move_speed': tk.DoubleVar(),       # 步速（非扫图速度）
+                          'turn_speed': tk.DoubleVar(),       # 转向速度
+                          'count_yuanbo': tk.IntVar(),         # 渊博时最大持图数量
+                          'count_no_yuanbo': tk.IntVar(),      # 非渊博时最大持图数量
+                          'open_box_time': tk.DoubleVar(),        # 开盒子读条时间
+                          'single_map_time': tk.DoubleVar(),       # 龙星阵开单张图时间
+                          'move_distance_x': tk.DoubleVar(),      # 地图搜索时x轴步距
+                          'move_distance_y': tk.DoubleVar(),# 地图搜索时y轴步距
+                          'email_add':tk.StringVar()  # 接收报错邮件的地址    
+                          }
 
-        self.config = config_io.Config_Data(self.is_yuanbo.get(),
-                                            [self.max_move_distance_var.get(),
-                                             self.move_speed_var.get(),
-                                             self.turn_speed_var.get(),
-                                             self.count_yuanbo.get(),
-                                             self.count_no_yuanbo.get(),
-                                             self.open_box_time.get(),
-                                             self.move_distance_x.get(),
-                                             self.move_distance_y.get()
-                                             ])
         # Create widgets :
         self.setup_widgets()
 
-    def setup_widgets(self):
 
+
+
+    def setup_widgets(self):
+        # region main frame
+        self.main_frame = ttk.Frame(self, padding=(0, 0, 0, 10))
+        self.main_frame.grid(
+            row=0, column=20, padx=0, pady=(0, 0), sticky="nsew", rowspan=20
+        )
         # region 开始键
+
         def start(event):
             # main.main_fun()
-            config_io.write_config([self.max_move_distance_var.get(),
-                                             self.move_speed_var.get(),
-                                             self.turn_speed_var.get(),
-                                             self.count_yuanbo.get(),
-                                             self.count_no_yuanbo.get(),
-                                             self.open_box_time.get(),
-                                             self.move_distance_x.get(),
-                                             self.move_distance_y.get()
-                                             ])
-            os.system('python main.py')
+            # config_io.write_config(tk_value_to_value(self.variables))
+            # os.system('python main.py')
+            print("start")
+            for index,pair in enumerate(self.variables.items()):
+                config_model.config[pair[0]]=self.variables[pair[0]].get()
+            calculate.calc()
+            
 
         self.start_button = ttk.Button(
-            self, text="保存并运行", style="Accent.TButton"
+            self.main_frame, text="运行", style="Accent.TButton"
         )
-        self.start_button.grid(row=8, column=0, padx=10,
+        self.start_button.grid(row=2, column=0, padx=10,
                                pady=10, sticky="nsew")
         self.start_button.bind("<Button-1>", start)
+        # endregion
+
+        # region 数值读取键
+        def para_load_fun(event):
+            config_io.load_config_from_file()
+            # 参数传递
+            for index,pair in enumerate(config_model.config.items()):
+                self.variables[pair[0]].set(config_model.config[pair[0]])
+            print("loaded and applied")
+        self.para_load = ttk.Button(self.main_frame, text="读取参数")
+        self.para_load.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
+        self.para_load.bind("<Button-1>", para_load_fun)
+        # endregion
+
+        # region 数值保存键
+        def para_save_fun(event):
+            config_io.write_config(tk_value_to_value(self.variables))
+            print("saved")
+        self.para_save = ttk.Button(self.main_frame, text="保存参数")
+        self.para_save.grid(row=1, column=0, padx=10,
+                            pady=10, sticky="nsew")
+        self.para_save.bind("<Button-1>", para_save_fun)
         # endregion
 
         # region Progressbar
@@ -74,6 +134,8 @@ class App(ttk.Frame):
         # )
         # self.progress.grid(row=0, column=1, padx=(
         #     10, 20), pady=(20, 0), sticky="ew")
+        # endregion
+
         # endregion
 
         # Panedwindow
@@ -111,7 +173,7 @@ class App(ttk.Frame):
         # region 渊博开关
         self.switch_yuanbo = ttk.Checkbutton(
             self.switch_frame, text="渊博", style="Switch.TCheckbutton",
-            onvalue=True, offvalue=False, variable=self.is_yuanbo)
+            onvalue=1, offvalue=0, variable=self.variables['is_yuanbo'])
 
         self.switch_yuanbo.grid(row=0, column=0, padx=5,
                                 pady=10, sticky="nsew")
@@ -143,15 +205,15 @@ class App(ttk.Frame):
             self.tab_parameter,
             from_=0,
             to=3,
-            variable=self.move_speed_var,
-            command=lambda event: self.move_speed_var.set(
-                self.move_speed_var.get()),
+            variable=self.variables['move_speed'],
+            command=lambda event: self.variables['move_speed'].set(
+                self.variables['move_speed'].get()),
         )
         self.move_speed_scale.grid(row=0, column=0, padx=(
             20, 10), pady=(50, 0), sticky="ew", columnspan=2)
 
         self.move_speed_entry = ttk.Entry(
-            self.tab_parameter, textvariable=self.move_speed_var
+            self.tab_parameter, textvariable=self.variables['move_speed']
         )
         self.move_speed_entry.grid(row=0, column=1, padx=(
             0, 10), pady=(0, 0), sticky="ew")
@@ -169,15 +231,15 @@ class App(ttk.Frame):
             self.tab_parameter,
             from_=0,
             to=5,
-            variable=self.turn_speed_var,
-            command=lambda event: self.turn_speed_var.set(
-                self.turn_speed_var.get()),
+            variable=self.variables['turn_speed'],
+            command=lambda event: self.variables['turn_speed'].set(
+                self.variables['turn_speed'].get()),
         )
         self.turn_speed_scale.grid(row=1, column=0, padx=(
             20, 10), pady=(50, 0), sticky="ew", columnspan=2)
 
         self.turn_speed_entry = ttk.Entry(
-            self.tab_parameter, textvariable=self.turn_speed_var
+            self.tab_parameter, textvariable=self.variables['turn_speed']
         )
         self.turn_speed_entry.grid(row=1, column=1, padx=(
             0, 10), pady=(0, 0), sticky="ew")
@@ -196,15 +258,15 @@ class App(ttk.Frame):
             self.tab_parameter,
             from_=20,
             to=100,
-            variable=self.max_move_distance_var,
-            command=lambda event: self.max_move_distance_var.set(
-                self.max_move_distance_var.get()),
+            variable=self.variables['max_move_distance'],
+            command=lambda event: self.variables['max_move_distance'].set(
+                self.variables['max_move_distance'].get()),
         )
         self.max_move_distance_scale.grid(row=2, column=0, padx=(
             20, 10), pady=(50, 0), sticky="ew", columnspan=2)
 
         self.max_move_distance_entry = ttk.Entry(
-            self.tab_parameter, textvariable=self.max_move_distance_var
+            self.tab_parameter, textvariable=self.variables['max_move_distance']
         )
         self.max_move_distance_entry.grid(row=2, column=1, padx=(
             0, 10), pady=(0, 0), sticky="ew")
@@ -222,17 +284,44 @@ class App(ttk.Frame):
             self.tab_parameter,
             from_=0,
             to=6,
-            variable=self.open_box_time,
-            command=lambda event: self.open_box_time.set(
-                self.open_box_time.get()),
+            variable=self.variables['open_box_time'],
+            command=lambda event: self.variables['open_box_time'].set(
+                self.variables['open_box_time'].get()),
         )
         self.open_box_time_scale.grid(row=3, column=0, padx=(
             20, 10), pady=(50, 0), sticky="ew", columnspan=2)
 
         self.open_box_time_entry = ttk.Entry(
-            self.tab_parameter, textvariable=self.open_box_time
+            self.tab_parameter, textvariable=self.variables['open_box_time']
         )
         self.open_box_time_entry.grid(row=3, column=1, padx=(
+            0, 10), pady=(0, 0), sticky="ew")
+
+        # endregion
+
+        # region 开图时长
+        self.single_map_time_scale_label = ttk.Label(
+            self.tab_parameter,
+            text="龙星阵开单张图时长",
+            justify="left",
+            font=('microsoft yahei ui',  10,  "normal"),
+        )
+        self.single_map_time_scale_label.grid(row=4, column=0, pady=0)
+        self.single_map_time_scale = ttk.Scale(
+            self.tab_parameter,
+            from_=0,
+            to=6,
+            variable=self.variables['single_map_time'],
+            command=lambda event: self.variables['single_map_time'].set(
+                self.variables['single_map_time'].get()),
+        )
+        self.single_map_time_scale.grid(row=4, column=0, padx=(
+            20, 10), pady=(50, 0), sticky="ew", columnspan=2)
+
+        self.single_map_time_entry = ttk.Entry(
+            self.tab_parameter, textvariable=self.variables['single_map_time']
+        )
+        self.single_map_time_entry.grid(row=4, column=1, padx=(
             0, 10), pady=(0, 0), sticky="ew")
 
         # endregion
@@ -247,16 +336,20 @@ class App(ttk.Frame):
         )
         self.label_move_distance.grid(row=2, column=5, pady=0)
         self.entry_move_distance_x = ttk.Entry(
-            self.tab_parameter, textvariable=self.move_distance_x, width=6
+            self.tab_parameter,
+            textvariable=self.variables['move_distance_x'],
+            width=6
         )
         self.entry_move_distance_x.grid(
-            row=2, column=6, padx=5, pady=(0, 10), sticky="w")
+            row=2, column=6, padx=5, pady=(0, 0), sticky="w")
 
         # y轴
         self.entry_move_distance_y = ttk.Entry(
-            self.tab_parameter, textvariable=self.move_distance_y, width=6)
+            self.tab_parameter,
+            textvariable=self.variables['move_distance_y'],
+            width=6)
         self.entry_move_distance_y.grid(
-            row=2, column=7, padx=5, pady=(0, 10), sticky="w")
+            row=2, column=7, padx=5, pady=(0, 0), sticky="w")
 
         # endregion
 
@@ -269,9 +362,11 @@ class App(ttk.Frame):
         )
         self.label_count_yuanbo.grid(row=0, column=5, pady=0)
         self.entry_count_yuanbo = ttk.Entry(
-            self.tab_parameter, textvariable=self.count_yuanbo, width=6)
+            self.tab_parameter,
+            textvariable=self.variables['count_yuanbo'],
+            width=6)
         self.entry_count_yuanbo.grid(
-            row=0, column=6, padx=5, pady=(0, 10), sticky="w")
+            row=0, column=6, padx=5, pady=(0, 0), sticky="w")
 
         self.label_count_no_yuanbo = ttk.Label(
             self.tab_parameter,
@@ -281,91 +376,56 @@ class App(ttk.Frame):
         )
         self.label_count_no_yuanbo.grid(row=1, column=5, pady=0)
         self.entry_count_no_yuanbo = ttk.Entry(
-            self.tab_parameter, textvariable=self.count_no_yuanbo, width=6)
+            self.tab_parameter,
+            textvariable=self.variables['count_no_yuanbo'],
+            width=6)
         self.entry_count_no_yuanbo.grid(
-            row=1, column=6, padx=5, pady=(0, 10), sticky="w")
+            row=1, column=6, padx=5, pady=(0, 0), sticky="w")
 
-        # endregion
-
-        # region 数值读取键
-
-        def para_load_fun(event):
-            self.config = config_io.load_config_from_file()
-
-            self.max_move_distance_var.set(self.config.max_move_distance_var),
-            self.move_speed_var.set(self.config.move_speed_var),
-            self.turn_speed_var.set(self.config.turn_speed_var),
-            self.count_yuanbo.set(self.config.count_yuanbo),
-            self.count_no_yuanbo.set(self.config.count_no_yuanbo),
-            self.open_box_time.set(self.config.open_box_time),
-            self.move_distance_x.set(self.config.move_distance_x),
-            self.move_distance_y.set(self.config.move_distance_y)
-            print("applied")
-        self.para_load = ttk.Button(self.tab_parameter, text="读取参数")
-        self.para_load.grid(row=7, column=8, padx=10, pady=10, sticky="nsew")
-        self.para_load.bind("<Button-1>", para_load_fun)
-        # endregion
-
-        # region 数值保存键
-        def para_save_fun(event):
-            config_data = [self.max_move_distance_var.get(),
-                           self.move_speed_var.get(),
-                           self.turn_speed_var.get(),
-                           self.count_yuanbo.get(),
-                           self.count_no_yuanbo.get(),
-                           self.open_box_time.get(),
-                           self.move_distance_x.get(),
-                           self.move_distance_y.get()
-                           ]
-            config_io.write_config(config_data)
-            print("saved")
-        self.para_save = ttk.Button(self.tab_parameter, text="保存参数")
-        self.para_save.grid(row=8, column=8, padx=10,
-                            pady=10, sticky="nsew")
-        self.para_save.bind("<Button-1>", para_save_fun)
         # endregion
 
         # endregion
 
         # region Tab 初始化
-        self.tab_capture = ttk.Frame(self.notebook)
-        self.notebook.add(self.tab_capture, text="初始化")
+        self.tab_init = ttk.Frame(self.notebook)
+        self.notebook.add(self.tab_init, text="初始化")
 
         # 整个游戏画面截屏键
-        self.button = ttk.Button(self.tab_capture, text="截取游戏画面")
+        self.button = ttk.Button(self.tab_init, text="截取游戏画面")
         self.button.grid(row=0, column=0, padx=5, pady=10, sticky="nsew")
 
         # 分区截屏键
-        self.button = ttk.Button(self.tab_capture, text="获取目标元素画面")
+        self.button = ttk.Button(self.tab_init, text="获取目标元素画面")
         self.button.grid(row=2, column=0, padx=5, pady=10, sticky="nsew")
 
         # Togglebutton 选取变色键
         self.togglebutton_loc_area = ttk.Checkbutton(
-            self.tab_capture, text="小地图坐标文字", style="Toggle.TButton"
+            self.tab_init, text="小地图坐标文字", style="Toggle.TButton"
         )
         self.togglebutton_loc_area.grid(
             row=0, column=0, padx=5, pady=10, sticky="nsew")
 
         self.togglebutton_bag_item = ttk.Checkbutton(
-            self.tab_capture, text="背包格子", style="Toggle.TButton"
+            self.tab_init, text="背包格子", style="Toggle.TButton"
         )
         self.togglebutton_bag_item.grid(
             row=1, column=0, padx=5, pady=10, sticky="nsew")
 
         # 背包一排格子数
-        self.entry_bag_width = ttk.Entry(self.tab_capture)
+        self.entry_bag_width = ttk.Entry(self.tab_init)
         self.entry_bag_width.insert(0, "背包一行格子数")
         self.entry_bag_width.grid(
             row=2, column=0, padx=5, pady=10, sticky="nsew")
 
         # 如更改分辨率，则需改动以下值
         self.extra_capture_frame = ttk.LabelFrame(
-            self.tab_capture, text="如更改分辨率，则需改动以下值", padding=(20, 10))
+            self.tab_init, text="如更改分辨率，则需改动以下值", padding=(20, 10))
         self.extra_capture_frame.grid(
             row=0, column=1, padx=10, pady=(0, 0), sticky="nsew", rowspan=10
         )
         self.extra_capture_frame.columnconfigure(index=0, weight=1)
 
+        
         # Scrollbar
         self.scrollbar = ttk.Scrollbar(self.extra_capture_frame)
         self.scrollbar.pack(side="right", fill="y")
@@ -373,6 +433,13 @@ class App(ttk.Frame):
         # # Select and scroll
         # self.treeview.selection_set(10)
         # self.treeview.see(7)
+
+        self.entry_email = ttk.Entry(
+            self.tab_init,
+            textvariable=self.variables['email_add']
+        )
+        self.entry_email.grid(
+            row=10, column=0, padx=5, pady=(0, 0), sticky="w")
 
         # endregion
 
@@ -385,6 +452,7 @@ class App(ttk.Frame):
             os.system('notepad readme.md')
             print("open readme")
 
+        
         self.help_button = ttk.Button(self.tab_about, text="打开帮助文档")
         self.help_button.grid(row=0, column=0, padx=5, pady=10, sticky="nsew")
         self.help_button.bind("<Button-1>", press_help_button)
@@ -404,7 +472,8 @@ class App(ttk.Frame):
         # endregion
 
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
+def ui_main():
     root = tk.Tk()
     root.title("猫猫挖宝")
 

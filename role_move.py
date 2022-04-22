@@ -2,24 +2,19 @@ import math
 import time
 import pyautogui
 
-import config_io
 import role_action
 import role_loc
 
-config=config_io.load_config_from_file()
+import config_model
 
 # 速度值
 # move_speed = 0.095169
-move_speed = config.move_speed_var
 move_back_speed = 2.5
 # turn_speed = 1.9
-turn_speed = config.turn_speed_var
 
 # 地图式搜索时的步距
 # move_distance_x = 4.5
 # move_distance_y = 3
-move_distance_x=config.move_distance_x
-move_distance_y=config.move_distance_y
 
 # 转动可识别的最小角度
 turn_min = 0.025
@@ -29,21 +24,20 @@ move_min = 1
 
 # 最多移动多少距离后校准方向
 # max_move_distance = 50
-max_move_distance = config.max_move_distance_var
 
 
 def move(x, y):
     if x > 0:
         pyautogui.keyDown('d')
-        wait_include_pause(x * move_speed)
+        wait_include_pause(x * config_model.config['move_speed'])
         pyautogui.keyUp('d')
     elif x < 0:
         pyautogui.keyDown('a')
-        wait_include_pause(- x * move_speed)
+        wait_include_pause(- x * config_model.config['move_speed'])
         pyautogui.keyUp('a')
     if y > 0:
         pyautogui.keyDown('w')
-        wait_include_pause(y * move_speed)
+        wait_include_pause(y * config_model.config['move_speed'])
         pyautogui.keyUp('w')
     elif y < 0:
         pyautogui.keyDown('s')
@@ -60,11 +54,11 @@ def turn_around(num):
         return
     if num > 0:
         pyautogui.keyDown(']')
-        wait_include_pause(num * turn_speed)
+        wait_include_pause(num * config_model.config['turn_speed'])
         pyautogui.keyUp(']')
     elif num < 0:
         pyautogui.keyDown('[')
-        wait_include_pause(- num * turn_speed)
+        wait_include_pause(- num * config_model.config['turn_speed'])
         pyautogui.keyUp('[')
 
 
@@ -88,12 +82,12 @@ def move_map(width, height, callback_fun=None):
     count = 0
     while y < height:
         while x < width:
-            move(direct * move_distance_x, 0)
-            x += move_distance_x
+            move(direct * config_model.config['move_distance_x'], 0)
+            x += config_model.config['move_distance_x']
             count += callback_fun()
         role_action.up_horse()
-        move(0, move_distance_y)
-        y += move_distance_y
+        move(0, config_model.config['move_distance_y'])
+        y += config_model.config['move_distance_y']
         count += callback_fun()
         x = 0
         direct = - direct
@@ -127,7 +121,7 @@ def move_directly(target_loc, diff=move_min, try_times=5):
     diff_loc = [target_loc[0] - current_loc[0], target_loc[1] - current_loc[1]]
     temp_direct = -math.atan2(diff_loc[1], diff_loc[0]) / math.pi
     turn_to(temp_direct)
-    move(0, min(math.hypot(diff_loc[0], diff_loc[1]), max_move_distance))
+    move(0, min(math.hypot(diff_loc[0], diff_loc[1]), config_model.config['max_move_distance']))
     return move_directly(target_loc, diff, try_times - 1)
 
 

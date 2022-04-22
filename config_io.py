@@ -1,54 +1,43 @@
-from xmlrpc.client import boolean
-import numpy as np
+from functools import singledispatch
+# import numpy as np
+import config_model
+
+# 读取并写入config_model
 
 
-# 读取
 def load_config_from_file():
-    config = np.loadtxt('config.txt', delimiter=',')
-    # for i in config:
-    #     print(i)
-    max_move_distance_var = config[0]
-    move_speed_var = config[1]
-    turn_speed_var = config[2]
-    count_yuanbo = config[3]
-    count_no_yuanbo = config[4]
-    open_box_time = config[5]
-    move_distance_x = config[6]
-    move_distance_y = config[7]
-
-    config_data = Config_Data(is_yuanbo=False, config=[max_move_distance_var,
-                                             move_speed_var,
-                                             turn_speed_var,
-                                             count_yuanbo,
-                                             count_no_yuanbo,
-                                             open_box_time,
-                                             move_distance_x,
-                                             move_distance_y
-                                             ])
-    return config_data
-
-
-def load_config_inside(config):
-    global max_move_distance_var
-    global move_speed_var
-    global turn_speed_var
-    global count_yuanbo
-    global count_no_yuanbo
-    global open_box_time
-    global move_distance_x
-    global move_distance_y
-
-    max_move_distance_var = config[0]
-    move_speed_var = config[1]
-    turn_speed_var = config[2]
-    count_yuanbo = config[3]
-    count_no_yuanbo = config[4]
-    open_box_time = config[5]
-    move_distance_x = config[6]
-    move_distance_y = config[7]
+    # config = np.loadtxt('config.txt', delimiter=',')
+    f=open(file='config.txt', mode='r', encoding="utf-8")
+    file_data = f.readlines()
+    for each_line in file_data:
+        each_line = each_line.strip('\n')
+        item_pair = each_line.split(',')
+        if item_pair[0] in config_model.config:
+            if item_pair[0]=='email_add':
+                config_model.config[item_pair[0]] = item_pair[1]
+            else:
+                config_model.config[item_pair[0]] = float(item_pair[1])
+    f.close()
 
 
 # 写入
+# def write_config(data):
+#     with open('config.txt', 'w') as config:
+#         # config.write(str('config=['))
+#         length = len(data)
+#         for i in range(length):
+#             if(i == (length-1)):
+#                 config.write(str(data[i]))
+#             else:
+#                 config.write(str(data[i])+',')
+#         # config.write(str(']'))
+
+# '@'符号用作函数修饰符是python2.4新增加的功能
+# 修饰符必须出现在函数定义前一行，不允许和函数定义在同一行。也就是说＠A def f(): 是非法的
+# 只可以在模块或类定义层内对函数进行修饰，不允许修修饰一个类。
+# 一个修饰符就是一个函数它将被修饰的函数做为参数，并返回修饰后的同名函数或其它可调用的东西。
+# 此处用来实现函数重载
+@singledispatch
 def write_config(data):
     with open('config.txt', 'w') as config:
         # config.write(str('config=['))
@@ -57,43 +46,18 @@ def write_config(data):
             if(i == (length-1)):
                 config.write(str(data[i]))
             else:
-                config.write(str(data[i])+',')
+                config.write(str(data[i])+'\n')
         # config.write(str(']'))
 
 
-# 全局变量
-class Config_Data:
-    # is_yuanbo
-    # max_move_distance_var   # 最长经过多少距离进行转向检测
-    # move_speed_var   # 步速（非扫图速度）
-    # turn_speed_var   # 转向速度
-    # count_yuanbo  # 渊博时最大持图数量
-    # count_no_yuanbo  # 非渊博时最大持图数量
-    # open_box_time   # 开盒子读条时间
-    # move_distance_x   # 地图搜索时x轴步距
-    # move_distance_y  # 地图搜索时y轴步距
-
-    def __init__(self, is_yuanbo: boolean, config: list):
-        self.is_yuanbo = is_yuanbo
-        self.max_move_distance_var = config[0]
-        self.move_speed_var = config[1]
-        self.turn_speed_var = config[2]
-        self.count_yuanbo = config[3]
-        self.count_no_yuanbo = config[4]
-        self.open_box_time = config[5]
-        self.move_distance_x = config[6]
-        self.move_distance_y = config[7]
-
-    def printhhh(self):
-        print(self.is_yuanbo)
-        print(self.max_move_distance_var)
-        print(self.move_speed_var)
-        print(self.turn_speed_var)
-        print(self.count_yuanbo)
-        print(self.count_no_yuanbo)
-        print(self.open_box_time)
-        print(self.move_distance_x)
-        print(self.move_distance_y)
-
-
-# load_config()
+@write_config.register(dict)
+def _(data):
+    with open('config.txt', 'w') as config:
+        # config.write(str('config=['))
+        length = len(data)
+        for index, key in enumerate(data):
+            if(index == (length-1)):
+                config.write(str(key)+','+str(data[key]))
+            else:
+                config.write(str(key)+','+str(data[key])+'\n')
+        # config.write(str(']'))

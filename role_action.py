@@ -7,7 +7,7 @@ import pyautogui
 import win32api
 import win32con
 
-import config_io
+import config_model
 import find_box
 import log_message
 import role_loc
@@ -29,7 +29,6 @@ new_day_tip = cv2.imread('img/new_day_tip.png')
 close_btn = cv2.imread('img/close_btn.png')
 horse = cv2.imread('img/horse.png')
 
-config=config_io.load_config_from_file()
 
 # 点开藏宝地图模式位置
 # open_box_map_pos = [500, 50]
@@ -43,13 +42,11 @@ first_map_pos = [2069, 522]
 confirm_pos = [880, 450]
 
 # 买图数量
-buy_count = int(
-    config.count_yuanbo if config.is_yuanbo else config.count_no_yuanbo)
+
 
 # 打开藏宝图等待时间
 # wait_open_time = 148 # 无渊博75
 # wait_open_time = 75
-wait_open_time = buy_count*5
 
 # 开始挖宝的坐标方向和大小
 begin_find_loc_1 = [-825, -525]
@@ -85,6 +82,8 @@ def clear_map():
     # if max_val < 0.95:
     #     pyautogui.moveTo(open_box_map_pos[0], open_box_map_pos[1])
     #     pyautogui.leftClick()
+    buy_count = int(
+    config_model.config['count_yuanbo'] if config_model.config['is_yuanbo'] else config_model.config['count_no_yuanbo'])
     for i in range(0, buy_count):
         pyautogui.moveTo(first_map_pos[0], first_map_pos[1])
         pyautogui.rightClick()
@@ -126,6 +125,8 @@ def buy_map():
     pyautogui.keyUp('shift')
     max_val, max_loc = match_img(buy_map_tip)
     # 确定买图数量
+    buy_count = int(
+    config_model.config['count_yuanbo'] if config_model.config['is_yuanbo'] else config_model.config['count_no_yuanbo'])
     buy_count_string = str(buy_count)
     if max_val > 0.9:
         # pyautogui.press('4')
@@ -151,6 +152,10 @@ def open_map():
     pyautogui.leftClick()
     pyautogui.sleep(1)
     max_val, max_loc = match_img(open_map_error)
+
+    buy_count = int(
+    config_model.config['count_yuanbo'] if config_model.config['is_yuanbo'] else config_model.config['count_no_yuanbo'])
+    wait_open_time=buy_count*config_model.config['single_map_time']
     if max_val < 0.9:
         pyautogui.sleep(wait_open_time)
         pyautogui.moveRel(0, -100)
