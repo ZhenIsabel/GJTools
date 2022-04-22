@@ -393,45 +393,45 @@ class App(ttk.Frame):
         self.tab_init = ttk.Frame(self.notebook)
         self.notebook.add(self.tab_init, text="初始化")
 
-        # 整个游戏画面截屏键
-        self.button = ttk.Button(self.tab_init, text="截取游戏画面")
-        self.button.grid(row=0, column=0, padx=5, pady=10, sticky="nsew")
+        # # 整个游戏画面截屏键
+        # self.button = ttk.Button(self.tab_init, text="截取游戏画面")
+        # self.button.grid(row=0, column=0, padx=5, pady=10, sticky="nsew")
 
-        # 分区截屏键
-        self.button = ttk.Button(self.tab_init, text="获取目标元素画面")
-        self.button.grid(row=2, column=0, padx=5, pady=10, sticky="nsew")
+        # # 分区截屏键
+        # self.button = ttk.Button(self.tab_init, text="获取目标元素画面")
+        # self.button.grid(row=2, column=0, padx=5, pady=10, sticky="nsew")
 
-        # Togglebutton 选取变色键
-        self.togglebutton_loc_area = ttk.Checkbutton(
-            self.tab_init, text="小地图坐标文字", style="Toggle.TButton"
-        )
-        self.togglebutton_loc_area.grid(
-            row=0, column=0, padx=5, pady=10, sticky="nsew")
+        # # Togglebutton 选取变色键
+        # self.togglebutton_loc_area = ttk.Checkbutton(
+        #     self.tab_init, text="小地图坐标文字", style="Toggle.TButton"
+        # )
+        # self.togglebutton_loc_area.grid(
+        #     row=0, column=0, padx=5, pady=10, sticky="nsew")
 
-        self.togglebutton_bag_item = ttk.Checkbutton(
-            self.tab_init, text="背包格子", style="Toggle.TButton"
-        )
-        self.togglebutton_bag_item.grid(
-            row=1, column=0, padx=5, pady=10, sticky="nsew")
+        # self.togglebutton_bag_item = ttk.Checkbutton(
+        #     self.tab_init, text="背包格子", style="Toggle.TButton"
+        # )
+        # self.togglebutton_bag_item.grid(
+        #     row=1, column=0, padx=5, pady=10, sticky="nsew")
 
-        # 背包一排格子数
-        self.entry_bag_width = ttk.Entry(self.tab_init)
-        self.entry_bag_width.insert(0, "背包一行格子数")
-        self.entry_bag_width.grid(
-            row=2, column=0, padx=5, pady=10, sticky="nsew")
+        # # 背包一排格子数
+        # self.entry_bag_width = ttk.Entry(self.tab_init)
+        # self.entry_bag_width.insert(0, "背包一行格子数")
+        # self.entry_bag_width.grid(
+        #     row=2, column=0, padx=5, pady=10, sticky="nsew")
 
-        # 如更改分辨率，则需改动以下值
-        self.extra_capture_frame = ttk.LabelFrame(
-            self.tab_init, text="如更改分辨率，则需改动以下值", padding=(20, 10))
-        self.extra_capture_frame.grid(
-            row=0, column=1, padx=10, pady=(0, 0), sticky="nsew", rowspan=10
-        )
-        self.extra_capture_frame.columnconfigure(index=0, weight=1)
+        # # 如更改分辨率，则需改动以下值
+        # self.extra_capture_frame = ttk.LabelFrame(
+        #     self.tab_init, text="如更改分辨率，则需改动以下值", padding=(20, 10))
+        # self.extra_capture_frame.grid(
+        #     row=0, column=1, padx=10, pady=(0, 0), sticky="nsew", rowspan=10
+        # )
+        # self.extra_capture_frame.columnconfigure(index=0, weight=1)
 
         
-        # Scrollbar
-        self.scrollbar = ttk.Scrollbar(self.extra_capture_frame)
-        self.scrollbar.pack(side="right", fill="y")
+        # # Scrollbar
+        # self.scrollbar = ttk.Scrollbar(self.extra_capture_frame)
+        # self.scrollbar.pack(side="right", fill="y")
 
         # # Select and scroll
         # self.treeview.selection_set(10)
@@ -441,10 +441,16 @@ class App(ttk.Frame):
             self.tab_init,
             textvariable=self.variables['email_add']
         )
-        self.entry_email.insert(0,'接收报错邮件的email')
         self.entry_email.grid(
-            row=10, column=0, padx=5, pady=(0, 0), sticky="w")
+            row=10, column=1, padx=5, pady=(0, 0), sticky="w")
 
+        self.label_entry_email = ttk.Label(
+            self.tab_init,
+            text="报错信息发送的邮箱",
+            justify="center",
+            font=('microsoft yahei ui',  10,  "normal"),
+        )
+        self.label_entry_email.grid(row=10, column=0, padx=5, sticky="w")
         # endregion
 
         # region Tab about

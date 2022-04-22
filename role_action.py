@@ -79,9 +79,9 @@ def clear_map():
     time.sleep(0.5)
     max_val, max_loc = match_img(map_title)
     # print(max_val)
-    # if max_val < 0.95:
-    #     pyautogui.moveTo(open_box_map_pos[0], open_box_map_pos[1])
-    #     pyautogui.leftClick()
+    if max_val < 0.9:
+        pyautogui.moveTo(open_box_map_pos[0], open_box_map_pos[1])
+        pyautogui.leftClick()
     buy_count = int(
     config_model.config['count_yuanbo'] if config_model.config['is_yuanbo'] else config_model.config['count_no_yuanbo'])
     for i in range(0, buy_count):

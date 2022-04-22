@@ -2,8 +2,9 @@ from smtplib import SMTP_SSL
 from email.mime.text import MIMEText
 
 import log_message
+import config_model
 
-receive_addr = "liangtianning@outlook.com"
+receive_addr = config_model.config['email_add']
 
 
 def send_message(message):

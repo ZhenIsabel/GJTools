@@ -11,6 +11,7 @@ import role_action
 
 def calc():
     time.sleep(3)
+    role_action.reset_visual_field()
     for i in range(0, 100):
         current_time = datetime.datetime.now()
         if 10 > current_time.hour > 5 and current_time.isoweekday() == 4:
