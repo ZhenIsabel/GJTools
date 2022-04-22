@@ -5,6 +5,7 @@ import role_action
 
 # import config_model
 # def calc():
+#     time.sleep(3)
 #     print(config_model.config)
 
 

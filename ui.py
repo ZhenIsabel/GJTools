@@ -3,7 +3,7 @@ import tkinter as tk
 from functools import singledispatch
 from tkinter import ttk
 
-# import main
+import window_control
 import pyautogui
 
 import calculate
@@ -93,8 +93,11 @@ class App(ttk.Frame):
             # config_io.write_config(tk_value_to_value(self.variables))
             # os.system('python main.py')
             print("start")
+            # ui中的数据同步到config_model中
             for index,pair in enumerate(self.variables.items()):
                 config_model.config[pair[0]]=self.variables[pair[0]].get()
+            # 最大化古剑
+            window_control.window_focus('古剑奇谭网络版')
             calculate.calc()
             
 
@@ -438,6 +441,7 @@ class App(ttk.Frame):
             self.tab_init,
             textvariable=self.variables['email_add']
         )
+        self.entry_email.insert(0,'接收报错邮件的email')
         self.entry_email.grid(
             row=10, column=0, padx=5, pady=(0, 0), sticky="w")
 
