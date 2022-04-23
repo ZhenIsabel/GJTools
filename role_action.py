@@ -42,7 +42,10 @@ first_map_pos = [2069, 522]
 # 确定按钮位置
 confirm_pos = [880, 450]
 
-# 买图数量
+# 傻逼的opencv模式匹配的匹配度阈值
+# 再给我在游戏截图里匹配出95%的缺头怪我就把你大爷杀了
+# via 无能狂怒的谢振衣
+fitness_threshold=0.95
 
 
 # 打开藏宝图等待时间
@@ -71,6 +74,9 @@ def match_img(template):
     image = cv2.cvtColor(np.asarray(pyautogui.screenshot()), cv2.COLOR_RGB2BGR)
     match_res = cv2.matchTemplate(image, template, 3)
     min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(match_res)
+    if config_model.config['is_testmode']:
+        cv2.imshow("screen", image)
+        cv2.imshow("check_picture", template)
     return max_val, max_loc
 
 
@@ -81,12 +87,12 @@ def clear_map():
     time.sleep(0.5)
     max_val, max_loc = match_img(map_title)
     # print(max_val)
-    if max_val < 0.9:
+    if max_val < fitness_threshold:
         pyautogui.moveTo(open_box_map_pos[0], open_box_map_pos[1])
         pyautogui.leftClick()
     buy_count = int(
         config_model.config['count_yuanbo'] if config_model.config['is_yuanbo'] else config_model.config['count_no_yuanbo'])
-    log_message.log_debug("清理数量为："+buy_count)
+    log_message.log_debug("清理数量为："+str(buy_count))
     for i in range(0, buy_count):
         pyautogui.moveTo(first_map_pos[0], first_map_pos[1])
         pyautogui.rightClick()
@@ -109,18 +115,18 @@ def buy_map():
         time.sleep(0.2)
         max_val, max_loc = match_img(store_npc)
         # print(max_val)
-        if max_val > 0.9:
+        if max_val > fitness_threshold:
             break
         role_move.move_to([-803, -721])
         role_move.move_to([-803, -716], None, 1)
-    if max_val <= 0.9:
+    if max_val <= fitness_threshold:
         send_message_with_loc("Find Map NPC Error")
         return False
     pyautogui.press(config_model.config['key_commu'])
     #  pyautogui.press('f')
     time.sleep(1)
     max_val, max_loc = match_img(map_in_store)
-    if max_val <= 0.9:
+    if max_val <= fitness_threshold:
         send_message_with_loc("Open Map Store Error")
         return False
     clear_bag()
@@ -133,7 +139,7 @@ def buy_map():
     buy_count = int(
         config_model.config['count_yuanbo'] if config_model.config['is_yuanbo'] else config_model.config['count_no_yuanbo'])
     buy_count_string = str(buy_count)
-    if max_val > 0.9:
+    if max_val > fitness_threshold:
         # pyautogui.press('4')
         # pyautogui.press('0')
         log_message.log_debug("买图数量为："+str(buy_count))
@@ -141,7 +147,7 @@ def buy_map():
             pyautogui.press(buy_count_string[i])
         pyautogui.press('enter')
         # max_val, max_loc = match_img(confirm_btn)
-        # if max_val > 0.9:
+        # if max_val > fitness_threshold:
         #     pyautogui.moveTo(max_loc[0] + 50, max_loc[1] + 15)
         #     pyautogui.leftClick()
     log_message.log_info("买图完毕")
@@ -165,13 +171,10 @@ def open_map():
     wait_open_time = buy_count*config_model.config['single_map_time']
     log_message.log_debug("开图数量为："+str(buy_count))
     log_message.log_debug("开图时间为："+str(wait_open_time))
-    if max_val < 0.9:
+    if max_val < fitness_threshold:
         pyautogui.sleep(wait_open_time)
         pyautogui.moveRel(0, -100)
         up_horse()
-        if config_model.config['is_testmode']:
-            if is_on_horse():
-                log_message.log_debug("成功上马")
         return True
     else:
         close_dialog()
@@ -186,6 +189,7 @@ def down_horse():
     # pyautogui.keyDown('ctrl')
     # pyautogui.press('r')
     # pyautogui.keyUp('ctrl')
+    log_message.log_debug("按下马键")
     pyautogui.press(config_model.config['key_horse'])
     pyautogui.press('shift')
     pyautogui.sleep(3)
@@ -200,16 +204,17 @@ def up_horse():
     # pyautogui.keyDown('ctrl')
     # pyautogui.press('r')
     # pyautogui.keyUp('ctrl')
+    log_message.log_debug("按上马键")
     pyautogui.press(config_model.config['key_horse'])
     pyautogui.sleep(3)
     if config_model.config['is_testmode']:
-        if not is_on_horse():
-            log_message.log_debug("成功下马")
+        if is_on_horse():
+            log_message.log_debug("成功上马")
 
 
 def close_dialog():
     max_val, max_loc = match_img(close_btn)
-    if max_val > 0.9:
+    if max_val > fitness_threshold:
         pyautogui.moveTo(max_loc[0] + 6, max_loc[1] + 6)
         pyautogui.leftClick()
 
@@ -270,7 +275,7 @@ def back_to_store():
 def clear_bag():
     log_message.log_info("出售背包物品")
     max_val, max_loc = match_img(bag_left)
-    if max_val < 0.9:
+    if max_val < fitness_threshold:
         log_message.log_debug('无法匹配背包位置')
         return
     first_loc = [max_loc[0] + 100, max_loc[1] + 85]
@@ -300,7 +305,7 @@ def reset_to_store():
     down_horse()
     log_message.log_debug("角色不在商店附近，尝试通过仙府重置")
     max_val, max_loc = match_img(home_door_btn)
-    if max_val < 0.9:
+    if max_val < fitness_threshold:
         log_message.log_debug("找不到仙府图标，上马")
         up_horse()
         return False
@@ -315,7 +320,7 @@ def reset_to_store():
 
     log_message.log_debug("找到仙府图标，回家")
     max_val, max_loc = match_img(home_main_btn)
-    if max_val < 0.9:
+    if max_val < fitness_threshold:
         log_message.log_debug("找不到'枕剑仙乡·卧云'选项")
         up_horse()
         return False
@@ -329,7 +334,7 @@ def reset_to_store():
     #  pyautogui.press('f')
     time.sleep(1)
     max_val, max_loc = match_img(back_origin_btn)
-    if max_val < 0.9:
+    if max_val < fitness_threshold:
         log_message.log_debug("找不到'回川入世符-返回荒狼原'选项")
         up_horse()
         return False
@@ -382,14 +387,17 @@ def deal_new_day():
         # 关服了
         return False
     max_val, max_loc = match_img(new_day_tip)
-    if max_val > 0.9:
+    if max_val > fitness_threshold:
         close_dialog()
     return True
 
 
 def is_on_horse():
     max_val, max_loc = match_img(horse)
-    return max_val > 0.9
+    log_message.log_debug("上马检测值："+str(max_val))
+    log_message.log_debug("上马检测匹配度最高的区域坐标："+str(max_loc))
+    # return max_val > 0.9
+    return max_val > fitness_threshold
 
 
 def reset_visual_field():

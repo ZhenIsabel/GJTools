@@ -4,9 +4,9 @@ import time
 import role_action
 
 # import config_model
-# def calc():
-#     time.sleep(3)
-#     print(config_model.config)
+def cal222c():
+    time.sleep(3)
+    print(role_action.is_on_horse())
 
 
 def calc():
