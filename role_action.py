@@ -70,13 +70,10 @@ bag_width = 12
 home_to_door = [-10, 0]
 
 
-def match_img(template):
+def match_img(template,method=3):
     image = cv2.cvtColor(np.asarray(pyautogui.screenshot()), cv2.COLOR_RGB2BGR)
     match_res = cv2.matchTemplate(image, template, 3)
     min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(match_res)
-    if config_model.config['is_testmode']:
-        cv2.imshow("screen", image)
-        cv2.imshow("check_picture", template)
     return max_val, max_loc
 
 
@@ -85,9 +82,12 @@ def clear_map():
     log_message.log_info("清理残图")
     pyautogui.press(config_model.config['key_map'])
     time.sleep(0.5)
-    max_val, max_loc = match_img(map_title)
+    max_val, max_loc = match_img(map_title,1)
     # print(max_val)
     if max_val < fitness_threshold:
+        # 切换到挖宝地图
+        log_message.log_info("切换到挖宝地图")
+        log_message.log_debug("匹配率："+str(max_val))
         pyautogui.moveTo(open_box_map_pos[0], open_box_map_pos[1])
         pyautogui.leftClick()
     buy_count = int(
@@ -393,11 +393,9 @@ def deal_new_day():
 
 
 def is_on_horse():
-    max_val, max_loc = match_img(horse)
+    max_val, max_loc = match_img(horse,5)
     log_message.log_debug("上马检测值："+str(max_val))
-    log_message.log_debug("上马检测匹配度最高的区域坐标："+str(max_loc))
-    # return max_val > 0.9
-    return max_val > fitness_threshold
+    return max_val > 0.9
 
 
 def reset_visual_field():

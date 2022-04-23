@@ -4,10 +4,7 @@ import config_model
 
 logging.basicConfig(
     filename='log.txt', format='%(asctime)s  %(message)s',
-    level=logging.DEBUG
-    if config_model.config['is_testmode']
-    else
-    logging.ERROR
+    level=logging.DEBUG if config_model.config['is_testmode']==1 else logging.ERROR
 )
 
 
