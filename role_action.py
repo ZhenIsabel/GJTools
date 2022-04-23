@@ -136,7 +136,7 @@ def buy_map():
     if max_val > 0.9:
         # pyautogui.press('4')
         # pyautogui.press('0')
-        log_message.log_debug("买图数量为："+buy_count)
+        log_message.log_debug("买图数量为："+str(buy_count))
         for i in range(len(buy_count_string)):
             pyautogui.press(buy_count_string[i])
         pyautogui.press('enter')
@@ -163,8 +163,8 @@ def open_map():
     buy_count = int(
         config_model.config['count_yuanbo'] if config_model.config['is_yuanbo'] else config_model.config['count_no_yuanbo'])
     wait_open_time = buy_count*config_model.config['single_map_time']
-    log_message.log_debug("开图数量为："+buy_count)
-    log_message.log_debug("开图时间为："+wait_open_time)
+    log_message.log_debug("开图数量为："+str(buy_count))
+    log_message.log_debug("开图时间为："+str(wait_open_time))
     if max_val < 0.9:
         pyautogui.sleep(wait_open_time)
         pyautogui.moveRel(0, -100)
