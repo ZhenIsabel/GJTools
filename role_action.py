@@ -1,3 +1,4 @@
+from asyncio.log import logger
 import datetime
 import time
 
@@ -75,6 +76,7 @@ def match_img(template):
 
 # def clear_map(count=20):
 def clear_map():
+    log_message.log_info("清理残图")
     pyautogui.press(config_model.config['key_map'])
     time.sleep(0.5)
     max_val, max_loc = match_img(map_title)
@@ -83,7 +85,8 @@ def clear_map():
         pyautogui.moveTo(open_box_map_pos[0], open_box_map_pos[1])
         pyautogui.leftClick()
     buy_count = int(
-    config_model.config['count_yuanbo'] if config_model.config['is_yuanbo'] else config_model.config['count_no_yuanbo'])
+        config_model.config['count_yuanbo'] if config_model.config['is_yuanbo'] else config_model.config['count_no_yuanbo'])
+    log_message.log_debug("清理数量为："+buy_count)
     for i in range(0, buy_count):
         pyautogui.moveTo(first_map_pos[0], first_map_pos[1])
         pyautogui.rightClick()
@@ -95,10 +98,12 @@ def clear_map():
     pyautogui.moveTo(first_map_pos[0] - 50, first_map_pos[1] - 50)
     pyautogui.leftClick()
     pyautogui.press(config_model.config['key_map'])
+    log_message.log_info("清理残图完毕")
     return True
 
 
 def buy_map():
+    log_message.log_info("买图")
     max_val = 0
     for i in range(0, 10):
         time.sleep(0.2)
@@ -126,11 +131,12 @@ def buy_map():
     max_val, max_loc = match_img(buy_map_tip)
     # 确定买图数量
     buy_count = int(
-    config_model.config['count_yuanbo'] if config_model.config['is_yuanbo'] else config_model.config['count_no_yuanbo'])
+        config_model.config['count_yuanbo'] if config_model.config['is_yuanbo'] else config_model.config['count_no_yuanbo'])
     buy_count_string = str(buy_count)
     if max_val > 0.9:
         # pyautogui.press('4')
         # pyautogui.press('0')
+        log_message.log_debug("买图数量为："+buy_count)
         for i in range(len(buy_count_string)):
             pyautogui.press(buy_count_string[i])
         pyautogui.press('enter')
@@ -138,6 +144,7 @@ def buy_map():
         # if max_val > 0.9:
         #     pyautogui.moveTo(max_loc[0] + 50, max_loc[1] + 15)
         #     pyautogui.leftClick()
+    log_message.log_info("买图完毕")
     return True
 
 
@@ -149,17 +156,22 @@ def open_map():
     max_val, max_loc = match_img(open_map_btn)
     pyautogui.moveTo(max_loc[0] + 24, max_loc[1] + 24)
     down_horse()
+    log_message.log_debug("开始开图")
     pyautogui.leftClick()
     pyautogui.sleep(1)
     max_val, max_loc = match_img(open_map_error)
-
     buy_count = int(
-    config_model.config['count_yuanbo'] if config_model.config['is_yuanbo'] else config_model.config['count_no_yuanbo'])
-    wait_open_time=buy_count*config_model.config['single_map_time']
+        config_model.config['count_yuanbo'] if config_model.config['is_yuanbo'] else config_model.config['count_no_yuanbo'])
+    wait_open_time = buy_count*config_model.config['single_map_time']
+    log_message.log_debug("开图数量为："+buy_count)
+    log_message.log_debug("开图时间为："+wait_open_time)
     if max_val < 0.9:
         pyautogui.sleep(wait_open_time)
         pyautogui.moveRel(0, -100)
         up_horse()
+        if config_model.config['is_testmode']:
+            if is_on_horse():
+                log_message.log_debug("成功上马")
         return True
     else:
         close_dialog()
@@ -177,6 +189,9 @@ def down_horse():
     pyautogui.press(config_model.config['key_horse'])
     pyautogui.press('shift')
     pyautogui.sleep(3)
+    if config_model.config['is_testmode']:
+        if not is_on_horse():
+            log_message.log_debug("成功下马")
 
 
 def up_horse():
@@ -187,6 +202,9 @@ def up_horse():
     # pyautogui.keyUp('ctrl')
     pyautogui.press(config_model.config['key_horse'])
     pyautogui.sleep(3)
+    if config_model.config['is_testmode']:
+        if not is_on_horse():
+            log_message.log_debug("成功下马")
 
 
 def close_dialog():
@@ -197,6 +215,7 @@ def close_dialog():
 
 
 def prepare_to_find():
+    log_message.log_info("出发去寻找")
     role_move.move_to([-779, -701])
     role_move.move_to([-793, -703])
     role_move.move_to([-793, -677])
@@ -214,10 +233,12 @@ def prepare_to_find():
 
 def find_boxs():
     count = 0
+    log_message.log_info("开始犁地")
     role_move.move_to(begin_find_loc_1, None, 1, 5)
     role_move.turn_to(begin_find_direct_1)
     count += role_move.move_map(find_area_1[0],
                                 find_area_1[1], find_box.find_box_under_footer)
+    log_message.log_info("出发犁第二片地")
     role_move.move_to(begin_find_loc_2, None, 1, 5)
     role_move.turn_to(begin_find_direct_2)
     count += role_move.move_map(find_area_2[0],
@@ -231,6 +252,7 @@ def find_boxs():
 
 
 def back_to_store():
+    log_message.log_info("回商店")
     role_move.move_to([-795, -644])
     role_move.move_to([-795, -667])
     role_move.move_to([-795, -702])
@@ -246,8 +268,10 @@ def back_to_store():
 
 
 def clear_bag():
+    log_message.log_info("出售背包物品")
     max_val, max_loc = match_img(bag_left)
     if max_val < 0.9:
+        log_message.log_debug('无法匹配背包位置')
         return
     first_loc = [max_loc[0] + 100, max_loc[1] + 85]
     pyautogui.keyDown('shift')
@@ -261,42 +285,52 @@ def clear_bag():
                          first_loc[1] + 3 * bag_item_size + 25)
         pyautogui.rightClick()
     pyautogui.keyUp('shift')
-
+    log_message.log_info("出售完毕")
 
 def reset_to_store():
+    log_message.log_info("重置到商店位置")
+    log_message.log_debug("获取当前位置")
     current_loc = role_loc.get_current_loc()
     if current_loc is None:
         return False
     # 处理在商店附近情况
     if abs(-803 - current_loc[0]) < 5 and abs(-716 - current_loc[1]) < 5:
+        log_message.log_debug("角色在商店附近，移动到商店")
         role_move.move_to([-803, -721])
     down_horse()
+    log_message.log_debug("角色不在商店附近，尝试通过仙府重置")
     max_val, max_loc = match_img(home_door_btn)
     if max_val < 0.9:
+        log_message.log_debug("找不到仙府图标，上马")
         up_horse()
         return False
     pyautogui.moveTo(max_loc[0] + 24, max_loc[1] + 24)
     pyautogui.leftClick()
     pyautogui.sleep(5)
+    log_message.log_debug("对话")
     pyautogui.press(config_model.config['key_commu'])
     #  pyautogui.press('f')
     pyautogui.moveRel(-100, -100)
     time.sleep(1)
 
+    log_message.log_debug("找到仙府图标，回家")
     max_val, max_loc = match_img(home_main_btn)
     if max_val < 0.9:
+        log_message.log_debug("找不到'枕剑仙乡·卧云'选项")
         up_horse()
         return False
     pyautogui.moveTo(max_loc[0] + 30, max_loc[1] + 15)
     pyautogui.leftClick()
     pyautogui.sleep(30)
 
+    log_message.log_debug("从仙府返回回川入世符定点位置")
     role_move.move(home_to_door[0], home_to_door[1])
     pyautogui.press(config_model.config['key_commu'])
     #  pyautogui.press('f')
     time.sleep(1)
     max_val, max_loc = match_img(back_origin_btn)
     if max_val < 0.9:
+        log_message.log_debug("找不到'回川入世符-返回荒狼原'选项")
         up_horse()
         return False
     pyautogui.moveTo(max_loc[0] + 30, max_loc[1] + 15)
@@ -313,6 +347,7 @@ def reset_to_store():
 
 
 def reset_keys():
+    log_message.log_info("重置视角")
     pyautogui.keyDown('shift')
     pyautogui.keyUp('shift')
     pyautogui.sleep(2)

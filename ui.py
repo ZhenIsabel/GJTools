@@ -2,6 +2,9 @@ import os
 import tkinter as tk
 from functools import singledispatch
 from tkinter import ttk
+from tkinter.messagebox import askokcancel
+
+from numpy import var
 
 import window_control
 import pyautogui
@@ -73,10 +76,12 @@ class App(ttk.Frame):
                           'single_map_time': tk.DoubleVar(),       # 龙星阵开单张图时间
                           'move_distance_x': tk.DoubleVar(),      # 地图搜索时x轴步距
                           'move_distance_y': tk.DoubleVar(),  # 地图搜索时y轴步距
+                          'is_testmode': tk.IntVar(),  # 是否是测试模式
                           'email_add': tk.StringVar(),  # 接收报错邮件的地址
-                          'key_commu': tk.StringVar(), # 交互键
-                          'key_map': tk.StringVar(), # 地图键
-                          'key_horse': tk.StringVar(), # 坐骑键
+                          'key_commu': tk.StringVar(),  # 交互键
+                          'key_map': tk.StringVar(),  # 地图键
+                          'key_horse': tk.StringVar(),  # 坐骑键
+
                           }
 
         # Create widgets :
@@ -112,7 +117,11 @@ class App(ttk.Frame):
 
         # region 数值读取键
         def para_load_fun(event):
-            config_io.load_config_from_file()
+            check = askokcancel(title='确认',
+                                message='确认读取数据吗？'
+                                )
+            if check:
+                config_io.load_config_from_file()
             # 参数传递
             for index, pair in enumerate(config_model.config.items()):
                 self.variables[pair[0]].set(config_model.config[pair[0]])
@@ -124,8 +133,12 @@ class App(ttk.Frame):
 
         # region 数值保存键
         def para_save_fun(event):
-            config_io.write_config(tk_value_to_value(self.variables))
-            print("saved")
+            check = askokcancel(title='确认',
+                                message='确认保存数据吗？'
+                                )
+            if check:
+                config_io.write_config(tk_value_to_value(self.variables))
+                print("saved")
         self.para_save = ttk.Button(self.main_frame, text="保存参数")
         self.para_save.grid(row=1, column=0, padx=10,
                             pady=10, sticky="nsew")
@@ -189,6 +202,15 @@ class App(ttk.Frame):
         # )
         # self.switch_learning.grid(
         #     row=1, column=0, padx=5, pady=10, sticky="nsew")
+        # endregion
+
+        # region 测试模式开关
+        self.switch_testmode = ttk.Checkbutton(
+            self.switch_frame, text="测试模式", style="Switch.TCheckbutton",
+            onvalue=1, offvalue=0, variable=self.variables['is_testmode']
+        )
+        self.switch_testmode.grid(
+            row=2, column=0, padx=5, pady=10, sticky="nsew")
         # endregion
 
         # region 创建数量调整框架
@@ -265,9 +287,9 @@ class App(ttk.Frame):
         self.scale_frame = ttk.LabelFrame(
             self.tab_parameter, text="数值设置", padding=(20, 10))
         self.scale_frame.grid(
-            row=0, column=0, padx=(20, 10), pady=(0, 0), sticky="nsew",rowspan=3
+            row=0, column=0, padx=(20, 10), pady=(0, 0), sticky="nsew", rowspan=3
         )
-        #endregion
+        # endregion
 
         # region 步速
         ttk.Label(
@@ -290,7 +312,8 @@ class App(ttk.Frame):
         self.move_speed_entry = ttk.Entry(
             self.scale_frame, textvariable=self.variables['move_speed']
         )
-        self.move_speed_entry.grid(row=0, column=1,padx=(0,10), pady=10, sticky="ew")
+        self.move_speed_entry.grid(
+            row=0, column=1, padx=(0, 10), pady=10, sticky="ew")
         # endregion
 
         # region 转向速度
@@ -448,7 +471,6 @@ class App(ttk.Frame):
             width=6)
         self.entry_count_no_yuanbo.grid(
             row=2, column=1, padx=5, pady=10,  sticky="w")
-
 
         # endregion
 

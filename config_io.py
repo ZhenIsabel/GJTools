@@ -7,33 +7,20 @@ import config_model
 
 def load_config_from_file():
     # config = np.loadtxt('config.txt', delimiter=',')
-    f=open(file='config.txt', mode='r', encoding="utf-8")
+    f = open(file='config.txt', mode='r', encoding="utf-8")
     file_data = f.readlines()
-    index=0
+    index = 0
     for each_line in file_data:
-        index+=1
+        index += 1
         each_line = each_line.strip('\n')
         item_pair = each_line.split(',')
         if item_pair[0] in config_model.config:
-            # if item_pair[0]=='email_add':
-            if index>10:
+            if index > 11:
                 config_model.config[item_pair[0]] = item_pair[1]
             else:
                 config_model.config[item_pair[0]] = float(item_pair[1])
     f.close()
 
-
-# 写入
-# def write_config(data):
-#     with open('config.txt', 'w') as config:
-#         # config.write(str('config=['))
-#         length = len(data)
-#         for i in range(length):
-#             if(i == (length-1)):
-#                 config.write(str(data[i]))
-#             else:
-#                 config.write(str(data[i])+',')
-#         # config.write(str(']'))
 
 # '@'符号用作函数修饰符是python2.4新增加的功能
 # 修饰符必须出现在函数定义前一行，不允许和函数定义在同一行。也就是说＠A def f(): 是非法的
