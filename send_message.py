@@ -4,12 +4,13 @@ from email.mime.text import MIMEText
 import log_message
 import config_model
 
-receive_addr = config_model.config['email_add']
+
 
 
 def send_message(message):
     try:
         # 填写真实的发邮件服务器用户名、密码
+        receive_addr = config_model.config['email_add']
         user = 'code_test_message@163.com'
         password = 'RYXVVTELHMNPHJUY'
         # 邮件内容
