@@ -6,6 +6,7 @@ import role_action
 import role_loc
 
 import config_model
+import improve_direction
 
 # 速度值
 # move_speed = 0.095169
@@ -29,15 +30,24 @@ move_min = 1
 def move(x, y):
     if x > 0:
         pyautogui.keyDown('d')
-        wait_include_pause(x * config_model.config['move_speed'])
+        wait_include_pause(
+            x * config_model.config['move_speed']
+            # *(1+improve_direction.check_ping())
+            )
+
         pyautogui.keyUp('d')
     elif x < 0:
         pyautogui.keyDown('a')
-        wait_include_pause(- x * config_model.config['move_speed'])
+        wait_include_pause(- x * config_model.config['move_speed']
+        # *(1+improve_direction.check_ping())
+        )
         pyautogui.keyUp('a')
     if y > 0:
         pyautogui.keyDown('w')
-        wait_include_pause(y * config_model.config['move_speed'])
+        wait_include_pause(
+            y * config_model.config['move_speed']
+            # *(1+improve_direction.check_ping())
+            )
         pyautogui.keyUp('w')
     elif y < 0:
         pyautogui.keyDown('s')
@@ -54,11 +64,16 @@ def turn_around(num):
         return
     if num > 0:
         pyautogui.keyDown(']')
-        wait_include_pause(num * config_model.config['turn_speed'])
+        wait_include_pause(
+            num * config_model.config['turn_speed']
+            # *(1+improve_direction.check_ping())
+            )
         pyautogui.keyUp(']')
     elif num < 0:
         pyautogui.keyDown('[')
-        wait_include_pause(- num * config_model.config['turn_speed'])
+        wait_include_pause(- num * config_model.config['turn_speed']
+        # *(1+improve_direction.check_ping())
+            )
         pyautogui.keyUp('[')
 
 
@@ -103,7 +118,8 @@ def move_to(target_loc, target_direct=None, diff=move_min, try_time=2):
     if not res:
         move_bad_case(target_loc)
         if not move_directly(target_loc, diff):
-            role_action.print_log_with_loc("Move Failed to " + str(target_loc) + " with try times " + str(try_time))
+            role_action.print_log_with_loc(
+                "Move Failed to " + str(target_loc) + " with try times " + str(try_time))
 
     current_direct = role_loc.get_current_direction()
     if target_direct is not None and current_direct is not None:
@@ -121,7 +137,8 @@ def move_directly(target_loc, diff=move_min, try_times=5):
     diff_loc = [target_loc[0] - current_loc[0], target_loc[1] - current_loc[1]]
     temp_direct = -math.atan2(diff_loc[1], diff_loc[0]) / math.pi
     turn_to(temp_direct)
-    move(0, min(math.hypot(diff_loc[0], diff_loc[1]), config_model.config['max_move_distance']))
+    move(0, min(math.hypot(diff_loc[0], diff_loc[1]),
+         config_model.config['max_move_distance']))
     return move_directly(target_loc, diff, try_times - 1)
 
 

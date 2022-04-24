@@ -10,6 +10,7 @@ import re
 import pyautogui
 import role_move
 
+
 # 获取绝对坐标的屏幕位置
 # current_loc_area = [1810, 35, 110, 30]
 current_loc_area = [2130, 174, 104, 29]

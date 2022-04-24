@@ -13,6 +13,8 @@ def log_error(message):
 
 def log_info(message):
     logging.info('Procedure: '+message)
+    pass
 
 def log_debug(message):
     logging.debug('DEBUG: '+message)
+    pass

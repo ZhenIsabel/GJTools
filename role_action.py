@@ -15,6 +15,8 @@ import role_loc
 import role_move
 import send_message
 
+import test
+
 map_in_store = cv2.imread('img/map_in_store.png')
 open_map_btn = cv2.imread('img/open_map.png')
 map_title = cv2.imread('img/map_title.png')
@@ -44,20 +46,21 @@ confirm_pos = [880, 450]
 
 # 傻逼的opencv模式匹配的匹配度阈值
 # 再给我在游戏截图里匹配出95%的缺头怪我就把你大爷杀了
-# via 无能狂怒的谢振衣
-fitness_threshold=0.95
+# by 无能狂怒的谢振衣
+fitness_threshold = 0.95
 
 
 # 打开藏宝图等待时间
 # wait_open_time = 148 # 无渊博75
 # wait_open_time = 75
 
-# 开始挖宝的坐标方向和大小
+# 第一个挖宝区域大小
 begin_find_loc_1 = [-825, -525]
 begin_find_direct_1 = 0.6
+# find_area_1 = [60, 47]
 find_area_1 = [55, 51]
 
-# 挖宝区域大小
+# 第二个挖宝区域大小
 begin_find_loc_2 = [-980, -530]
 begin_find_direct_2 = -0.5
 find_area_2 = [55, 27]
@@ -70,10 +73,11 @@ bag_width = 12
 home_to_door = [-10, 0]
 
 
-def match_img(template,method=3):
+def match_img(template, method=3):
     image = cv2.cvtColor(np.asarray(pyautogui.screenshot()), cv2.COLOR_RGB2BGR)
-    match_res = cv2.matchTemplate(image, template, 3)
+    match_res = cv2.matchTemplate(image, template, method)
     min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(match_res)
+    # test.show_match_image(match_res,template,image)
     return max_val, max_loc
 
 
@@ -82,9 +86,9 @@ def clear_map():
     log_message.log_info("清理残图")
     pyautogui.press(config_model.config['key_map'])
     time.sleep(0.5)
-    max_val, max_loc = match_img(map_title,1)
+    max_val, max_loc = match_img(map_title, 5)
     # print(max_val)
-    if max_val < fitness_threshold:
+    if max_val < 0.6:
         # 切换到挖宝地图
         log_message.log_info("切换到挖宝地图")
         log_message.log_debug("匹配率："+str(max_val))
@@ -116,6 +120,7 @@ def buy_map():
         max_val, max_loc = match_img(store_npc)
         # print(max_val)
         if max_val > fitness_threshold:
+            log_message.log_debug("藏宝商人匹配率："+str(max_val))
             break
         role_move.move_to([-803, -721])
         role_move.move_to([-803, -716], None, 1)
@@ -126,6 +131,7 @@ def buy_map():
     #  pyautogui.press('f')
     time.sleep(1)
     max_val, max_loc = match_img(map_in_store)
+    log_message.log_debug("藏宝图物品匹配率："+str(max_val))
     if max_val <= fitness_threshold:
         send_message_with_loc("Open Map Store Error")
         return False
@@ -160,6 +166,7 @@ def open_map():
     role_move.move_to([-777, -701])
     role_move.move_to([-756, -703], None, 0, 5)
     max_val, max_loc = match_img(open_map_btn)
+    log_message.log_debug("开图按钮匹配率："+str(max_val))
     pyautogui.moveTo(max_loc[0] + 24, max_loc[1] + 24)
     down_horse()
     log_message.log_debug("开始开图")
@@ -275,6 +282,7 @@ def back_to_store():
 def clear_bag():
     log_message.log_info("出售背包物品")
     max_val, max_loc = match_img(bag_left)
+    log_message.log_debug("背包左侧匹配率："+str(max_val))
     if max_val < fitness_threshold:
         log_message.log_debug('无法匹配背包位置')
         return
@@ -291,6 +299,7 @@ def clear_bag():
         pyautogui.rightClick()
     pyautogui.keyUp('shift')
     log_message.log_info("出售完毕")
+
 
 def reset_to_store():
     log_message.log_info("重置到商店位置")
@@ -393,9 +402,9 @@ def deal_new_day():
 
 
 def is_on_horse():
-    max_val, max_loc = match_img(horse,5)
-    log_message.log_debug("上马检测值："+str(max_val))
-    return max_val > 0.9
+    max_val, max_loc = match_img(horse, 5)
+    log_message.log_debug("上马匹配率："+str(max_val))
+    return max_val > fitness_threshold
 
 
 def reset_visual_field():
