@@ -2,11 +2,12 @@ import datetime
 import time
 
 import role_action
+import send_message
 
 # import config_model
-def cal222c():
+def calc222():
     time.sleep(3)
-    print(role_action.is_on_horse())
+    send_message.send_message("test")
 
 
 def calc():

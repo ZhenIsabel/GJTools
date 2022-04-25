@@ -15,7 +15,6 @@ import role_loc
 import role_move
 import send_message
 
-import test
 
 map_in_store = cv2.imread('img/map_in_store.png')
 open_map_btn = cv2.imread('img/open_map.png')
@@ -57,13 +56,14 @@ fitness_threshold = 0.95
 # 第一个挖宝区域大小
 begin_find_loc_1 = [-825, -525]
 begin_find_direct_1 = 0.6
+find_area_1 = [55, 47]
 # find_area_1 = [60, 47]
-find_area_1 = [55, 51]
 
 # 第二个挖宝区域大小
 begin_find_loc_2 = [-980, -530]
 begin_find_direct_2 = -0.5
 find_area_2 = [55, 27]
+# find_area_2 = [60, 30]
 
 # 背包格子大小
 bag_item_size = 36
@@ -257,6 +257,7 @@ def find_boxs():
                                 find_area_2[1], find_box.find_box_under_footer)
     role_move.move_to([-850, -560], None, 3, 3)
     print("开盒次数" + str(count))
+    send_message.send_message("开盒次数" + str(count))
     if count <= 0:
         reset_keys()
         send_message_with_loc("Find No Box")

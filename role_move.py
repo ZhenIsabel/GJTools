@@ -6,11 +6,11 @@ import role_action
 import role_loc
 
 import config_model
-import improve_direction
 
 # 速度值
 # move_speed = 0.095169
-move_back_speed = 2.5
+# move_back_speed = 2.5
+move_back_speed = 0.5
 # turn_speed = 1.9
 
 # 地图式搜索时的步距
@@ -33,25 +33,26 @@ def move(x, y):
         wait_include_pause(
             x * config_model.config['move_speed']
             # *(1+improve_direction.check_ping())
-            )
+        )
 
         pyautogui.keyUp('d')
     elif x < 0:
         pyautogui.keyDown('a')
         wait_include_pause(- x * config_model.config['move_speed']
-        # *(1+improve_direction.check_ping())
-        )
+                           # *(1+improve_direction.check_ping())
+                           )
         pyautogui.keyUp('a')
     if y > 0:
         pyautogui.keyDown('w')
         wait_include_pause(
             y * config_model.config['move_speed']
             # *(1+improve_direction.check_ping())
-            )
+        )
         pyautogui.keyUp('w')
     elif y < 0:
         pyautogui.keyDown('s')
         wait_include_pause(- y * move_back_speed)
+        print("移动时间:"+str(- y * move_back_speed))
         pyautogui.keyUp('s')
 
 
@@ -67,13 +68,13 @@ def turn_around(num):
         wait_include_pause(
             num * config_model.config['turn_speed']
             # *(1+improve_direction.check_ping())
-            )
+        )
         pyautogui.keyUp(']')
     elif num < 0:
         pyautogui.keyDown('[')
         wait_include_pause(- num * config_model.config['turn_speed']
-        # *(1+improve_direction.check_ping())
-            )
+                           # *(1+improve_direction.check_ping())
+                           )
         pyautogui.keyUp('[')
 
 
@@ -155,6 +156,37 @@ def move_bad_case(target_loc):
     elif current_loc is not None and -689 >= current_loc[1] >= -690 and -789 >= current_loc[0] >= -789:
         move(0, -2)
         move(2, 0)
+    # 无叶镇口
+    # 房子
+    elif current_loc is not None and -667 >= current_loc[1] >= -671 and -802 >= current_loc[0] >= -809:
+        # 旋转镜头
+        # 无叶镇内很可能转不准！！
+        turn_to(math.pi/2)
+        # 退到可以移动
+        move(-2,0)
+        # 进入巷子中间
+        move(0, -678-current_loc[1])
+        # 进入主路
+        move(-794-current_loc[0], 0)
+    # 柴堆
+    elif current_loc is not None and -674 >= current_loc[1] >= -676 and -803 >= current_loc[0] >= -810:
+        # 旋转镜头
+        # 无叶镇内很可能转不准！！
+        turn_to(math.pi/2)
+        # 退到巷子中间
+        move(0, -678-current_loc[1])
+        # 进入主路
+        move(-794-current_loc[0], 0)
+    # 柴堆前的棚子
+    elif current_loc is not None and current_loc[1] == -674 and current_loc[0] ==-802:
+        turn_to(math.pi/2)
+        move(0,-2)
+        # 进入主路
+        move(-794-current_loc[0], 0)
+    elif current_loc is not None and current_loc[1] == -672 and current_loc[0] ==-800:
+        # 没得救
+        pass
+
     else:
         if current_loc is not None and target_loc[0] - current_loc[0] < 0:
             move_x = -2
