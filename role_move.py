@@ -52,7 +52,7 @@ def move(x, y):
     elif y < 0:
         pyautogui.keyDown('s')
         wait_include_pause(- y * move_back_speed)
-        print("移动时间:"+str(- y * move_back_speed))
+        # print("移动时间:"+str(- y * move_back_speed))
         pyautogui.keyUp('s')
 
 
@@ -92,15 +92,27 @@ def turn_to(direct, try_times=5):
         turn_to(direct, try_times - 1)
 
 
-def move_map(width, height, callback_fun=None):
+def move_map(width, height, callback_fun=None, origin_x=None):
+    # fix:纠正切线后路线疯狂往左偏
+    # 后半段路径每检测完一行之后截屏判断当前x是否是原始x
+    # 如果不是，则移动到原始x处
     x, y = 0, 0
     direct = 1
     count = 0
+    row_tag = 1  # 记录当前行是否应走到归零
     while y < height:
         while x < width:
             move(direct * config_model.config['move_distance_x'], 0)
             x += config_model.config['move_distance_x']
             count += callback_fun()
+            row_tag = -row_tag
+        if row_tag > 0:  # 如果当前行走完后应回到x归零位置
+            if not origin_x == None:
+                current_loc = role_loc.get_current_loc(2)
+                if not current_loc == None:
+                    offset_x = origin_x-current_loc[0]
+                    print('纠正当前出发点')
+                    move(offset_x, 0)
         role_action.up_horse()
         move(0, config_model.config['move_distance_y'])
         y += config_model.config['move_distance_y']
@@ -163,7 +175,7 @@ def move_bad_case(target_loc):
         # 无叶镇内很可能转不准！！
         turn_to(math.pi/2)
         # 退到可以移动
-        move(-2,0)
+        move(-2, 0)
         # 进入巷子中间
         move(0, -678-current_loc[1])
         # 进入主路
@@ -178,12 +190,12 @@ def move_bad_case(target_loc):
         # 进入主路
         move(-794-current_loc[0], 0)
     # 柴堆前的棚子
-    elif current_loc is not None and current_loc[1] == -674 and current_loc[0] ==-802:
+    elif current_loc is not None and current_loc[1] == -674 and current_loc[0] == -802:
         turn_to(math.pi/2)
-        move(0,-2)
+        move(0, -2)
         # 进入主路
         move(-794-current_loc[0], 0)
-    elif current_loc is not None and current_loc[1] == -672 and current_loc[0] ==-800:
+    elif current_loc is not None and current_loc[1] == -672 and current_loc[0] == -800:
         # 没得救
         pass
 

@@ -67,6 +67,7 @@ class App(ttk.Frame):
 
         # Create control variables
         self.variables = {'is_yuanbo': tk.IntVar(),            # 是否是渊博状态
+                          'is_large_region':tk.IntVar(),# 是否扩图
                           'max_move_distance': tk.DoubleVar(),  # 最长经过多少距离进行转向检测
                           'move_speed': tk.DoubleVar(),       # 步速（非扫图速度）
                           'turn_speed': tk.DoubleVar(),       # 转向速度
@@ -190,9 +191,19 @@ class App(ttk.Frame):
         # region 渊博开关
         self.switch_yuanbo = ttk.Checkbutton(
             self.switch_frame, text="渊博", style="Switch.TCheckbutton",
-            onvalue=1, offvalue=0, variable=self.variables['is_yuanbo'])
+            onvalue=1, offvalue=0, 
+            variable=self.variables['is_yuanbo'])
 
         self.switch_yuanbo.grid(row=0, column=0, padx=5,
+                                pady=10, sticky="nsew")
+        # endregion
+                               
+        # region 扩图开关
+        self.switch_large_region = ttk.Checkbutton(
+            self.switch_frame, text="扩图", style="Switch.TCheckbutton",
+            onvalue=1, offvalue=0, variable=self.variables['is_large_region'])
+
+        self.switch_large_region.grid(row=1, column=0, padx=5,
                                 pady=10, sticky="nsew")
         # endregion
 
@@ -210,7 +221,7 @@ class App(ttk.Frame):
             onvalue=1, offvalue=0, variable=self.variables['is_testmode']
         )
         self.switch_testmode.grid(
-            row=2, column=0, padx=5, pady=10, sticky="nsew")
+            row=5, column=0, padx=5, pady=10, sticky="nsew")
         # endregion
 
         # region 创建数量调整框架
