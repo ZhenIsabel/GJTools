@@ -249,7 +249,7 @@ def find_boxs():
     find_area_2 = [55, 27]
     if config_model.config['is_large_region']==1:
         find_area_1 = [65, 47]
-        find_area_2 = [55, 30]
+        find_area_2 = [55, 28]
     log_message.log_info("开始犁地")
     role_move.move_to(begin_find_loc_1, None, 1, 5)
     role_move.turn_to(begin_find_direct_1)
