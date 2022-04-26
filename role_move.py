@@ -105,7 +105,7 @@ def move_map(width, height, callback_fun=None, origin_x=None):
             move(direct * config_model.config['move_distance_x'], 0)
             x += config_model.config['move_distance_x']
             count += callback_fun()
-            row_tag = -row_tag
+        row_tag = -row_tag
         if not origin_x == None and y > height/2:
             current_loc = role_loc.get_current_loc(2)
             if not current_loc == None:
