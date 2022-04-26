@@ -106,13 +106,13 @@ def move_map(width, height, callback_fun=None, origin_x=None):
             x += config_model.config['move_distance_x']
             count += callback_fun()
             row_tag = -row_tag
-        if row_tag > 0:  # 如果当前行走完后应回到x归零位置
-            if not origin_x == None:
-                current_loc = role_loc.get_current_loc(2)
-                if not current_loc == None:
-                    offset_x = origin_x-current_loc[0]
-                    print('纠正当前出发点')
-                    move(offset_x, 0)
+        if not origin_x == None:
+            current_loc = role_loc.get_current_loc(2)
+            if not current_loc == None:
+                offset_x = origin_x-current_loc[0]  # 如果当前行走完后应回到x归零位置
+                if row_tag < 0:  # 如果当前行走完后应回到x终点位置
+                    offset_x += width
+                move(offset_x, 0)
         role_action.up_horse()
         move(0, config_model.config['move_distance_y'])
         y += config_model.config['move_distance_y']
