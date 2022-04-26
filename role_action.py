@@ -260,7 +260,7 @@ def find_boxs():
     role_move.turn_to(begin_find_direct_2)
     count += role_move.move_map(find_area_2[0],
                                 find_area_2[1], find_box.find_box_under_footer,
-                                begin_find_loc_2[0]
+                                begin_find_loc_2
                                 )
     role_move.move_to([-850, -560], None, 3, 3)
     print("开盒次数" + str(count))
