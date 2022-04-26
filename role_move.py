@@ -109,6 +109,7 @@ def move_map(width, height, callback_fun=None, origin_x=None):
         if not origin_x == None:
             current_loc = role_loc.get_current_loc(2)
             if not current_loc == None:
+                # time.wait(1)
                 offset_x = origin_x-current_loc[0]  # 如果当前行走完后应回到x归零位置
                 if row_tag < 0:  # 如果当前行走完后应回到x终点位置
                     offset_x += width
