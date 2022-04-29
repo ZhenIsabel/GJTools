@@ -14,7 +14,7 @@ import config_io
 import config_model
 
 # 是否允许鼠标挪出界自动关闭
-pyautogui.FAILSAFE = True
+pyautogui.FAILSAFE = False
 
 # region 数据格式转换
 

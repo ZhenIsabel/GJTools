@@ -2,6 +2,7 @@ import time
 
 import cv2
 import role_move
+import role_action
 import find_box
 
 # time.sleep(3)
@@ -28,5 +29,6 @@ def move_test():
     role_move.turn_to(begin_find_direct_2)
     role_move.move_map(find_area_2[0],
                                 find_area_2[1], find_box.find_box_under_footer,
-                                begin_find_loc_2[0]
+                                begin_find_loc_2
                                 )
+role_action.find_boxs()
