@@ -26,7 +26,8 @@ def calc():
         if not role_action.buy_map():
             role_action.try_reset()
             continue
-        if not role_action.open_map():
+        # if not role_action.open_map():
+        if not role_action.avoid_open_interrupt():
             role_action.try_reset()
             continue
         if not role_action.prepare_to_find():

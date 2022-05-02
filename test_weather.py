@@ -10,6 +10,7 @@ weather_area = [1980, 160, 100, 50]
 
 # 盒子二值化参数
 threshold_value = [80, 60, 40]
+# threshold_value = [176, 80, 80]
 
 # 脚下可开盒子区域
 box_under_footer_area = [1085, 735, 400, 250]

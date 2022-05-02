@@ -1,5 +1,6 @@
 from asyncio.log import logger
 import datetime
+from subprocess import CompletedProcess
 import time
 
 import cv2
@@ -15,7 +16,6 @@ import role_loc
 import role_move
 import send_message
 
-
 map_in_store = cv2.imread('img/map_in_store.png')
 open_map_btn = cv2.imread('img/open_map.png')
 map_title = cv2.imread('img/map_title.png')
@@ -30,6 +30,7 @@ back_origin_btn = cv2.imread('img/back_origin_btn.png')
 new_day_tip = cv2.imread('img/new_day_tip.png')
 close_btn = cv2.imread('img/close_btn.png')
 horse = cv2.imread('img/horse.png')
+open_complete = cv2.imread('img/open_complete.png')
 
 
 # 点开藏宝地图模式位置
@@ -115,8 +116,11 @@ def clear_map():
 def buy_map():
     log_message.log_info("买图")
     max_val = 0
+
     for i in range(0, 10):
         time.sleep(0.2)
+        # 鼠标挪到角落以防误触
+        pyautogui.moveTo(first_map_pos[0], first_map_pos[1])
         max_val, max_loc = match_img(store_npc)
         # print(max_val)
         if max_val > fitness_threshold:
@@ -160,6 +164,77 @@ def buy_map():
     return True
 
 
+def avoid_open_interrupt():
+    # 开图读条左上角位置及长宽
+    read_area = [1104, 999, 368, 50]
+    image_origin = cv2.cvtColor(np.asarray(
+        pyautogui.screenshot(region=read_area)), cv2.COLOR_RGB2BGR)
+    # 原开图操作
+    role_move.move_to([-802, -703])
+    role_move.move_to([-791, -702])
+    role_move.move_to([-777, -701])
+    role_move.move_to([-756, -703], None, 0, 5)
+    max_val, max_loc = match_img(open_map_btn)
+    log_message.log_debug("开图按钮匹配率："+str(max_val))
+    pyautogui.moveTo(max_loc[0] + 24, max_loc[1] + 24)
+    down_horse()
+    log_message.log_debug("开始开图")
+    pyautogui.leftClick()
+    pyautogui.sleep(1)
+    max_val, max_error_loc = match_img(open_map_error)
+    buy_count = int(
+        config_model.config['count_yuanbo'] if config_model.config['is_yuanbo'] else config_model.config['count_no_yuanbo'])
+    wait_open_time = buy_count*config_model.config['single_map_time']
+    log_message.log_debug("开图数量为："+str(buy_count))
+    log_message.log_debug("开图时间为："+str(wait_open_time))
+    if max_val < fitness_threshold:
+        # 每5秒一测
+        wait_time = 0
+        reset_times = 0
+        while wait_time+config_model.config['single_map_time'] < wait_open_time+1:
+            wait_time = wait_time+config_model.config['single_map_time']
+            time.sleep(config_model.config['single_map_time'])
+            # 匹配开图读条区域
+            image_read = cv2.cvtColor(np.asarray(
+                pyautogui.screenshot(region=read_area)), cv2.COLOR_RGB2BGR)
+            match_res = cv2.matchTemplate(image_origin, image_read, 3)
+            min_val, max_val, min_loc, max_error_loc = cv2.minMaxLoc(match_res)
+
+            # print("interrupt check:"+str(max_val))
+            if max_val > 0.9 and reset_times < 3:
+                log_message.log_error("interrupt check:"+str(max_val))
+                # 判断是否开图执行完毕
+                image = cv2.cvtColor(np.asarray(
+                    pyautogui.screenshot(region=[923, 369, 75, 22])), cv2.COLOR_RGB2BGR)
+                match_res = cv2.matchTemplate(open_complete, image, 3)
+                min_val, max_complete_val, min_loc, max_error_loc = cv2.minMaxLoc(
+                    match_res)
+                # print("complete check:"+str(max_complete_val))
+                log_message.log_error("complete check:"+str(max_complete_val))
+                if max_complete_val > 0.9:
+                    pyautogui.moveRel(0, -100)
+                    up_horse()
+                    return True
+                pyautogui.moveTo(max_loc[0] + 24, max_loc[1] + 24)
+                time.sleep(0.1)
+                wait_time = 0
+                pyautogui.leftClick()
+                print("open map reset:"+str(max_val))
+                log_message.log_error("open map reset"+str(max_val))
+                reset_times = reset_times+1
+        # pyautogui.sleep(wait_open_time)
+        pyautogui.moveRel(0, -100)
+        up_horse()
+        return True
+    else:
+        close_dialog()
+        up_horse()
+        send_message_with_loc("Open Map Error")
+        return False
+
+    pass
+
+
 def open_map():
     role_move.move_to([-802, -703])
     role_move.move_to([-791, -702])
@@ -180,6 +255,8 @@ def open_map():
     log_message.log_debug("开图时间为："+str(wait_open_time))
     if max_val < fitness_threshold:
         pyautogui.sleep(wait_open_time)
+        # 防打断
+
         pyautogui.moveRel(0, -100)
         up_horse()
         return True
@@ -245,12 +322,12 @@ def prepare_to_find():
 
 def find_boxs():
     count = 0
-    find_area_1=[55, 47]
+    find_area_1 = [55, 47]
     find_area_2 = [55, 27]
-    if config_model.config['is_large_region']==1:
+    if config_model.config['is_large_region'] == 1:
         find_area_1 = [65, 47]
-        find_area_2 = [55, 28]
-        
+        find_area_2 = [56, 29]
+
     log_message.log_info("开始犁地")
     role_move.move_to(begin_find_loc_1, None, 1, 5)
     role_move.turn_to(begin_find_direct_1)

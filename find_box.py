@@ -25,8 +25,9 @@ box_under_footer_area = [1042, 740, 474, 288]
 footer_pos = [1279,790]
 
 # 盒子二值化参数
-# threshold_value = [80, 60, 40]
-threshold_value = [170, 80, 80]
+threshold_value = [80, 60, 40]
+# threshold_value = [80, 46, 40]
+# threshold_value = [170, 80, 80]
 
 # 盒子大小
 box_area_up = 1400

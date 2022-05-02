@@ -23,7 +23,7 @@ def show_match_image(match_res,template,image):
 
 def move_test():
     begin_find_loc_2 = [-980, -530]
-    find_area_2 = [55, 29]
+    find_area_2 = [55, 30]
     begin_find_direct_2 = -0.5
     role_move.move_to(begin_find_loc_2, None, 1, 5)
     role_move.turn_to(begin_find_direct_2)
@@ -31,4 +31,7 @@ def move_test():
                                 find_area_2[1], find_box.find_box_under_footer,
                                 begin_find_loc_2
                                 )
-role_action.find_boxs()
+# move_test()
+time.sleep(3)
+role_action.avoid_open_interrupt()
+# role_action.find_boxs()
