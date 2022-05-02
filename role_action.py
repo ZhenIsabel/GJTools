@@ -1,6 +1,5 @@
 from asyncio.log import logger
 import datetime
-from subprocess import CompletedProcess
 import time
 
 import cv2
@@ -31,6 +30,8 @@ new_day_tip = cv2.imread('img/new_day_tip.png')
 close_btn = cv2.imread('img/close_btn.png')
 horse = cv2.imread('img/horse.png')
 open_complete = cv2.imread('img/open_complete.png')
+equip_box = cv2.imread('img/equip_box.png')
+equip_empty = cv2.imread('img/equip_empty.png')
 
 
 # 点开藏宝地图模式位置
@@ -163,6 +164,21 @@ def buy_map():
     log_message.log_info("买图完毕")
     return True
 
+def change_equip():
+    pyautogui.press('c')
+    pyautogui.sleep(0.5)
+    max_val, max_loc = match_img(equip_empty)
+    if max_val > 0.9:
+        pyautogui.moveTo(max_loc[0] + 14, max_loc[1] + 14)
+        pyautogui.click()
+    pyautogui.sleep(1)
+    max_val, max_loc = match_img(equip_box)
+    if max_val > 0.9:
+        pyautogui.moveTo(max_loc[0] + 14, max_loc[1] + 14)
+        pyautogui.click()
+    pyautogui.sleep(0.5)
+    pyautogui.press('c')
+
 
 def avoid_open_interrupt():
     # 开图读条左上角位置及长宽
@@ -188,6 +204,7 @@ def avoid_open_interrupt():
     log_message.log_debug("开图数量为："+str(buy_count))
     log_message.log_debug("开图时间为："+str(wait_open_time))
     if max_val < fitness_threshold:
+        change_equip()
         # 每5秒一测
         wait_time = 0
         reset_times = 0
