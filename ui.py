@@ -68,6 +68,7 @@ class App(ttk.Frame):
         # Create control variables
         self.variables = {'is_yuanbo': tk.IntVar(),            # 是否是渊博状态
                           'is_large_region':tk.IntVar(),# 是否扩图
+                          'is_binarization':tk.IntVar(),# 是否采用二值化风格
                           'max_move_distance': tk.DoubleVar(),  # 最长经过多少距离进行转向检测
                           'move_speed': tk.DoubleVar(),       # 步速（非扫图速度）
                           'turn_speed': tk.DoubleVar(),       # 转向速度
@@ -207,12 +208,13 @@ class App(ttk.Frame):
                                 pady=10, sticky="nsew")
         # endregion
 
-        # region 参数学习开关
-        # self.switch_learning = ttk.Checkbutton(
-        #     self.switch_frame, text="参数学习（无效）", style="Switch.TCheckbutton"
-        # )
-        # self.switch_learning.grid(
-        #     row=1, column=0, padx=5, pady=10, sticky="nsew")
+        # region 二值化模式开关
+        self.switch_large_region = ttk.Checkbutton(
+            self.switch_frame, text="二值化", style="Switch.TCheckbutton",
+            onvalue=1, offvalue=0, variable=self.variables['is_binarization'])
+
+        self.switch_large_region.grid(row=2, column=0, padx=5,
+                                pady=10, sticky="nsew")
         # endregion
 
         # region 测试模式开关

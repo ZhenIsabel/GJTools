@@ -3,11 +3,15 @@ import time
 
 import role_action
 import send_message
+import config_model
 
 # import config_model
 def calc222():
     time.sleep(3)
-    send_message.send_message("test")
+    threshold_value=[80, 60, 40]
+    if config_model.config['is_binarization']:
+        threshold_value = [170, 80, 80]
+    print(threshold_value)
 
 
 def calc():

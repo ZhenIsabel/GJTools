@@ -7,6 +7,7 @@ import numpy as np
 import pyautogui
 import win32api
 import win32con
+import pyperclip
 
 import config_model
 import find_box
@@ -14,6 +15,7 @@ import log_message
 import role_loc
 import role_move
 import send_message
+import fucking_flower
 
 map_in_store = cv2.imread('img/map_in_store.png')
 open_map_btn = cv2.imread('img/open_map.png')
@@ -29,9 +31,9 @@ back_origin_btn = cv2.imread('img/back_origin_btn.png')
 new_day_tip = cv2.imread('img/new_day_tip.png')
 close_btn = cv2.imread('img/close_btn.png')
 horse = cv2.imread('img/horse.png')
-open_complete = cv2.imread('img/open_complete.png')
-equip_box = cv2.imread('img/equip_box.png')
-equip_empty = cv2.imread('img/equip_empty.png')
+open_complete_night = cv2.imread('img/open_complete_night.png')
+open_complete_day = cv2.imread('img/open_complete_day.png')
+flower_debuff = cv2.imread('img/flower_debuff.png')
 
 
 # 点开藏宝地图模式位置
@@ -54,6 +56,7 @@ fitness_threshold = 0.95
 # 打开藏宝图等待时间
 # wait_open_time = 148 # 无渊博75
 # wait_open_time = 75
+wait_open_time_step = 4.9
 
 # 第一个挖宝区域大小
 begin_find_loc_1 = [-825, -525]
@@ -164,20 +167,46 @@ def buy_map():
     log_message.log_info("买图完毕")
     return True
 
-def change_equip():
-    pyautogui.press('c')
-    pyautogui.sleep(0.5)
-    max_val, max_loc = match_img(equip_empty)
-    if max_val > 0.9:
-        pyautogui.moveTo(max_loc[0] + 14, max_loc[1] + 14)
-        pyautogui.click()
-    pyautogui.sleep(1)
-    max_val, max_loc = match_img(equip_box)
-    if max_val > 0.9:
-        pyautogui.moveTo(max_loc[0] + 14, max_loc[1] + 14)
-        pyautogui.click()
-    pyautogui.sleep(0.5)
-    pyautogui.press('c')
+
+def remove_buff():
+    buff_region = cv2.cvtColor(np.asarray(
+        pyautogui.screenshot(region=[858, 1005, 230, 55])), cv2.COLOR_RGB2BGR)
+    match_res = cv2.matchTemplate(buff_region, flower_debuff, 3)
+    min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(
+        match_res)
+    # print(max_loc)
+    if max_val > 0.92:
+        pyautogui.moveTo(858+max_loc[0] + 13, 1005+max_loc[1] + 13)
+        pyautogui.rightClick()
+        # 打字嘲讽饼哥
+        pyautogui.moveTo(417,1220)
+        pyautogui.leftClick()
+        pyperclip.copy(fucking_flower.fucking_coockie_bro())
+        time.sleep(0.5)
+        pyautogui.keyDown('ctrl')
+        pyautogui.press('v')
+        pyautogui.keyUp('ctrl')
+        pyautogui.press('enter')
+
+
+
+def check_open_complete():
+    # 判断是否开图执行完毕
+    # 用红色通道判断
+    image = cv2.cvtColor(np.asarray(
+        pyautogui.screenshot(region=[923, 369, 75, 22])), cv2.COLOR_RGB2BGR)
+    match_res = cv2.matchTemplate(
+        open_complete_day[:, :, 2], image[:, :, 2], 5)
+    min_val, max_complete_val, min_loc, max_error_loc = cv2.minMaxLoc(
+        match_res)
+    if max_complete_val < 0.7:
+        match_res = cv2.matchTemplate(
+            open_complete_night[:, :, 2], image[:, :, 2], 5)
+        min_val, max_complete_val, min_loc, max_error_loc = cv2.minMaxLoc(
+            match_res)
+    # print("complete check:"+str(max_complete_val))
+    log_message.log_error("complete check:"+str(max_complete_val))
+    return max_complete_val > 0.7
 
 
 def avoid_open_interrupt():
@@ -204,42 +233,44 @@ def avoid_open_interrupt():
     log_message.log_debug("开图数量为："+str(buy_count))
     log_message.log_debug("开图时间为："+str(wait_open_time))
     if max_val < fitness_threshold:
-        change_equip()
         # 每5秒一测
-        wait_time = 0
         reset_times = 0
-        while wait_time+config_model.config['single_map_time'] < wait_open_time+1:
-            wait_time = wait_time+config_model.config['single_map_time']
+        i = 0
+        while i < buy_count:
             time.sleep(config_model.config['single_map_time'])
-            # 匹配开图读条区域
-            image_read = cv2.cvtColor(np.asarray(
-                pyautogui.screenshot(region=read_area)), cv2.COLOR_RGB2BGR)
-            match_res = cv2.matchTemplate(image_origin, image_read, 3)
-            min_val, max_val, min_loc, max_error_loc = cv2.minMaxLoc(match_res)
+            i = i+1
+            # 移除不对劲的buff
+            remove_buff()
+        #     # 匹配开图读条区域
+        #     image_read = cv2.cvtColor(np.asarray(
+        #         pyautogui.screenshot(region=read_area)), cv2.COLOR_RGB2BGR)
+        #     match_res = cv2.matchTemplate(image_origin, image_read, 3)
+        #     min_val, max_val, min_loc, max_error_loc = cv2.minMaxLoc(match_res)
 
-            # print("interrupt check:"+str(max_val))
-            if max_val > 0.9 and reset_times < 3:
-                log_message.log_error("interrupt check:"+str(max_val))
-                # 判断是否开图执行完毕
-                image = cv2.cvtColor(np.asarray(
-                    pyautogui.screenshot(region=[923, 369, 75, 22])), cv2.COLOR_RGB2BGR)
-                match_res = cv2.matchTemplate(open_complete, image, 3)
-                min_val, max_complete_val, min_loc, max_error_loc = cv2.minMaxLoc(
-                    match_res)
-                # print("complete check:"+str(max_complete_val))
-                log_message.log_error("complete check:"+str(max_complete_val))
-                if max_complete_val > 0.9:
-                    pyautogui.moveRel(0, -100)
-                    up_horse()
-                    return True
-                pyautogui.moveTo(max_loc[0] + 24, max_loc[1] + 24)
-                time.sleep(0.1)
-                wait_time = 0
-                pyautogui.leftClick()
-                print("open map reset:"+str(max_val))
-                log_message.log_error("open map reset"+str(max_val))
-                reset_times = reset_times+1
-        # pyautogui.sleep(wait_open_time)
+        #     # print("interrupt check:"+str(max_val))
+        #     if max_val > 0.9 and reset_times < 3:
+        #         log_message.log_error("interrupt check:"+str(max_val))
+
+        #         if check_open_complete():
+        #             pyautogui.moveRel(0, -100)
+        #             up_horse()
+        #             return True
+        #         pyautogui.moveTo(max_loc[0] + 24, max_loc[1] + 24)
+        #         time.sleep(0.1)
+        #         pyautogui.leftClick()
+        #         i = 0
+        #         print("open map reset:"+str(max_val))
+        #         log_message.log_error("open map reset"+str(max_val))
+        #         reset_times = reset_times+1
+
+        # # pyautogui.sleep(wait_open_time)
+        # time.sleep(2)
+        # pyautogui.moveTo(max_loc[0] + 24, max_loc[1] + 24)
+        # time.sleep(0.1)
+        # pyautogui.leftClick()
+        # if not check_open_complete():
+        #     send_message_with_loc("Open Map Error: cannot complete")
+        #     # return False
         pyautogui.moveRel(0, -100)
         up_horse()
         return True
@@ -248,8 +279,6 @@ def avoid_open_interrupt():
         up_horse()
         send_message_with_loc("Open Map Error")
         return False
-
-    pass
 
 
 def open_map():
@@ -273,7 +302,10 @@ def open_map():
     if max_val < fitness_threshold:
         pyautogui.sleep(wait_open_time)
         # 防打断
-
+        # 移除不对劲的debuff
+        for i in range(int(0, wait_open_time, wait_open_time_step)+1):
+            remove_buff()
+            pyautogui.sleep(wait_open_time_step)
         pyautogui.moveRel(0, -100)
         up_horse()
         return True

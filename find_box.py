@@ -6,6 +6,7 @@ import imutils
 import pyautogui
 
 import role_move
+import config_model
 
 find_tip = cv2.imread('img/find_tip.png')
 find_tip_night = cv2.imread('img/find_tip_night.png')
@@ -25,7 +26,7 @@ box_under_footer_area = [1042, 740, 474, 288]
 footer_pos = [1279,790]
 
 # 盒子二值化参数
-threshold_value = [80, 60, 40]
+# threshold_value = [80, 60, 40]
 # threshold_value = [80, 46, 40]
 # threshold_value = [170, 80, 80]
 
@@ -45,6 +46,9 @@ weather_area = [1980, 160, 100, 50]
 
 
 def find_box_in_area_color(region, weather_code=0):
+    threshold_value=[80, 60, 40]
+    if config_model.config['is_binarization']:
+        threshold_value = [170, 80, 80]
     image_grey = cv2.cvtColor(np.asarray(pyautogui.screenshot(region=region)), cv2.COLOR_RGB2GRAY)
     ret, image = cv2.threshold(image_grey, threshold_value[weather_code], 255, cv2.THRESH_BINARY_INV)
     image = cv2.dilate(image, kernel=np.ones((3, 3), np.uint8), iterations=1)

@@ -2,6 +2,7 @@ config = {
     'is_yuanbo': 0,  # 是否是渊博状态,true为1, false为0，否则无法存储
     'is_large_region':0,# 是否扩图
     'is_testmode': 1,  # 是否是测试模式
+    'is_binarization':0,# 是否采用二值化风格
     'max_move_distance': 50,  # 最长经过多少距离进行转向检测
     'move_speed': 0.096,       # 步速（非扫图速度）
     'turn_speed': 1.9,       # 转向速度
