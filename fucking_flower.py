@@ -16,5 +16,3 @@ fucking_words = [
 def fucking_coockie_bro():
     word_index = random.randint(0, len(fucking_words)-1)
     return fucking_words[word_index]
-
-print(fucking_coockie_bro())

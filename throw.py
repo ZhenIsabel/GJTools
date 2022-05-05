@@ -29,7 +29,7 @@ def clear_map():
         # 切换到挖宝地图
         pyautogui.moveTo(open_box_map_pos[0], open_box_map_pos[1])
         pyautogui.leftClick()
-    buy_count = 30
+    buy_count = 20
     for i in range(0, buy_count):
         pyautogui.moveTo(first_map_pos[0], first_map_pos[1])
         pyautogui.rightClick()

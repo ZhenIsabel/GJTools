@@ -375,7 +375,7 @@ def find_boxs():
     find_area_2 = [55, 27]
     if config_model.config['is_large_region'] == 1:
         find_area_1 = [65, 47]
-        find_area_2 = [56, 29]
+        find_area_2 = [56, 31]
 
     log_message.log_info("开始犁地")
     role_move.move_to(begin_find_loc_1, None, 1, 5)
@@ -423,7 +423,7 @@ def clear_bag():
         return
     first_loc = [max_loc[0] + 100, max_loc[1] + 85]
     pyautogui.keyDown('shift')
-    for j in range(0, 3):
+    for j in range(0, 5):
         for i in range(0, bag_width):
             pyautogui.moveTo(
                 first_loc[0] + i * bag_item_size, first_loc[1] + j * bag_item_size)

@@ -4,7 +4,7 @@ from functools import singledispatch
 from tkinter import ttk
 from tkinter.messagebox import askokcancel
 
-from numpy import var
+import test_weather
 
 import window_control
 import pyautogui
@@ -67,8 +67,8 @@ class App(ttk.Frame):
 
         # Create control variables
         self.variables = {'is_yuanbo': tk.IntVar(),            # 是否是渊博状态
-                          'is_large_region':tk.IntVar(),# 是否扩图
-                          'is_binarization':tk.IntVar(),# 是否采用二值化风格
+                          'is_large_region': tk.IntVar(),  # 是否扩图
+                          'is_binarization': tk.IntVar(),  # 是否采用二值化风格
                           'max_move_distance': tk.DoubleVar(),  # 最长经过多少距离进行转向检测
                           'move_speed': tk.DoubleVar(),       # 步速（非扫图速度）
                           'turn_speed': tk.DoubleVar(),       # 转向速度
@@ -112,7 +112,7 @@ class App(ttk.Frame):
         self.start_button = ttk.Button(
             self.main_frame, text="运行", style="Accent.TButton"
         )
-        self.start_button.grid(row=2, column=0, padx=10,
+        self.start_button.grid(row=3, column=0, padx=10,
                                pady=10, sticky="nsew")
         self.start_button.bind("<Button-1>", start)
         # endregion
@@ -145,6 +145,28 @@ class App(ttk.Frame):
         self.para_save.grid(row=1, column=0, padx=10,
                             pady=10, sticky="nsew")
         self.para_save.bind("<Button-1>", para_save_fun)
+        # endregion
+
+        # region 天气测试键
+
+        def weather_test(event):
+            check = askokcancel(title='确认',
+                                message='确认测试天气吗？'
+                                )
+            if check:
+                 # 最大化古剑
+                window_control.window_focus('古剑奇谭网络版')
+                test_weather.weather_test(
+                    [80, 60, 40]
+                    if config_model.config['is_binarization']
+                    else
+                    [170, 80, 80]
+                )
+                print("weather test completed")
+        self.weather_test = ttk.Button(self.main_frame, text="天气测试")
+        self.weather_test.grid(row=2, column=0, padx=10,
+                               pady=10, sticky="nsew")
+        self.weather_test.bind("<Button-1>", weather_test)
         # endregion
 
         # region Progressbar
@@ -192,20 +214,20 @@ class App(ttk.Frame):
         # region 渊博开关
         self.switch_yuanbo = ttk.Checkbutton(
             self.switch_frame, text="渊博", style="Switch.TCheckbutton",
-            onvalue=1, offvalue=0, 
+            onvalue=1, offvalue=0,
             variable=self.variables['is_yuanbo'])
 
         self.switch_yuanbo.grid(row=0, column=0, padx=5,
                                 pady=10, sticky="nsew")
         # endregion
-                               
+
         # region 扩图开关
         self.switch_large_region = ttk.Checkbutton(
             self.switch_frame, text="扩图", style="Switch.TCheckbutton",
             onvalue=1, offvalue=0, variable=self.variables['is_large_region'])
 
         self.switch_large_region.grid(row=1, column=0, padx=5,
-                                pady=10, sticky="nsew")
+                                      pady=10, sticky="nsew")
         # endregion
 
         # region 二值化模式开关
@@ -214,7 +236,7 @@ class App(ttk.Frame):
             onvalue=1, offvalue=0, variable=self.variables['is_binarization'])
 
         self.switch_large_region.grid(row=2, column=0, padx=5,
-                                pady=10, sticky="nsew")
+                                      pady=10, sticky="nsew")
         # endregion
 
         # region 测试模式开关
