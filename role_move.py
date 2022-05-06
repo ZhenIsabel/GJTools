@@ -1,6 +1,7 @@
 import math
 import time
 import pyautogui
+import numpy
 
 import role_action
 import role_loc
@@ -104,11 +105,14 @@ def move_map_correct(origin_coordinate, direct, width, height, callback_fun, try
             offset[0] += width
         if 3 > offset[0] > -3 and 3 > offset[1] > -3:
             return None
+        # elif abs(offset[0]) > 50:
+        #     return None
         else:
             move(0, offset[1])
             x = 0
             while x < abs(offset[0]):
-                move(offset[0]/abs(offset[0]) * config_model.config['move_distance_x'], 0)
+                move(numpy.sign(offset[0]) *
+                     config_model.config['move_distance_x'], 0)
                 x += config_model.config['move_distance_x']
                 callback_fun()
     if try_times > 0:
@@ -125,7 +129,8 @@ def move_map(width, height, callback_fun=None, origin=None):
             x += config_model.config['move_distance_x']
             count += callback_fun()
         if not origin == None and y > height/2:
-            move_map_correct(origin, direct, width, height, callback_fun)
+            move_map_correct([origin[0], origin[1]+y],
+                             direct, width, height, callback_fun)
         role_action.up_horse()
         move(0, config_model.config['move_distance_y'])
         y += config_model.config['move_distance_y']

@@ -45,11 +45,26 @@ time.sleep(3)
 # image=cv2.imread('D:/test.png')
 # temp=cv2.imread('D:/open_complete_day.png')
 
-pyautogui.moveTo(417,1220)
-pyautogui.leftClick()
-pyperclip.copy('饼哥好')
-time.sleep(0.5)
-pyautogui.keyDown('ctrl')
-pyautogui.press('v')
-pyautogui.keyUp('ctrl')
-pyautogui.press('enter')
+# pyautogui.moveTo(417,1220)
+# pyautogui.leftClick()
+# pyperclip.copy('饼哥好')
+# time.sleep(0.5)
+# pyautogui.keyDown('ctrl')
+# pyautogui.press('v')
+# pyautogui.keyUp('ctrl')
+# pyautogui.press('enter')
+
+# para=input('test')
+# print(para)\
+cost_220=cv2.imread('img/cost_220.png')
+extra_buy_count=0
+image_read = cv2.cvtColor(np.asarray(
+                pyautogui.screenshot(region=[327,1032,402,203])), 
+                cv2.COLOR_RGB2BGR
+                )
+match_res = cv2.matchTemplate(cost_220, image_read, 3)
+min_val, max_val, min_loc, max_error_loc = cv2.minMaxLoc(match_res)
+if max_val>0.9:
+    extra_buy_count=10
+print('匹配：'+str(max_val)+', 额外购买：'+str(extra_buy_count))
+show_match_image(match_res,cost_220,image_read)

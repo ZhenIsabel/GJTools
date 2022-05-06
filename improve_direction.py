@@ -110,7 +110,7 @@ def reply_ping(send_request_ping_time, rawsocket, data_Sequence, timeout=2):
   '''
 
 
-def check_ping(host='121.5.96.160'):
+def check_ping(host='121.5.96.160',try_times=3):
     data_type = 8  # ICMP Echo Request
     data_code = 0  # must be zero
     data_checksum = 0  # "...with value 0 substituted for this field..."
@@ -120,16 +120,17 @@ def check_ping(host='121.5.96.160'):
     # 将主机名转ipv4地址格式，返回以ipv4地址格式的字符串，如果主机名称是ipv4地址，则它将保持不变
     dst_addr = socket.gethostbyname(host)
     for i in range(0, 1):
+      for j in range(0,try_times):
         icmp_packet = request_ping(
             data_type, data_code, data_checksum, data_ID, data_Sequence + i, payload_body)
         send_request_ping_time, rawsocket, addr = raw_socket(
             dst_addr, icmp_packet)
         times = reply_ping(send_request_ping_time,
                            rawsocket, data_Sequence + i)
-        if times > 0:
-            # print("来自 {0} 的回复: 字节=32 时间={1}ms".format(addr, int(times * 1000)))
-            # time.sleep(0.7)
-            return times
-        else:
-            # print("请求超时。")
-            return 0
+      if times > 0:
+          # print("来自 {0} 的回复: 字节=32 时间={1}ms".format(addr, int(times * 1000)))
+          # time.sleep(0.7)
+          return times
+      else:
+          # print("请求超时。")
+          return 0

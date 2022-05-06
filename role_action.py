@@ -1,4 +1,3 @@
-from asyncio.log import logger
 import datetime
 import time
 
@@ -34,6 +33,7 @@ horse = cv2.imread('img/horse.png')
 open_complete_night = cv2.imread('img/open_complete_night.png')
 open_complete_day = cv2.imread('img/open_complete_day.png')
 flower_debuff = cv2.imread('img/flower_debuff.png')
+cost_220=cv2.imread('img/cost_220.png')
 
 
 # 点开藏宝地图模式位置
@@ -102,7 +102,7 @@ def clear_map():
     buy_count = int(
         config_model.config['count_yuanbo'] if config_model.config['is_yuanbo'] else config_model.config['count_no_yuanbo'])
     log_message.log_debug("清理数量为："+str(buy_count))
-    for i in range(0, buy_count):
+    for i in range(0, buy_count+5):
         pyautogui.moveTo(first_map_pos[0], first_map_pos[1])
         pyautogui.rightClick()
         pyautogui.moveTo(first_map_pos[0] + 50, first_map_pos[1] + 30)
@@ -152,14 +152,19 @@ def buy_map():
     # 确定买图数量
     buy_count = int(
         config_model.config['count_yuanbo'] if config_model.config['is_yuanbo'] else config_model.config['count_no_yuanbo'])
-    buy_count_string = str(buy_count)
+    buy_count_string = str(buy_count-1)
     if max_val > fitness_threshold:
         # pyautogui.press('4')
         # pyautogui.press('0')
+        # 增加延迟
+        # improve_direction.check_ping(try_times=20)
         log_message.log_debug("买图数量为："+str(buy_count))
         for i in range(len(buy_count_string)):
             pyautogui.press(buy_count_string[i])
+        # improve_direction.check_ping(try_times=20)
         pyautogui.press('enter')
+        pyautogui.click(x=None, y=None, clicks=11, interval=0.001,
+                        button='right', duration=0.0, tween=pyautogui.linear)
         # max_val, max_loc = match_img(confirm_btn)
         # if max_val > fitness_threshold:
         #     pyautogui.moveTo(max_loc[0] + 50, max_loc[1] + 15)
@@ -179,7 +184,7 @@ def remove_buff():
         pyautogui.moveTo(858+max_loc[0] + 13, 1005+max_loc[1] + 13)
         pyautogui.rightClick()
         # 打字嘲讽饼哥
-        pyautogui.moveTo(417,1220)
+        pyautogui.moveTo(417, 1220)
         pyautogui.leftClick()
         pyperclip.copy(fucking_flower.fucking_coockie_bro())
         time.sleep(0.5)
@@ -187,7 +192,6 @@ def remove_buff():
         pyautogui.press('v')
         pyautogui.keyUp('ctrl')
         pyautogui.press('enter')
-
 
 
 def check_open_complete():
@@ -229,39 +233,47 @@ def avoid_open_interrupt():
     max_val, max_error_loc = match_img(open_map_error)
     buy_count = int(
         config_model.config['count_yuanbo'] if config_model.config['is_yuanbo'] else config_model.config['count_no_yuanbo'])
-    wait_open_time = buy_count*config_model.config['single_map_time']
-    log_message.log_debug("开图数量为："+str(buy_count))
-    log_message.log_debug("开图时间为："+str(wait_open_time))
+    # wait_open_time = buy_count*config_model.config['single_map_time']
+    extra_buy_count=0
+    image_read = cv2.cvtColor(np.asarray(
+                 pyautogui.screenshot(region=[327,1032,402,203])), cv2.COLOR_RGB2BGR)
+    match_res = cv2.matchTemplate(cost_220, image_read, 3)
+    min_val, max_val, min_loc, max_error_loc = cv2.minMaxLoc(match_res)
+    if max_val>0.95:
+        extra_buy_count=10
+    log_message.log_debug("开图数量为："+str(buy_count+extra_buy_count))
+    print(("开图数量为："+str(buy_count+extra_buy_count)))
+    # log_message.log_debug("开图时间为："+str(wait_open_time))
     if max_val < fitness_threshold:
         # 每5秒一测
         reset_times = 0
         i = 0
-        while i < buy_count:
+        while i < buy_count+extra_buy_count:
             time.sleep(config_model.config['single_map_time'])
             i = i+1
             # 移除不对劲的buff
             remove_buff()
-        #     # 匹配开图读条区域
-        #     image_read = cv2.cvtColor(np.asarray(
-        #         pyautogui.screenshot(region=read_area)), cv2.COLOR_RGB2BGR)
-        #     match_res = cv2.matchTemplate(image_origin, image_read, 3)
-        #     min_val, max_val, min_loc, max_error_loc = cv2.minMaxLoc(match_res)
+            # # 匹配开图读条区域
+            # image_read = cv2.cvtColor(np.asarray(
+            #     pyautogui.screenshot(region=read_area)), cv2.COLOR_RGB2BGR)
+            # match_res = cv2.matchTemplate(image_origin, image_read, 3)
+            # min_val, max_val, min_loc, max_error_loc = cv2.minMaxLoc(match_res)
 
-        #     # print("interrupt check:"+str(max_val))
-        #     if max_val > 0.9 and reset_times < 3:
-        #         log_message.log_error("interrupt check:"+str(max_val))
+            # # print("interrupt check:"+str(max_val))
+            # if max_val > 0.9 and reset_times < 3:
+            #     log_message.log_error("interrupt check:"+str(max_val))
 
-        #         if check_open_complete():
-        #             pyautogui.moveRel(0, -100)
-        #             up_horse()
-        #             return True
-        #         pyautogui.moveTo(max_loc[0] + 24, max_loc[1] + 24)
-        #         time.sleep(0.1)
-        #         pyautogui.leftClick()
-        #         i = 0
-        #         print("open map reset:"+str(max_val))
-        #         log_message.log_error("open map reset"+str(max_val))
-        #         reset_times = reset_times+1
+            #     if check_open_complete():
+            #         pyautogui.moveRel(0, -100)
+            #         up_horse()
+            #         return True
+            #     pyautogui.moveTo(max_loc[0] + 24, max_loc[1] + 24)
+            #     time.sleep(0.1)
+            #     pyautogui.leftClick()
+            #     i = 0
+            #     print("open map reset:"+str(max_val))
+            #     log_message.log_error("open map reset"+str(max_val))
+            #     reset_times = reset_times+1
 
         # # pyautogui.sleep(wait_open_time)
         # time.sleep(2)
@@ -421,16 +433,17 @@ def clear_bag():
     if max_val < fitness_threshold:
         log_message.log_debug('无法匹配背包位置')
         return
-    first_loc = [max_loc[0] + 100, max_loc[1] + 85]
+    # first_loc = [max_loc[0] + 100, max_loc[1] + 85]
+    first_loc = [max_loc[0] + 100, max_loc[1] - 30]
     pyautogui.keyDown('shift')
-    for j in range(0, 5):
+    for j in range(0, 3):
         for i in range(0, bag_width):
             pyautogui.moveTo(
                 first_loc[0] + i * bag_item_size, first_loc[1] + j * bag_item_size)
             pyautogui.rightClick()
-    for i in range(0, 10):
-        pyautogui.moveTo(first_loc[0] + i * bag_item_size,
-                         first_loc[1] + 3 * bag_item_size + 25)
+    # for i in range(0, 10):
+    #     pyautogui.moveTo(first_loc[0] + i * bag_item_size,
+    #                      first_loc[1] + 3 * bag_item_size + 25)
         pyautogui.rightClick()
     pyautogui.keyUp('shift')
     log_message.log_info("出售完毕")
