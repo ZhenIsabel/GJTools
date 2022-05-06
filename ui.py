@@ -68,6 +68,7 @@ class App(ttk.Frame):
         # Create control variables
         self.variables = {'is_yuanbo': tk.IntVar(),            # 是否是渊博状态
                           'is_large_region': tk.IntVar(),  # 是否扩图
+                          'is_extra_buy':tk.IntVar(),  # 是否额外买到50图
                           'is_binarization': tk.IntVar(),  # 是否采用二值化风格
                           'max_move_distance': tk.DoubleVar(),  # 最长经过多少距离进行转向检测
                           'move_speed': tk.DoubleVar(),       # 步速（非扫图速度）
@@ -236,6 +237,15 @@ class App(ttk.Frame):
             onvalue=1, offvalue=0, variable=self.variables['is_binarization'])
 
         self.switch_large_region.grid(row=2, column=0, padx=5,
+                                      pady=10, sticky="nsew")
+        # endregion
+
+        # region 额外买图开关
+        self.switch_extra_buy = ttk.Checkbutton(
+            self.switch_frame, text="买到50图", style="Switch.TCheckbutton",
+            onvalue=1, offvalue=0, variable=self.variables['is_extra_buy'])
+
+        self.switch_extra_buy.grid(row=3, column=0, padx=5,
                                       pady=10, sticky="nsew")
         # endregion
 

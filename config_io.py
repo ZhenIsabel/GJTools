@@ -15,7 +15,7 @@ def load_config_from_file():
         each_line = each_line.strip('\n')
         item_pair = each_line.split(',')
         if item_pair[0] in config_model.config:
-            if index > 12:
+            if index > 13:
                 config_model.config[item_pair[0]] = item_pair[1]
             else:
                 config_model.config[item_pair[0]] = float(item_pair[1])

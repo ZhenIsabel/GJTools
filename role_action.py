@@ -33,8 +33,9 @@ horse = cv2.imread('img/horse.png')
 open_complete_night = cv2.imread('img/open_complete_night.png')
 open_complete_day = cv2.imread('img/open_complete_day.png')
 flower_debuff = cv2.imread('img/flower_debuff.png')
-cost_220=cv2.imread('img/cost_220.png')
-
+cost_220 = cv2.imread('img/cost_220.png')
+cost_20 = cv2.imread('img/cost_20.png')
+cost_800 = cv2.imread('img/cost_800.png')
 
 # 点开藏宝地图模式位置
 # open_box_map_pos = [500, 50]
@@ -152,7 +153,9 @@ def buy_map():
     # 确定买图数量
     buy_count = int(
         config_model.config['count_yuanbo'] if config_model.config['is_yuanbo'] else config_model.config['count_no_yuanbo'])
-    buy_count_string = str(buy_count-1)
+    if config_model.config['is_extra_buy']:
+        buy_count = buy_count-1
+    buy_count_string = str(buy_count)
     if max_val > fitness_threshold:
         # pyautogui.press('4')
         # pyautogui.press('0')
@@ -163,8 +166,9 @@ def buy_map():
             pyautogui.press(buy_count_string[i])
         # improve_direction.check_ping(try_times=20)
         pyautogui.press('enter')
-        pyautogui.click(x=None, y=None, clicks=11, interval=0.001,
-                        button='right', duration=0.0, tween=pyautogui.linear)
+        if config_model.config['is_extra_buy']:
+            pyautogui.click(x=None, y=None, clicks=11, interval=0.001,
+                            button='right', duration=0.0, tween=pyautogui.linear)
         # max_val, max_loc = match_img(confirm_btn)
         # if max_val > fitness_threshold:
         #     pyautogui.moveTo(max_loc[0] + 50, max_loc[1] + 15)
@@ -234,13 +238,14 @@ def avoid_open_interrupt():
     buy_count = int(
         config_model.config['count_yuanbo'] if config_model.config['is_yuanbo'] else config_model.config['count_no_yuanbo'])
     # wait_open_time = buy_count*config_model.config['single_map_time']
-    extra_buy_count=0
+    extra_buy_count = 0
     image_read = cv2.cvtColor(np.asarray(
-                 pyautogui.screenshot(region=[327,1032,402,203])), cv2.COLOR_RGB2BGR)
-    match_res = cv2.matchTemplate(cost_220, image_read, 3)
-    min_val, max_val, min_loc, max_error_loc = cv2.minMaxLoc(match_res)
-    if max_val>0.95:
-        extra_buy_count=10
+        pyautogui.screenshot(region=[327, 1032, 402, 203])), cv2.COLOR_RGB2BGR)
+    match_res = cv2.matchTemplate(cost_20, image_read, 3)
+    min_val, max_val_count_check, min_loc, max_error_loc = cv2.minMaxLoc(
+        match_res)
+    if max_val_count_check < 0.95 and config_model.config['is_extra_buy']:
+        extra_buy_count = 10
     log_message.log_debug("开图数量为："+str(buy_count+extra_buy_count))
     print(("开图数量为："+str(buy_count+extra_buy_count)))
     # log_message.log_debug("开图时间为："+str(wait_open_time))

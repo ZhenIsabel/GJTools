@@ -56,15 +56,15 @@ time.sleep(3)
 
 # para=input('test')
 # print(para)\
-cost_220=cv2.imread('img/cost_220.png')
+cost_220=cv2.imread('img/cost_20.png')
 extra_buy_count=0
 image_read = cv2.cvtColor(np.asarray(
-                pyautogui.screenshot(region=[327,1032,402,203])), 
+                pyautogui.screenshot(region=[327,1022,402,203])), 
                 cv2.COLOR_RGB2BGR
                 )
 match_res = cv2.matchTemplate(cost_220, image_read, 3)
-min_val, max_val, min_loc, max_error_loc = cv2.minMaxLoc(match_res)
-if max_val>0.9:
-    extra_buy_count=10
-print('匹配：'+str(max_val)+', 额外购买：'+str(extra_buy_count))
+min_val, max_val_count_check, min_loc, max_error_loc = cv2.minMaxLoc(match_res)
+if max_val_count_check < 0.95:
+        extra_buy_count = 10
+print('匹配：'+str(max_val_count_check)+', 额外购买：'+str(extra_buy_count))
 show_match_image(match_res,cost_220,image_read)
