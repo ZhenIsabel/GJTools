@@ -103,11 +103,11 @@ def find_box_under_footer():
     image = cv2.cvtColor(np.asarray(pyautogui.screenshot(region=weather_area)), cv2.COLOR_RGB2BGR)
     match_res = cv2.matchTemplate(image, night_tip, 3)
     min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(match_res)
-    is_night = max_val > 0.95
+    is_night = max_val > 0.92
     image = cv2.cvtColor(np.asarray(pyautogui.screenshot(region=weather_area)), cv2.COLOR_RGB2BGR)
     match_res = cv2.matchTemplate(image, rain_tip, 3)
     min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(match_res)
-    is_rain = max_val > 0.95
+    is_rain = max_val > 0.92
     weather_code = 0
     if is_night:
         weather_code = 2

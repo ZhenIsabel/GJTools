@@ -241,10 +241,14 @@ def avoid_open_interrupt():
     extra_buy_count = 0
     image_read = cv2.cvtColor(np.asarray(
         pyautogui.screenshot(region=[327, 1032, 402, 203])), cv2.COLOR_RGB2BGR)
-    match_res = cv2.matchTemplate(cost_20, image_read, 3)
+    match_res_20 = cv2.matchTemplate(cost_20, image_read, 3)
     min_val, max_val_count_check, min_loc, max_error_loc = cv2.minMaxLoc(
-        match_res)
-    if max_val_count_check < 0.96 and config_model.config['is_extra_buy']:
+        match_res_20)
+    if max_val_count_check<0.95:
+        matxh_res_800=cv2.matchTemplate(cost_800, image_read, 3)
+        min_val, max_val_count_check, min_loc, max_error_loc = cv2.minMaxLoc(
+        matxh_res_800)
+    if max_val_count_check < 0.95 and config_model.config['is_extra_buy']:
         extra_buy_count = 10
     log_message.log_debug("开图数量为："+str(buy_count+extra_buy_count))
     print(("开图数量为："+str(buy_count+extra_buy_count)))
