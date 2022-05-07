@@ -244,7 +244,7 @@ def avoid_open_interrupt():
     match_res = cv2.matchTemplate(cost_20, image_read, 3)
     min_val, max_val_count_check, min_loc, max_error_loc = cv2.minMaxLoc(
         match_res)
-    if max_val_count_check < 0.95 and config_model.config['is_extra_buy']:
+    if max_val_count_check < 0.96 and config_model.config['is_extra_buy']:
         extra_buy_count = 10
     log_message.log_debug("开图数量为："+str(buy_count+extra_buy_count))
     print(("开图数量为："+str(buy_count+extra_buy_count)))

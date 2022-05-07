@@ -62,7 +62,7 @@ image_read = cv2.cvtColor(np.asarray(
                 pyautogui.screenshot(region=[327,1022,402,203])), 
                 cv2.COLOR_RGB2BGR
                 )
-match_res = cv2.matchTemplate(cost_220, image_read, 3)
+match_res = cv2.matchTemplate(cost_220, image_read, 5)
 min_val, max_val_count_check, min_loc, max_error_loc = cv2.minMaxLoc(match_res)
 if max_val_count_check < 0.95:
         extra_buy_count = 10
