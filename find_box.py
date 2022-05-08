@@ -45,6 +45,20 @@ too_far_area = [909, 353, 150, 100]
 weather_area = [1980, 160, 100, 50]
 
 
+def show_imag(name, image):
+    cv2.imshow(name, image)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
+def show_match_image(match_res,template,image):
+    min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(match_res)
+    top_left = max_loc
+    h, w = template.shape[:2]
+    bottom_right = (top_left[0]+w, top_left[1]+h)
+    cv2.rectangle(image, top_left, bottom_right, 255, 2)
+    show_imag('temp', image)
+
+
 def find_box_in_area_color(region, weather_code=0):
     threshold_value=[80, 60, 40]
     if config_model.config['is_binarization']:
@@ -87,6 +101,9 @@ def is_on_box_by_tip(region, is_night):
     try_find_tip = cv2.cvtColor(np.asarray(pyautogui.screenshot(region=region)), cv2.COLOR_RGB2BGR)
     match_res = cv2.matchTemplate(try_find_tip, tip_template, 3)
     min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(match_res)
+    # print (max_val)
+    # show_match_image(match_res,tip_template,try_find_tip)
+
     return max_val > 0.95
 
 

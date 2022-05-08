@@ -6,7 +6,7 @@ import numpy as np
 import pyautogui
 import win32api
 import win32con
-import pyperclip
+# import pyperclip
 
 import config_model
 import find_box
@@ -14,7 +14,8 @@ import log_message
 import role_loc
 import role_move
 import send_message
-import fucking_flower
+import get_weather
+# import fucking_flower
 
 map_in_store = cv2.imread('img/map_in_store.png')
 open_map_btn = cv2.imread('img/open_map.png')
@@ -187,15 +188,15 @@ def remove_buff():
     if max_val > 0.92:
         pyautogui.moveTo(858+max_loc[0] + 13, 1005+max_loc[1] + 13)
         pyautogui.rightClick()
-        # 打字嘲讽饼哥
-        pyautogui.moveTo(417, 1220)
-        pyautogui.leftClick()
-        pyperclip.copy(fucking_flower.fucking_coockie_bro())
-        time.sleep(0.5)
-        pyautogui.keyDown('ctrl')
-        pyautogui.press('v')
-        pyautogui.keyUp('ctrl')
-        pyautogui.press('enter')
+        # # 打字嘲讽饼哥
+        # pyautogui.moveTo(417, 1220)
+        # pyautogui.leftClick()
+        # pyperclip.copy(fucking_flower.fucking_coockie_bro())
+        # time.sleep(0.5)
+        # pyautogui.keyDown('ctrl')
+        # pyautogui.press('v')
+        # pyautogui.keyUp('ctrl')
+        # pyautogui.press('enter')
 
 
 def check_open_complete():
@@ -294,12 +295,12 @@ def avoid_open_interrupt():
         #     # return False
         pyautogui.moveRel(0, -100)
         up_horse()
-        return True
+        return extra_buy_count+buy_count
     else:
         close_dialog()
         up_horse()
         send_message_with_loc("Open Map Error")
-        return False
+        return 0
 
 
 def open_map():
@@ -403,6 +404,8 @@ def find_boxs():
     role_move.turn_to(begin_find_direct_1)
     count += role_move.move_map(find_area_1[0],
                                 find_area_1[1], find_box.find_box_under_footer)
+    if count<3:
+        print (str(get_weather.get_weather_name()))
     log_message.log_info("出发犁第二片地")
     role_move.move_to(begin_find_loc_2, None, 1, 5)
     role_move.turn_to(begin_find_direct_2)
@@ -412,11 +415,11 @@ def find_boxs():
                                 )
     role_move.move_to([-850, -560], None, 3, 3)
     print("开盒次数" + str(count))
-    send_message.send_message("开盒次数" + str(count))
+    # send_message.send_message("开盒次数" + str(count))
     if count <= 0:
         reset_keys()
         send_message_with_loc("Find No Box")
-    return True
+    return count
 
 
 def back_to_store():
