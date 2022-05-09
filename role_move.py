@@ -140,6 +140,14 @@ def move_map(width, height, callback_fun=None, origin=None):
     return count
 
 
+def lod_move_map(width, height, callback_fun=None, origin=None):
+    x, y = 0, 0
+    direct = 1
+    count = 0
+    catch_region=[]
+    pass
+
+
 def move_to(target_loc, target_direct=None, diff=move_min, try_time=2):
     res = False
     for i in range(0, try_time):

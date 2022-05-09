@@ -46,12 +46,7 @@ def clear_map(buy_count):
 def buy_map():
     
     map_in_store = cv2.imread('img/map_in_store.png')
-    open_map_btn = cv2.imread('img/open_map.png')
-    map_title = cv2.imread('img/map_title.png')
     buy_map_tip = cv2.imread('img/buy_map_tip.png')
-    confirm_btn = cv2.imread('img/confirm_btn.png')
-    bag_left = cv2.imread('img/bag_left.png')
-    store_npc = cv2.imread('img/store_npc.png')
     max_val = 0
     fitness_threshold=0.95
     pyautogui.press('g')
@@ -85,8 +80,6 @@ def buy_map():
         #     pyautogui.moveTo(max_loc[0] + 50, max_loc[1] + 15)
         #     pyautogui.leftClick()
     return True
-
-
 
 buy_count=input('count of throw\n')
 time.sleep(2)

@@ -31,8 +31,10 @@ re_cmp = re.compile('-?[1-9]\d*')
 
 
 def get_current_loc(try_times=5):
-    image = cv2.cvtColor(np.asarray(pyautogui.screenshot(region=current_loc_area)), cv2.COLOR_RGB2GRAY)
-    ret, binary = cv2.threshold(image, loc_threshold_param, 255, cv2.THRESH_BINARY)
+    image = cv2.cvtColor(np.asarray(pyautogui.screenshot(
+        region=current_loc_area)), cv2.COLOR_RGB2GRAY)
+    ret, binary = cv2.threshold(
+        image, loc_threshold_param, 255, cv2.THRESH_BINARY)
     cv2.bitwise_not(binary, binary)
     test_message = Image.fromarray(binary)
     text = pytesseract.image_to_string(test_message)
@@ -48,9 +50,12 @@ def get_current_loc(try_times=5):
 
 
 def get_current_direction(try_times=5):
-    image = cv2.cvtColor(np.asarray(pyautogui.screenshot(region=small_map_area)), cv2.COLOR_RGB2BGR)
-    mask = cv2.inRange(image, np.array(arrow_color_low), np.array(arrow_color_high))
-    cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+    image = cv2.cvtColor(np.asarray(pyautogui.screenshot(
+        region=small_map_area)), cv2.COLOR_RGB2BGR)
+    mask = cv2.inRange(image, np.array(arrow_color_low),
+                       np.array(arrow_color_high))
+    cnts = cv2.findContours(
+        mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
     cnts = imutils.grab_contours(cnts)
 
     for c in cnts:
@@ -82,30 +87,36 @@ def get_current_direction(try_times=5):
 def get_two_line_angle(line1, line2):
     line1_len = math.hypot(line1[0], line1[1])
     line2_len = math.hypot(line2[0], line2[1])
-    middle_line = [line1[0]/line1_len + line2[0]/line2_len, line1[1]/line1_len + line2[1]/line2_len]
+    middle_line = [line1[0]/line1_len + line2[0] /
+                   line2_len, line1[1]/line1_len + line2[1]/line2_len]
     return math.atan2(middle_line[1], middle_line[0])
 
 
 def get_clear_map_count(try_times=5):
-    #丢图藏宝图坐标
+    # 丢图藏宝图坐标
     # clear_map_area = [1698, 158, 52, 27]
-    clear_map_area = [2011, 311, 52, 27]
+    clear_map_area = [2011, 309, 52, 27]
     # 获取丢图计数二值化参数
-    clear_map_count_param = 230
-    image = cv2.cvtColor(np.asarray(pyautogui.screenshot(region=clear_map_area)), cv2.COLOR_RGB2GRAY)
-    #cv2.imshow("截屏",image)
-    #cv2.waitKey(0)
-    ret, binary = cv2.threshold(image, clear_map_count_param, 255, cv2.THRESH_BINARY)
+    clear_map_count_param = 210
+    image = cv2.cvtColor(np.asarray(pyautogui.screenshot(
+        region=clear_map_area)), cv2.COLOR_RGB2GRAY)
+    ret, binary = cv2.threshold(
+        image, clear_map_count_param, 255, cv2.THRESH_BINARY)
     cv2.bitwise_not(binary)
+    # cv2.imshow("截屏", binary)
+    # cv2.waitKey(0)
     test_message = Image.fromarray(binary)
     text = pytesseract.image_to_string(test_message)
+    # print(text)
     text = text.replace('B', '8')
-    #print(f'位置：{text}')
+    # print(f'位置：{text}')
     count_str = re_cmp.findall(text)
     if count_str == []:
         clear_map_count = int(50)
-    else: 
+    else:
         clear_map_count = int(count_str[0])
-    #print(count_str)
-    #print(str(clear_map_count))
+    # print(count_str)
+    # print(str(clear_map_count))
+    if clear_map_count>=50:
+        clear_map_count=45
     return clear_map_count
