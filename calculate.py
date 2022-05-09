@@ -9,7 +9,7 @@ import get_weather
 # import config_model
 
 
-def calc222():
+def calc111():
     time.sleep(1)
     report_data = {
             '开盒': 1,

@@ -2,7 +2,6 @@ import time
 import cv2
 import numpy as np
 import pyautogui
-import test
 
 night_tip = cv2.imread('img/night_tip.png')
 rain_tip = cv2.imread('img/rain_tip.png')
@@ -34,13 +33,16 @@ def weather_test(threshold_value: list):
     # cv2.imshow("Weather Area", image)
 
     match_res = cv2.matchTemplate(image, night_tip, 3)
-    min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(match_res)
-    is_night = max_val > 0.92
-    print(max_val)
+    min_val, max_val_night, min_loc, max_loc = cv2.minMaxLoc(match_res)
+    is_night = max_val_night > 0.92
+    print(max_val_night)
     match_res = cv2.matchTemplate(image, rain_tip, 3)
-    min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(match_res)
+    min_val, max_val_rain, min_loc, max_loc = cv2.minMaxLoc(match_res)
   
-    is_rain = max_val > 0.92
+    is_rain = max_val_rain > 0.92
+    if max_val_rain-max_val_night>0.04:
+        is_night=False
+    print(max_val_rain)
     weather_code = 0
     if is_night:
         weather_code = 2
