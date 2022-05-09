@@ -28,8 +28,8 @@ def load_config_from_file():
 # 一个修饰符就是一个函数它将被修饰的函数做为参数，并返回修饰后的同名函数或其它可调用的东西。
 # 此处用来实现函数重载
 @singledispatch
-def write_config(data):
-    with open('config.txt', 'w') as config:
+def write_config(data,file='config.txt',mode='w'):
+    with open(file, mode) as config:
         # config.write(str('config=['))
         length = len(data)
         for i in range(length):
@@ -41,8 +41,8 @@ def write_config(data):
 
 
 @write_config.register(dict)
-def _(data):
-    with open('config.txt', 'w') as config:
+def _(data,file='config.txt',mode='w'):
+    with open(file, mode) as config:
         # config.write(str('config=['))
         length = len(data)
         for index, key in enumerate(data):
