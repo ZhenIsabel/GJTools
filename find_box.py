@@ -19,11 +19,11 @@ rain_tip = cv2.imread('img/rain_tip.png')
 # 脚下可开盒子区域
 # box_under_footer_area = [710, 580, 500, 250]
 # box_under_footer_area = [1035, 735, 500, 250]
-box_under_footer_area = [1042, 740, 474, 288]
+box_under_footer_area = [1042, 740, 420, 288]
 
 # 脚下中心点
 # footer_pos = [960, 635]
-footer_pos = [1279,790]
+footer_pos = [1280,790]
 
 # 盒子二值化参数
 # threshold_value = [80, 60, 40]

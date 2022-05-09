@@ -85,3 +85,27 @@ def get_two_line_angle(line1, line2):
     middle_line = [line1[0]/line1_len + line2[0]/line2_len, line1[1]/line1_len + line2[1]/line2_len]
     return math.atan2(middle_line[1], middle_line[0])
 
+
+def get_clear_map_count(try_times=5):
+    #丢图藏宝图坐标
+    # clear_map_area = [1698, 158, 52, 27]
+    clear_map_area = [2011, 311, 52, 27]
+    # 获取丢图计数二值化参数
+    clear_map_count_param = 230
+    image = cv2.cvtColor(np.asarray(pyautogui.screenshot(region=clear_map_area)), cv2.COLOR_RGB2GRAY)
+    #cv2.imshow("截屏",image)
+    #cv2.waitKey(0)
+    ret, binary = cv2.threshold(image, clear_map_count_param, 255, cv2.THRESH_BINARY)
+    cv2.bitwise_not(binary)
+    test_message = Image.fromarray(binary)
+    text = pytesseract.image_to_string(test_message)
+    text = text.replace('B', '8')
+    #print(f'位置：{text}')
+    count_str = re_cmp.findall(text)
+    if count_str == []:
+        clear_map_count = int(50)
+    else: 
+        clear_map_count = int(count_str[0])
+    #print(count_str)
+    #print(str(clear_map_count))
+    return clear_map_count

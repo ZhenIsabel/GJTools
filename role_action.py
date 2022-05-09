@@ -61,16 +61,9 @@ fitness_threshold = 0.95
 wait_open_time_step = 4.9
 
 # 第一个挖宝区域大小
-begin_find_loc_1 = [-825, -525]
+# begin_find_loc_1 = [-825, -530]
+begin_find_loc_1 = [-825, -526]
 begin_find_direct_1 = 0.6
-# find_area_1 = [55, 47]
-# # find_area_1 = [60, 47]
-
-# 第二个挖宝区域大小
-begin_find_loc_2 = [-980, -530]
-begin_find_direct_2 = -0.5
-# find_area_2 = [55, 27]
-# # find_area_2 = [60, 30]
 
 # 背包格子大小
 bag_item_size = 36
@@ -101,10 +94,11 @@ def clear_map():
         log_message.log_debug("匹配率："+str(max_val))
         pyautogui.moveTo(open_box_map_pos[0], open_box_map_pos[1])
         pyautogui.leftClick()
-    buy_count = int(
-        config_model.config['count_yuanbo'] if config_model.config['is_yuanbo'] else config_model.config['count_no_yuanbo'])
-    log_message.log_debug("清理数量为："+str(buy_count))
-    for i in range(0, buy_count+5):
+    # buy_count = int(
+    #     config_model.config['count_yuanbo'] if config_model.config['is_yuanbo'] else config_model.config['count_no_yuanbo'])
+    # log_message.log_debug("清理数量为："+str(buy_count))
+    count = role_loc.get_clear_map_count()
+    for i in range(0, count):
         pyautogui.moveTo(first_map_pos[0], first_map_pos[1])
         pyautogui.rightClick()
         pyautogui.moveTo(first_map_pos[0] + 50, first_map_pos[1] + 30)
@@ -116,7 +110,7 @@ def clear_map():
     pyautogui.leftClick()
     pyautogui.press(config_model.config['key_map'])
     log_message.log_info("清理残图完毕")
-    return True
+    return count
 
 
 def buy_map():
@@ -393,11 +387,18 @@ def prepare_to_find():
 
 def find_boxs():
     count = 0
+
+    # 第二个挖宝区域大小
+    begin_find_loc_2 = [-980, -528]
+    begin_find_direct_2 = -0.5
+
     find_area_1 = [55, 47]
     find_area_2 = [55, 27]
     if config_model.config['is_large_region'] == 1:
-        find_area_1 = [65, 47]
-        find_area_2 = [56, 31]
+        # find_area_1 = [65, 47]
+        # find_area_2 = [56, 31]
+        find_area_1 = [63, 45]
+        find_area_2 = [60, 34]
 
     log_message.log_info("开始犁地")
     role_move.move_to(begin_find_loc_1, None, 1, 5)
