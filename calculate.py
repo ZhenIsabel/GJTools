@@ -90,7 +90,7 @@ def calc():
             role_action.try_reset()
             continue
         find_time = time.time()
-        clear_count = role_action.clear_map()
+        clear_count = role_action.clear_map(open_count)
         if not clear_count >= 0:
             role_action.try_reset()
             continue

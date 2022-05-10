@@ -33,21 +33,18 @@ def move_test():
                                 find_area_1[1], find_box.find_box_under_footer,
                                 begin_find_loc_1
                                 )
-# cost_20 = cv2.imread('img/cost_20.png')
-# cost_800 = cv2.imread('img/cost_800.png')
-# time.sleep(2)
-# import pyautogui
-# import numpy as np
-# image_read = cv2.cvtColor(np.asarray(
-# pyautogui.screenshot(region=[327, 1032, 402, 203])), cv2.COLOR_RGB2BGR)
-# match_res_20 = cv2.matchTemplate(cost_20, image_read, 3)
-# min_val, max_val_count_check, min_loc, max_error_loc = cv2.minMaxLoc(
-# match_res_20)
-# print(max_val_count_check)
-# if max_val_count_check<0.95:
-#     matxh_res_800=cv2.matchTemplate(cost_800, image_read, 3)
-#     min_val, max_val_count_check, min_loc, max_error_loc = cv2.minMaxLoc(
-# matxh_res_800)
-# print(max_val_count_check)
-# if max_val_count_check < 0.95 :
-#     extra_buy_count = 10
+
+import numpy as np
+import pyautogui
+cost_20 = cv2.imread('img/cost_20.png')
+cost_800 = cv2.imread('img/cost_800.png')
+image_read = cv2.cvtColor(np.asarray(
+        pyautogui.screenshot(region=[327, 1032, 402, 203])), cv2.COLOR_RGB2BGR)
+match_res_20 = cv2.matchTemplate(cost_20, image_read, 3)
+min_val, max_val_count_check, min_loc, max_error_loc = cv2.minMaxLoc(
+    match_res_20)
+print(max_val_count_check)
+matxh_res_800=cv2.matchTemplate(cost_800, image_read, 3)
+min_val, max_val_count_check, min_loc, max_error_loc = cv2.minMaxLoc(
+matxh_res_800)
+print(max_val_count_check)
