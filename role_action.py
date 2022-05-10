@@ -294,7 +294,7 @@ def avoid_open_interrupt():
         close_dialog()
         up_horse()
         send_message_with_loc("Open Map Error")
-        return 0
+        return -1
 
 
 def open_map():
@@ -496,7 +496,7 @@ def reset_to_store():
         return False
     pyautogui.moveTo(max_loc[0] + 30, max_loc[1] + 15)
     pyautogui.leftClick()
-    pyautogui.sleep(30)
+    pyautogui.sleep(36)
 
     log_message.log_debug("从仙府返回回川入世符定点位置")
     role_move.move(home_to_door[0], home_to_door[1])
@@ -510,7 +510,7 @@ def reset_to_store():
         return False
     pyautogui.moveTo(max_loc[0] + 30, max_loc[1] + 15)
     pyautogui.leftClick()
-    pyautogui.sleep(30)
+    pyautogui.sleep(36)
 
     reset_visual_field()
 
