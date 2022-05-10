@@ -140,6 +140,29 @@ def move_map(width, height, callback_fun=None, origin=None):
     return count
 
 
+def move_to_nearby(target_loc, target_direct=None, diff=move_min, try_time=2):
+    res = False
+    for i in range(0, try_time):
+        if move_directly(target_loc, diff):
+            res = True
+            break
+        this_loc = role_loc.get_current_loc()
+        loc_bias = numpy.power(
+            target_loc[0]-this_loc[0], 2)+numpy.power(target_loc[1]-this_loc[1], 2)
+        if loc_bias<2:
+            res=True
+            break 
+    if not res:
+        move_bad_case(target_loc)
+        if not move_directly(target_loc, diff):
+            role_action.print_log_with_loc(
+                "Move Failed to " + str(target_loc) + " with try times " + str(try_time))
+
+    current_direct = role_loc.get_current_direction()
+    if target_direct is not None and current_direct is not None:
+        turn_around(target_direct - current_direct)
+
+
 def move_to(target_loc, target_direct=None, diff=move_min, try_time=2):
     res = False
     for i in range(0, try_time):

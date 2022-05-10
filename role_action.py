@@ -233,7 +233,7 @@ def avoid_open_interrupt():
     role_move.move_to([-802, -703])
     role_move.move_to([-791, -702])
     role_move.move_to([-777, -701])
-    role_move.move_to([-756, -703], None, 0, 5)
+    role_move.move_to_nearby([-756, -703], None, 0, 5)
     max_val, max_loc = match_img(open_map_btn)
     log_message.log_debug("开图按钮匹配率："+str(max_val))
     pyautogui.moveTo(max_loc[0] + 24, max_loc[1] + 24)
@@ -299,13 +299,13 @@ def avoid_open_interrupt():
                 # reset_times = reset_times+1
 
         # pyautogui.sleep(wait_open_time)
-        time.sleep(2)
-        pyautogui.moveTo(max_loc[0] + 24, max_loc[1] + 24)
-        time.sleep(0.1)
-        pyautogui.leftClick()
-        if not check_open_complete():
-            send_message_with_loc("Open Map Error: cannot complete")
-            # return False
+        # time.sleep(2)
+        # pyautogui.moveTo(max_loc[0] + 24, max_loc[1] + 24)
+        # time.sleep(0.1)
+        # pyautogui.leftClick()
+        # if not check_open_complete():
+        #     send_message_with_loc("Open Map Error: cannot complete")
+        #     # return False
         pyautogui.moveRel(0, -100)
         up_horse()
         return extra_buy_count+buy_count
@@ -422,24 +422,26 @@ def find_boxs():
     log_message.log_info("开始犁地")
     role_move.move_to(begin_find_loc_1, None, 1, 5)
     role_move.turn_to(begin_find_direct_1)
+    start_time=time.time()
     count += role_move.move_map(find_area_1[0],
                                 find_area_1[1], find_box.find_box_under_footer)
-    if count < 3:
-        print(str(get_weather.get_weather_name()))
+    region_1_time=time.time()-start_time
     log_message.log_info("出发犁第二片地")
     role_move.move_to(begin_find_loc_2, None, 1, 5)
     role_move.turn_to(begin_find_direct_2)
+    start_time=time.time()
     count += role_move.move_map(find_area_2[0],
                                 find_area_2[1], find_box.find_box_under_footer,
                                 begin_find_loc_2
                                 )
+    region_2_time=time.time()-start_time
     role_move.move_to([-850, -560], None, 3, 3)
     print("开盒次数" + str(count))
     # send_message.send_message("开盒次数" + str(count))
     if count <= 0:
         reset_keys()
         send_message_with_loc("Find No Box")
-    return count
+    return count,region_1_time,region_2_time
 
 
 def back_to_store():
