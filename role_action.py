@@ -33,7 +33,7 @@ close_btn = cv2.imread('img/close_btn.png')
 horse = cv2.imread('img/horse.png')
 open_complete_night = cv2.imread('img/open_complete_night.png')
 open_complete_day = cv2.imread('img/open_complete_day.png')
-reading_tag=cv2.imread('img/reading.png')
+reading_tag = cv2.imread('img/reading.png')
 flower_debuff = cv2.imread('img/flower_debuff.png')
 cost_220 = cv2.imread('img/cost_220.png')
 cost_20 = cv2.imread('img/cost_20.png')
@@ -239,10 +239,10 @@ def avoid_open_interrupt():
     match_res_20 = cv2.matchTemplate(cost_20, image_read, 3)
     min_val, max_val_count_check, min_loc, max_error_loc = cv2.minMaxLoc(
         match_res_20)
-    if max_val_count_check<0.98:
-        matxh_res_800=cv2.matchTemplate(cost_800, image_read, 3)
+    if max_val_count_check < 0.98:
+        matxh_res_800 = cv2.matchTemplate(cost_800, image_read, 3)
         min_val, max_val_count_check, min_loc, max_error_loc = cv2.minMaxLoc(
-        matxh_res_800)
+            matxh_res_800)
     if max_val_count_check < 0.98 and config_model.config['is_extra_buy']:
         extra_buy_count = 10
     log_message.log_debug("开图数量为："+str(buy_count+extra_buy_count))
@@ -269,11 +269,11 @@ def avoid_open_interrupt():
                 # 读条完成检测
                 # double check
                 image_read = cv2.cvtColor(np.asarray(
-                pyautogui.screenshot(region=read_area)), cv2.COLOR_RGB2BGR)
+                    pyautogui.screenshot(region=read_area)), cv2.COLOR_RGB2BGR)
                 match_res = cv2.matchTemplate(image_read, reading_tag, 3)
                 _, max_val, _, _ = cv2.minMaxLoc(match_res)
                 # print("reading check:"+str(max_val))
-                if max_val<0.85:
+                if max_val < 0.85:
                     pyautogui.moveRel(0, -100)
                     up_horse()
                     return i+1
@@ -410,17 +410,21 @@ def find_boxs():
     log_message.log_info("开始犁地")
     role_move.move_to(begin_find_loc_1, None, 1, 5)
     role_move.turn_to(begin_find_direct_1)
-    count += role_move.move_map(find_area_1[0],
-                                find_area_1[1], find_box.find_box_under_footer)
-    if count<3:
-        print (str(get_weather.get_weather_name()))
+    # count += role_move.move_map(find_area_1[0],
+    #                             find_area_1[1], find_box.find_box_under_footer)
+    count += role_move.lod_move_map(find_area_1[0], find_area_1[1],
+                                    find_box.find_box_in_area_color,
+                                    find_box.find_box_under_footer)
     log_message.log_info("出发犁第二片地")
     role_move.move_to(begin_find_loc_2, None, 1, 5)
     role_move.turn_to(begin_find_direct_2)
-    count += role_move.move_map(find_area_2[0],
-                                find_area_2[1], find_box.find_box_under_footer,
-                                begin_find_loc_2
-                                )
+    # count += role_move.move_map(find_area_2[0],
+    #                             find_area_2[1], find_box.find_box_under_footer,
+    #                             begin_find_loc_2
+    #                             )
+    count += role_move.lod_move_map(find_area_2[0], find_area_2[1],
+                                    find_box.find_box_in_area_color,
+                                    find_box.find_box_under_footer)
     role_move.move_to([-850, -560], None, 3, 3)
     print("开盒次数" + str(count))
     # send_message.send_message("开盒次数" + str(count))

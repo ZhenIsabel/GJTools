@@ -2,6 +2,7 @@ import math
 import time
 import pyautogui
 import numpy
+import get_weather
 
 import role_action
 import role_loc
@@ -132,21 +133,45 @@ def move_map(width, height, callback_fun=None, origin=None):
             move_map_correct([origin[0], origin[1]+y],
                              direct, width, height, callback_fun)
         role_action.up_horse()
-        move(0, config_model.config['move_distance_y'])
-        y += config_model.config['move_distance_y']
-        count += callback_fun()
+        if height>0:
+            move(0, config_model.config['move_distance_y'])
+            y += config_model.config['move_distance_y']
+            count += callback_fun()
         x = 0
         direct = - direct
     return count
 
 
-def lod_move_map(width, height, callback_fun=None, origin=None):
+def lod_move_map(width, height,check_fun=None, callback_fun=None, origin=None):
     x, y = 0, 0
     direct = 1
     count = 0
-    catch_region=[]
-    pass
-
+    # 下半身起算的一条
+    catch_region = [320, 740, 1920, 288]  # location, width, height.
+    while y < height:
+        while x < width:
+            # 检测该条是否有箱子
+            weather_code=get_weather.get_weather_code()
+            has_box=check_fun(catch_region, weather_code,is_open_box=False)
+            if has_box:
+                # 逐步走
+                x_diff=0
+                while x_diff<direct*catch_region[2]/2:
+                    move(direct * config_model.config['move_distance_x'], 0)
+                    x_diff += config_model.config['move_distance_x']
+                    count += callback_fun()
+            else:
+            # 大步走
+                move(direct*catch_region[2]/2)
+            x += catch_region[2]/2
+            
+        # 进入新行
+        move(0, config_model.config['move_distance_y'])
+        y += config_model.config['move_distance_y']
+        count += callback_fun()
+        x = 0
+        direct = - direct
+        return count
 
 def move_to(target_loc, target_direct=None, diff=move_min, try_time=2):
     res = False

@@ -60,7 +60,7 @@ def show_match_image(match_res, template, image):
     show_imag('temp', image)
 
 
-def find_box_in_area_color(region, weather_code=0):
+def find_box_in_area_color(region, weather_code=0,is_open_box=True):
     threshold_value = [80, 60, 40]
     if config_model.config['is_binarization']:
         threshold_value = [170, 80, 80]
@@ -90,8 +90,9 @@ def find_box_in_area_color(region, weather_code=0):
             cY = int(M["m01"] / cZ)
             pyautogui.moveTo(region[0] + cX, region[1] + cY)
             if is_on_box_by_tip([region[0], region[1] - 50, region[2] + 150, region[3] + 50], weather_code > 0):
-                pyautogui.rightClick()
-                time.sleep(open_box_time)
+                if is_open_box:
+                    pyautogui.rightClick()
+                    time.sleep(open_box_time)
                 return True
     return False
 
