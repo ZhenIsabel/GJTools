@@ -143,6 +143,7 @@ def move_map(width, height, callback_fun=None, origin=None):
 
 
 def lod_move_map(width, height,check_fun=None, callback_fun=None, origin=None):
+    pixel_to_meter=137.14 
     x, y = 0, 0
     direct = 1
     count = 0
@@ -156,14 +157,15 @@ def lod_move_map(width, height,check_fun=None, callback_fun=None, origin=None):
             if has_box:
                 # 逐步走
                 x_diff=0
-                while x_diff<direct*catch_region[2]/2:
+                while x_diff<direct*catch_region[2]/(2*pixel_to_meter):
                     move(direct * config_model.config['move_distance_x'], 0)
                     x_diff += config_model.config['move_distance_x']
+                    x+=config_model.config['move_distance_x']
                     count += callback_fun()
             else:
             # 大步走
-                move(direct*catch_region[2]/2)
-            x += catch_region[2]/2
+                move(direct*catch_region[2]/(2*pixel_to_meter),0)
+                x += catch_region[2]/(2*pixel_to_meter)
             
         # 进入新行
         move(0, config_model.config['move_distance_y'])
@@ -171,7 +173,7 @@ def lod_move_map(width, height,check_fun=None, callback_fun=None, origin=None):
         count += callback_fun()
         x = 0
         direct = - direct
-        return count
+    return count
 
 def move_to(target_loc, target_direct=None, diff=move_min, try_time=2):
     res = False

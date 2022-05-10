@@ -71,19 +71,20 @@ def calc():
             time.sleep(16 * 60)  # 等到六点
             role_action.close_dialog()
         start_time = time.time()
-        if not role_action.buy_map():
-            role_action.try_reset()
-            continue
+        # if not role_action.buy_map():
+        #     role_action.try_reset()
+        #     continue
         buy_time = time.time()
-        # if not role_action.open_map():
-        open_count = role_action.avoid_open_interrupt()
-        if not open_count >= 0:
-            role_action.try_reset()
-            continue
+        # # if not role_action.open_map():
+        open_count =0
+        # open_count = role_action.avoid_open_interrupt()
+        # if not open_count >= 0:
+        #     role_action.try_reset()
+        #     continue
         open_time = time.time()
-        if not role_action.prepare_to_find():
-            role_action.try_reset()
-            continue
+        # if not role_action.prepare_to_find():
+        #     role_action.try_reset()
+        #     continue
         on_way_time = time.time()
         find_count = role_action.find_boxs()
         if not find_count >= 0:

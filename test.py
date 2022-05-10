@@ -34,17 +34,3 @@ def move_test():
                                 begin_find_loc_1
                                 )
 
-import numpy as np
-import pyautogui
-cost_20 = cv2.imread('img/cost_20.png')
-cost_800 = cv2.imread('img/cost_800.png')
-image_read = cv2.cvtColor(np.asarray(
-        pyautogui.screenshot(region=[327, 1032, 402, 203])), cv2.COLOR_RGB2BGR)
-match_res_20 = cv2.matchTemplate(cost_20, image_read, 3)
-min_val, max_val_count_check, min_loc, max_error_loc = cv2.minMaxLoc(
-    match_res_20)
-print(max_val_count_check)
-matxh_res_800=cv2.matchTemplate(cost_800, image_read, 3)
-min_val, max_val_count_check, min_loc, max_error_loc = cv2.minMaxLoc(
-matxh_res_800)
-print(max_val_count_check)
