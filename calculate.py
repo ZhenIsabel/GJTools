@@ -110,9 +110,9 @@ def calc():
             '开图耗时': open_time-buy_time,
             '寻路去程耗时': on_way_time-open_time,
             '寻路返程耗时': back_time-clear_time,
-            '找盒耗时': find_time-on_way_time,
-            '区域1开盒耗时':region_1_time,
-            '区域2开盒耗时':region_2_time,
+            '找盒耗时': (find_time-on_way_time)/60,
+            '区域1开盒耗时':region_1_time/60,
+            '区域2开盒耗时':region_2_time/60,
             '清图耗时': clear_time-find_time,
             '总耗时': (back_time-start_time)/60
         }

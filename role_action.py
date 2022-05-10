@@ -258,7 +258,7 @@ def avoid_open_interrupt():
     if max_val_count_check < 0.98 and config_model.config['is_extra_buy']:
         extra_buy_count = 10
     log_message.log_debug("开图数量为："+str(buy_count+extra_buy_count))
-    print(("开图数量为："+str(buy_count+extra_buy_count)))
+    
     # log_message.log_debug("开图时间为："+str(wait_open_time))
     if max_val < fitness_threshold:
         # 每5秒一测
@@ -288,6 +288,7 @@ def avoid_open_interrupt():
                 if max_val < 0.85:
                     pyautogui.moveRel(0, -100)
                     up_horse()
+                    print(("开图数量为："+str(i+1)))
                     return i+1
                 # # 打断重置
                 # pyautogui.moveTo(max_loc[0] + 24, max_loc[1] + 24)
@@ -417,7 +418,7 @@ def find_boxs():
         # find_area_1 = [65, 47]
         # find_area_2 = [56, 31]
         find_area_1 = [63, 45]
-        find_area_2 = [60, 34]
+        find_area_2 = [60, 31]
 
     log_message.log_info("开始犁地")
     role_move.move_to(begin_find_loc_1, None, 1, 5)
