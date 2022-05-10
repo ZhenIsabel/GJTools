@@ -81,7 +81,17 @@ def match_img(template, method=3):
     return max_val, max_loc
 
 
+def match_region(template, region, method=3):
+    image = cv2.cvtColor(np.asarray(
+        pyautogui.screenshot(region=region)), cv2.COLOR_RGB2BGR)
+    match_res = cv2.matchTemplate(image, template, method)
+    min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(match_res)
+    # test.show_match_image(match_res,template,image)
+    return max_val, max_loc
+
 # def clear_map(count=20):
+
+
 def clear_map():
     log_message.log_info("清理残图")
     pyautogui.press(config_model.config['key_map'])
@@ -239,11 +249,11 @@ def avoid_open_interrupt():
     match_res_20 = cv2.matchTemplate(cost_20, image_read, 3)
     min_val, max_val_count_check, min_loc, max_error_loc = cv2.minMaxLoc(
         match_res_20)
-    if max_val_count_check<0.95:
-        matxh_res_800=cv2.matchTemplate(cost_800, image_read, 3)
+    if max_val_count_check < 0.98:
+        matxh_res_800 = cv2.matchTemplate(cost_800, image_read, 3)
         min_val, max_val_count_check, min_loc, max_error_loc = cv2.minMaxLoc(
-        matxh_res_800)
-    if max_val_count_check < 0.95 and config_model.config['is_extra_buy']:
+            matxh_res_800)
+    if max_val_count_check < 0.98 and config_model.config['is_extra_buy']:
         extra_buy_count = 10
     log_message.log_debug("开图数量为："+str(buy_count+extra_buy_count))
     print(("开图数量为："+str(buy_count+extra_buy_count)))
@@ -405,8 +415,8 @@ def find_boxs():
     role_move.turn_to(begin_find_direct_1)
     count += role_move.move_map(find_area_1[0],
                                 find_area_1[1], find_box.find_box_under_footer)
-    if count<3:
-        print (str(get_weather.get_weather_name()))
+    if count < 3:
+        print(str(get_weather.get_weather_name()))
     log_message.log_info("出发犁第二片地")
     role_move.move_to(begin_find_loc_2, None, 1, 5)
     role_move.turn_to(begin_find_direct_2)

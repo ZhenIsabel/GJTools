@@ -103,7 +103,7 @@ def get_clear_map_count(try_times=5):
     #print(f'位置：{text}')
     count_str = re_cmp.findall(text)
     if count_str == []:
-        clear_map_count = int(50)
+        clear_map_count = int(45)
     else: 
         clear_map_count = int(count_str[0])
     #print(count_str)

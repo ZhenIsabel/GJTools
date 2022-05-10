@@ -38,9 +38,10 @@ def move_test():
 # time.sleep(2)
 # import pyautogui
 # import numpy as np
+# clear_finish = cv2.imread('img/clear_finish.png')
 # image_read = cv2.cvtColor(np.asarray(
-# pyautogui.screenshot(region=[327, 1032, 402, 203])), cv2.COLOR_RGB2BGR)
-# match_res_20 = cv2.matchTemplate(cost_20, image_read, 3)
+# pyautogui.screenshot(region=[1930, 303, 240, 202])), cv2.COLOR_RGB2BGR)
+# match_res_20 = cv2.matchTemplate(clear_finish, image_read, 5)
 # min_val, max_val_count_check, min_loc, max_error_loc = cv2.minMaxLoc(
 # match_res_20)
 # print(max_val_count_check)
