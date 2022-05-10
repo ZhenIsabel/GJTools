@@ -6,4 +6,5 @@
 *.iml
 log.txt
 config.txt
+dataset.txt
 __pycache__/

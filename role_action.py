@@ -98,7 +98,7 @@ def clear_map():
         config_model.config['count_yuanbo'] if config_model.config['is_yuanbo'] else config_model.config['count_no_yuanbo'])
     log_message.log_debug("清理数量为："+str(buy_count))
     # count = role_loc.get_clear_map_count()
-    for i in range(0, buy_count):
+    for i in range(0, buy_count+5):
         pyautogui.moveTo(first_map_pos[0], first_map_pos[1])
         pyautogui.rightClick()
         pyautogui.moveTo(first_map_pos[0] + 50, first_map_pos[1] + 30)
@@ -110,7 +110,7 @@ def clear_map():
     pyautogui.leftClick()
     pyautogui.press(config_model.config['key_map'])
     log_message.log_info("清理残图完毕")
-    return buy_count
+    return buy_count+5
 
 
 def buy_map():
