@@ -63,7 +63,8 @@ wait_open_time_step = 4.9
 
 # 第一个挖宝区域大小
 # begin_find_loc_1 = [-825, -530]
-begin_find_loc_1 = [-825, -526]
+# begin_find_loc_1 = [-825, -526]
+begin_find_loc_1 = [-825, -540]
 begin_find_direct_1 = 0.6
 
 # 背包格子大小
@@ -409,7 +410,8 @@ def find_boxs():
     count = 0
 
     # 第二个挖宝区域大小
-    begin_find_loc_2 = [-980, -528]
+    # begin_find_loc_2 = [-980, -528]
+    begin_find_loc_2 = [-975, -525]
     begin_find_direct_2 = -0.5
 
     find_area_1 = [55, 47]
@@ -417,8 +419,10 @@ def find_boxs():
     if config_model.config['is_large_region'] == 1:
         # find_area_1 = [65, 47]
         # find_area_2 = [56, 31]
-        find_area_1 = [63, 46]
-        find_area_2 = [60, 31]
+        # find_area_1 = [63, 46]
+        # find_area_2 = [60, 31]
+        find_area_1 = [65, 42]
+        find_area_2 = [61, 34]
 
     log_message.log_info("开始犁地")
     role_move.move_to(begin_find_loc_1, None, 1, 5)
