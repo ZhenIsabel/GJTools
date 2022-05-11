@@ -5,6 +5,7 @@ import role_action
 import send_message
 import config_model
 import get_weather
+import switch_style
 
 # import config_model
 
@@ -85,6 +86,9 @@ def calc():
             role_action.try_reset()
             continue
         on_way_time = time.time()
+        # 先检测天气
+        weather=get_weather.get_weather_name()
+        # switch_style.auto_switch(weather)
         find_count,region_1_time,region_2_time = role_action.find_boxs()
         if not find_count >= 0:
             role_action.try_reset()
@@ -105,7 +109,7 @@ def calc():
             '开盒': find_count,
             '总图数': open_count,
             '清理数': clear_count,
-            '天气': get_weather.get_weather_name(),
+            '天气': weather,
             # '买图耗时': buy_time-start_time,
             '开图耗时': open_time-buy_time,
             '寻路去程耗时': on_way_time-open_time,

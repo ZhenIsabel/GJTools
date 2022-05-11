@@ -417,7 +417,7 @@ def find_boxs():
     if config_model.config['is_large_region'] == 1:
         # find_area_1 = [65, 47]
         # find_area_2 = [56, 31]
-        find_area_1 = [63, 45]
+        find_area_1 = [63, 46]
         find_area_2 = [60, 31]
 
     log_message.log_info("开始犁地")
@@ -427,6 +427,8 @@ def find_boxs():
     count += role_move.move_map(find_area_1[0],
                                 find_area_1[1], find_box.find_box_under_footer)
     region_1_time=time.time()-start_time
+    if count<=0:
+        reset_keys()
     log_message.log_info("出发犁第二片地")
     role_move.move_to(begin_find_loc_2, None, 1, 5)
     role_move.turn_to(begin_find_direct_2)
