@@ -158,10 +158,11 @@ class App(ttk.Frame):
                  # 最大化古剑
                 window_control.window_focus('古剑奇谭网络版')
                 test_weather.weather_test(
-                    [80, 60, 40]
+                    [170, 80, 80]
                     if config_model.config['is_binarization']
                     else
-                    [170, 80, 80]
+                    
+                    [80, 60, 40]
                 )
                 print("weather test completed")
         self.weather_test = ttk.Button(self.main_frame, text="天气测试")

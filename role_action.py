@@ -63,7 +63,8 @@ wait_open_time_step = 4.9
 
 # 第一个挖宝区域大小
 # begin_find_loc_1 = [-825, -530]
-begin_find_loc_1 = [-825, -526]
+# begin_find_loc_1 = [-825, -526]
+begin_find_loc_1 = [-825, -540]
 begin_find_direct_1 = 0.6
 
 # 背包格子大小
@@ -82,7 +83,17 @@ def match_img(template, method=3):
     return max_val, max_loc
 
 
+def match_region(template, region, method=3):
+    image = cv2.cvtColor(np.asarray(
+        pyautogui.screenshot(region=region)), cv2.COLOR_RGB2BGR)
+    match_res = cv2.matchTemplate(image, template, method)
+    min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(match_res)
+    # test.show_match_image(match_res,template,image)
+    return max_val, max_loc
+
 # def clear_map(count=20):
+
+
 def clear_map(buy_count):
     log_message.log_info("清理残图")
     pyautogui.press(config_model.config['key_map'])
@@ -98,8 +109,10 @@ def clear_map(buy_count):
     # buy_count = int(
     #     config_model.config['count_yuanbo'] if config_model.config['is_yuanbo'] else config_model.config['count_no_yuanbo'])
     # log_message.log_debug("清理数量为："+str(buy_count))
-    # count = role_loc.get_clear_map_count()
-    for i in range(0, buy_count):
+    count = role_loc.get_clear_map_count()
+    if buy_count < count:
+        count = buy_count
+    for i in range(0, count):
         pyautogui.moveTo(first_map_pos[0], first_map_pos[1])
         pyautogui.rightClick()
         pyautogui.moveTo(first_map_pos[0] + 50, first_map_pos[1] + 30)
@@ -221,7 +234,7 @@ def avoid_open_interrupt():
     role_move.move_to([-802, -703])
     role_move.move_to([-791, -702])
     role_move.move_to([-777, -701])
-    role_move.move_to([-756, -703], None, 0, 5)
+    role_move.move_to_nearby([-756, -703], None, 0, 5)
     max_val, max_loc = match_img(open_map_btn)
     log_message.log_debug("开图按钮匹配率："+str(max_val))
     pyautogui.moveTo(max_loc[0] + 24, max_loc[1] + 24)
@@ -246,7 +259,7 @@ def avoid_open_interrupt():
     if max_val_count_check < 0.98 and config_model.config['is_extra_buy']:
         extra_buy_count = 10
     log_message.log_debug("开图数量为："+str(buy_count+extra_buy_count))
-    print(("开图数量为："+str(buy_count+extra_buy_count)))
+    
     # log_message.log_debug("开图时间为："+str(wait_open_time))
     if max_val < fitness_threshold:
         # 每5秒一测
@@ -276,6 +289,7 @@ def avoid_open_interrupt():
                 if max_val < 0.85:
                     pyautogui.moveRel(0, -100)
                     up_horse()
+                    print(("开图数量为："+str(i+1)))
                     return i+1
                 # # 打断重置
                 # pyautogui.moveTo(max_loc[0] + 24, max_loc[1] + 24)
@@ -287,13 +301,13 @@ def avoid_open_interrupt():
                 # reset_times = reset_times+1
 
         # pyautogui.sleep(wait_open_time)
-        time.sleep(2)
-        pyautogui.moveTo(max_loc[0] + 24, max_loc[1] + 24)
-        time.sleep(0.1)
-        pyautogui.leftClick()
-        if not check_open_complete():
-            send_message_with_loc("Open Map Error: cannot complete")
-            # return False
+        # time.sleep(2)
+        # pyautogui.moveTo(max_loc[0] + 24, max_loc[1] + 24)
+        # time.sleep(0.1)
+        # pyautogui.leftClick()
+        # if not check_open_complete():
+        #     send_message_with_loc("Open Map Error: cannot complete")
+        #     # return False
         pyautogui.moveRel(0, -100)
         up_horse()
         return extra_buy_count+buy_count
@@ -396,7 +410,8 @@ def find_boxs():
     count = 0
 
     # 第二个挖宝区域大小
-    begin_find_loc_2 = [-980, -528]
+    # begin_find_loc_2 = [-980, -528]
+    begin_find_loc_2 = [-975, -525]
     begin_find_direct_2 = -0.5
 
     find_area_1 = [55, 47]
@@ -404,8 +419,10 @@ def find_boxs():
     if config_model.config['is_large_region'] == 1:
         # find_area_1 = [65, 47]
         # find_area_2 = [56, 31]
-        find_area_1 = [63, 45]
-        find_area_2 = [60, 34]
+        # find_area_1 = [63, 46]
+        # find_area_2 = [60, 31]
+        find_area_1 = [65, 42]
+        find_area_2 = [61, 34]
 
     log_message.log_info("开始犁地")
     role_move.move_to(begin_find_loc_1, None, 1, 5)
