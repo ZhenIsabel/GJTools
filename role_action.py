@@ -61,6 +61,14 @@ fitness_threshold = 0.95
 # wait_open_time = 75
 wait_open_time_step = 4.9
 
+# 走廊挖宝坐标方向和大小
+begin_find_loc_passageway1 = [-794, -720]
+begin_find_loc_passageway2 = [-793, -681]
+begin_find_direct_passageway1 = -0.49
+begin_find_direct_passageway2 = -0.51
+find_area_passageway1 = [0, 39]
+find_area_passageway2 = [0, 24]
+
 # 第一个挖宝区域大小
 # begin_find_loc_1 = [-825, -530]
 # begin_find_loc_1 = [-825, -526]
@@ -259,7 +267,7 @@ def avoid_open_interrupt():
     if max_val_count_check < 0.98 and config_model.config['is_extra_buy']:
         extra_buy_count = 10
     log_message.log_debug("开图数量为："+str(buy_count+extra_buy_count))
-    
+
     # log_message.log_debug("开图时间为："+str(wait_open_time))
     if max_val < fitness_threshold:
         # 每5秒一测
@@ -390,17 +398,25 @@ def close_dialog():
 
 
 def prepare_to_find():
-    log_message.log_info("出发去寻找")
+    count = 0
     role_move.move_to([-779, -701])
     role_move.move_to([-793, -703])
-    role_move.move_to([-793, -677])
-    role_move.move_to([-795, -666])
+    role_move.move_to(begin_find_loc_passageway1, None, 1, 5)
+    role_move.turn_to(begin_find_direct_passageway1)
+    count += role_move.move_map(
+        find_area_passageway1[0], find_area_passageway1[1], find_box.find_box_under_footer_passageway)
+    role_move.move_to(begin_find_loc_passageway2, None, 1, 5)
+    role_move.turn_to(begin_find_direct_passageway2)
+    count += role_move.move_map(
+        find_area_passageway2[0], find_area_passageway2[1], find_box.find_box_under_footer_passageway)
+    role_move.move_to([-795, -655])
     role_move.move_to([-795, -640])
     role_move.move_to(begin_find_loc_1, None, 1, 5)
     role_move.turn_to(begin_find_direct_1)
     loc = role_loc.get_current_loc()
+    print("走廊开盒次数" + str(count-1))
     if loc is not None and abs(loc[0] - begin_find_loc_1[0]) < 5 and abs(loc[1] - begin_find_loc_1[1]) < 5:
-        return True
+        return count
     else:
         send_message_with_loc("Go to Find Box Error")
         return False
@@ -427,28 +443,33 @@ def find_boxs():
     log_message.log_info("开始犁地")
     role_move.move_to(begin_find_loc_1, None, 1, 5)
     role_move.turn_to(begin_find_direct_1)
-    # count += role_move.move_map(find_area_1[0],
-    #                             find_area_1[1], find_box.find_box_under_footer)
-    count += role_move.lod_move_map(find_area_1[0], find_area_1[1],
-                                    find_box.find_box_in_area_color,
-                                    find_box.find_box_under_footer)
+    start = time.time()
+    count += role_move.move_map(find_area_1[0],
+                                find_area_1[1], find_box.find_box_under_footer)
+    # count += role_move.lod_move_map(find_area_1[0], find_area_1[1],
+    #                                 find_box.find_box_in_area_color,
+    #                                 find_box.find_box_under_footer)
+    time_region_1 = time.time()-start
     log_message.log_info("出发犁第二片地")
+
     role_move.move_to(begin_find_loc_2, None, 1, 5)
     role_move.turn_to(begin_find_direct_2)
-    # count += role_move.move_map(find_area_2[0],
-    #                             find_area_2[1], find_box.find_box_under_footer,
-    #                             begin_find_loc_2
-    #                             )
-    count += role_move.lod_move_map(find_area_2[0], find_area_2[1],
-                                    find_box.find_box_in_area_color,
-                                    find_box.find_box_under_footer)
+    start = time.time()
+    count += role_move.move_map(find_area_2[0],
+                                find_area_2[1], find_box.find_box_under_footer,
+                                begin_find_loc_2
+                                )
+    # count += role_move.lod_move_map(find_area_2[0], find_area_2[1],
+    #                                 find_box.find_box_in_area_color,
+    #                                 find_box.find_box_under_footer)
+    time_region_2 = time.time()-start
     role_move.move_to([-850, -560], None, 3, 3)
     print("开盒次数" + str(count))
     # send_message.send_message("开盒次数" + str(count))
     if count <= 0:
         reset_keys()
         send_message_with_loc("Find No Box")
-    return count
+    return count, time_region_1, time_region_2
 
 
 def back_to_store():

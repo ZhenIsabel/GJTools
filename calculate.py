@@ -72,20 +72,21 @@ def calc():
             time.sleep(16 * 60)  # 等到六点
             role_action.close_dialog()
         start_time = time.time()
-        # if not role_action.buy_map():
-        #     role_action.try_reset()
-        #     continue
+        if not role_action.buy_map():
+            role_action.try_reset()
+            continue
         buy_time = time.time()
         # # if not role_action.open_map():
         open_count =0
-        # open_count = role_action.avoid_open_interrupt()
-        # if not open_count >= 0:
-        #     role_action.try_reset()
-        #     continue
+        open_count = role_action.avoid_open_interrupt()
+        if not open_count >= 0:
+            role_action.try_reset()
+            continue
         open_time = time.time()
-        # if not role_action.prepare_to_find():
-        #     role_action.try_reset()
-        #     continue
+        passage_count=role_action.prepare_to_find()
+        if not passage_count>=0:
+            role_action.try_reset()
+            continue
         on_way_time = time.time()
         # 先检测天气
         weather=get_weather.get_weather_name()
@@ -114,6 +115,7 @@ def calc():
             # '买图耗时': buy_time-start_time,
             '开图耗时': open_time-buy_time,
             '寻路去程耗时': on_way_time-open_time,
+            '走廊开盒':passage_count,
             '寻路返程耗时': back_time-clear_time,
             '找盒耗时': (find_time-on_way_time)/60,
             '区域1开盒耗时':region_1_time/60,
