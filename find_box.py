@@ -66,6 +66,8 @@ def find_box_in_area_color(region, weather_code=0,is_open_box=True):
         threshold_value = [170, 80, 80]
     image_grey = cv2.cvtColor(np.asarray(
         pyautogui.screenshot(region=region)), cv2.COLOR_RGB2GRAY)
+    # cv2.imshow('img_origin', image_grey)
+    # cv2.waitKey(0)
     ret, image = cv2.threshold(
         image_grey, threshold_value[weather_code], 255, cv2.THRESH_BINARY_INV)
     image = cv2.dilate(image, kernel=np.ones((3, 3), np.uint8), iterations=1)
@@ -163,20 +165,9 @@ def find_box_under_footer():
 
 def find_box_under_footer_passageway():
     #走廊脚下可开盒子区域
-    box_under_footer_area_passageway = [710, 580, 230, 200]
-    image = cv2.cvtColor(np.asarray(pyautogui.screenshot(region=weather_area)), cv2.COLOR_RGB2BGR)
-    match_res = cv2.matchTemplate(image, night_tip, 3)
-    min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(match_res)
-    is_night = max_val > 0.95
-    image = cv2.cvtColor(np.asarray(pyautogui.screenshot(region=weather_area)), cv2.COLOR_RGB2BGR)
-    match_res = cv2.matchTemplate(image, rain_tip, 3)
-    min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(match_res)
-    is_rain = max_val > 0.95
-    weather_code = 0
-    if is_night:
-        weather_code = 2
-    elif is_rain:
-        weather_code = 1
+    [1280, 790]
+    box_under_footer_area_passageway = [1165, 740, 230, 200]
+    weather_code=get_weather.get_weather_code()
     first_check = find_box_in_area_color(box_under_footer_area_passageway, weather_code)
     if not first_check:
         return False

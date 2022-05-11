@@ -85,5 +85,5 @@ buy_count=input('count of throw\n')
 time.sleep(2)
 clear_map(int(buy_count))
 
-# time.sleep(1)
-# buy_map()
+time.sleep(1)
+buy_map()

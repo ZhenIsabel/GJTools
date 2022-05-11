@@ -52,3 +52,27 @@ def move_test():
 # print(max_val_count_check)
 # if max_val_count_check < 0.95 :
 #     extra_buy_count = 10
+def prepare_to_find():
+    count = 0
+    # 走廊挖宝坐标方向和大小
+    begin_find_loc_passageway1 = [-794, -720]
+    begin_find_loc_passageway2 = [-793, -681]
+    begin_find_direct_passageway1 = -0.49
+    begin_find_direct_passageway2 = -0.51
+    find_area_passageway1 = [0, 39]
+    find_area_passageway2 = [0, 24]
+    role_move.move_to([-779, -701])
+    role_move.move_to([-793, -703])
+    role_move.move_to(begin_find_loc_passageway1, None, 1, 5)
+    role_move.turn_to(begin_find_direct_passageway1)
+    count += role_move.move_map(
+        find_area_passageway1[0], find_area_passageway1[1], find_box.find_box_under_footer_passageway)
+    role_move.move_to(begin_find_loc_passageway2, None, 1, 5)
+    role_move.turn_to(begin_find_direct_passageway2)
+    count += role_move.move_map(
+        find_area_passageway2[0], find_area_passageway2[1], find_box.find_box_under_footer_passageway)
+    role_move.move_to([-795, -655])
+
+prepare_to_find()
+# time.sleep(1)
+# find_box.find_box_under_footer_passageway()
