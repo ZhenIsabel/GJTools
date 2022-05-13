@@ -258,7 +258,6 @@ def avoid_open_interrupt():
             matxh_res_800)
     if max_val_count_check < 0.98 and config_model.config['is_extra_buy']:
         extra_buy_count = 10
-    log_message.log_debug("开图数量为："+str(buy_count+extra_buy_count))
     
     # log_message.log_debug("开图时间为："+str(wait_open_time))
     if max_val < fitness_threshold:
@@ -289,8 +288,8 @@ def avoid_open_interrupt():
                 if max_val < 0.85:
                     pyautogui.moveRel(0, -100)
                     up_horse()
-                    print(("开图数量为："+str(i+1)))
-                    return i+1
+                    print(("开图数量为："+str(i)))
+                    return i
                 # # 打断重置
                 # pyautogui.moveTo(max_loc[0] + 24, max_loc[1] + 24)
                 # time.sleep(0.1)
