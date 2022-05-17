@@ -3,9 +3,9 @@ import time
 
 import role_action
 import send_message
-import config_model
+# import config_model
 import get_weather
-import switch_style
+import utils
 
 # import config_model
 
@@ -17,7 +17,7 @@ def calc111():
 def calc():
     time.sleep(1)
     role_action.reset_visual_field()
-    for i in range(0, 100):
+    for i in range(0, 200):
         current_time = datetime.datetime.now()
         if 10 > current_time.hour > 5 and current_time.isoweekday() == 4:
             break
@@ -26,6 +26,11 @@ def calc():
                 break
             time.sleep(16 * 60)  # 等到六点
             role_action.close_dialog()
+        # 掉线检测
+        if not utils.deal_offline():
+            role_action.try_reset()
+            continue
+        # 运行
         start_time = time.time()
         if not role_action.buy_map():
             role_action.try_reset()
@@ -41,9 +46,9 @@ def calc():
             role_action.try_reset()
             continue
         on_way_time = time.time()
-        # 先检测天气
+        # 检测天气
         weather=get_weather.get_weather_name()
-        # switch_style.auto_switch(weather)
+        # utils.auto_switch(weather)
         find_count,region_1_time,region_2_time = role_action.find_boxs()
         if not find_count >= 0:
             role_action.try_reset()

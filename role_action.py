@@ -15,6 +15,7 @@ import role_loc
 import role_move
 import send_message
 import get_weather
+import utils
 # import fucking_flower
 
 map_in_store = cv2.imread('img/map_in_store.png')
@@ -569,6 +570,9 @@ def reset_keys():
 
 def try_reset():
     if not deal_new_day():
+        # 检查是否掉线
+        if not utils.deal_offline():
+            send_message_with_loc("fail to restart game " + str(count))
         return
     count = 0
     while not reset_to_store():
