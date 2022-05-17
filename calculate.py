@@ -10,57 +10,12 @@ import switch_style
 # import config_model
 
 
-def calc222():
+def calc111():
     time.sleep(1)
-
-    for i in range(0, 100):
-        start_time = time.time()
-        if not role_action.buy_map():
-            role_action.try_reset()
-            continue
-        buy_time = time.time()
-        # if not role_action.open_map():
-        open_count = -1
-        if not open_count >= 0:
-            role_action.try_reset()
-            continue
-        open_time = time.time()
-        if not role_action.prepare_to_find():
-            role_action.try_reset()
-            continue
-        on_way_time = time.time()
-        find_count = role_action.find_boxs()
-        if not find_count >= 0:
-            role_action.try_reset()
-            continue
-        find_time = time.time()
-        clear_count = role_action.clear_map()
-        if not clear_count >= 0:
-            role_action.try_reset()
-            continue
-        clear_time = time.time()
-        if not role_action.back_to_store():
-            role_action.try_reset()
-            continue
-        back_time = time.time()
-        print(datetime.datetime.strftime(datetime.datetime.now(),
-              '%Y-%m-%d %H:%M:%S') + " 第" + str(i + 1) + "次")
-        report_data = {
-            '开盒': 1,
-            '总图数': 2,
-            '天气': get_weather.get_weather_name(),
-            '买图耗时': 3,
-            '开图耗时': 4,
-            '寻路耗时': 5,
-            '找盒耗时': 6,
-            '清图耗时': 7
-        }
-
-        send_message.send_procedure_report(report_data, i+1)
-
+    role_action.is_on_horse()
 
 def calc():
-    time.sleep(2)
+    time.sleep(1)
     role_action.reset_visual_field()
     for i in range(0, 100):
         current_time = datetime.datetime.now()

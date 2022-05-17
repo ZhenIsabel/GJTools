@@ -112,6 +112,8 @@ def clear_map(buy_count):
     count = role_loc.get_clear_map_count()
     if buy_count < count:
         count = buy_count
+    if count < 20:
+        count = buy_count
     for i in range(0, count):
         pyautogui.moveTo(first_map_pos[0], first_map_pos[1])
         pyautogui.rightClick()
@@ -176,7 +178,7 @@ def buy_map():
         # improve_direction.check_ping(try_times=20)
         pyautogui.press('enter')
         if config_model.config['is_extra_buy']:
-            pyautogui.click(x=None, y=None, clicks=11, interval=0.001,
+            pyautogui.click(x=None, y=None, clicks=20, interval=0.001,
                             button='right', duration=0.0, tween=pyautogui.linear)
         # max_val, max_loc = match_img(confirm_btn)
         # if max_val > fitness_threshold:
@@ -250,15 +252,15 @@ def avoid_open_interrupt():
     image_read = cv2.cvtColor(np.asarray(
         pyautogui.screenshot(region=[327, 1032, 402, 203])), cv2.COLOR_RGB2BGR)
     match_res_20 = cv2.matchTemplate(cost_20, image_read, 3)
-    min_val, max_val_count_check, min_loc, max_error_loc = cv2.minMaxLoc(
+    _, max_val_count_check, _, _ = cv2.minMaxLoc(
         match_res_20)
     if max_val_count_check < 0.98:
         matxh_res_800 = cv2.matchTemplate(cost_800, image_read, 3)
-        min_val, max_val_count_check, min_loc, max_error_loc = cv2.minMaxLoc(
+        _, max_val_count_check, _, _ = cv2.minMaxLoc(
             matxh_res_800)
     if max_val_count_check < 0.98 and config_model.config['is_extra_buy']:
         extra_buy_count = 10
-    
+
     # log_message.log_debug("开图时间为："+str(wait_open_time))
     if max_val < fitness_threshold:
         # 每5秒一测
@@ -426,28 +428,28 @@ def find_boxs():
     log_message.log_info("开始犁地")
     role_move.move_to(begin_find_loc_1, None, 1, 5)
     role_move.turn_to(begin_find_direct_1)
-    start_time=time.time()
+    start_time = time.time()
     count += role_move.move_map(find_area_1[0],
                                 find_area_1[1], find_box.find_box_under_footer)
-    region_1_time=time.time()-start_time
-    if count<=0:
+    region_1_time = time.time()-start_time
+    if count <= 0:
         reset_keys()
     log_message.log_info("出发犁第二片地")
     role_move.move_to(begin_find_loc_2, None, 1, 5)
     role_move.turn_to(begin_find_direct_2)
-    start_time=time.time()
+    start_time = time.time()
     count += role_move.move_map(find_area_2[0],
                                 find_area_2[1], find_box.find_box_under_footer,
                                 begin_find_loc_2
                                 )
-    region_2_time=time.time()-start_time
+    region_2_time = time.time()-start_time
     role_move.move_to([-850, -560], None, 3, 3)
     print("开盒次数" + str(count))
     # send_message.send_message("开盒次数" + str(count))
     if count <= 0:
         reset_keys()
         send_message_with_loc("Find No Box")
-    return count,region_1_time,region_2_time
+    return count, region_1_time, region_2_time
 
 
 def back_to_store():
@@ -537,7 +539,7 @@ def reset_to_store():
         return False
     pyautogui.moveTo(max_loc[0] + 30, max_loc[1] + 15)
     pyautogui.leftClick()
-    pyautogui.sleep(36)
+    pyautogui.sleep(40)
 
     reset_visual_field()
 
@@ -592,7 +594,8 @@ def deal_new_day():
 def is_on_horse():
     max_val, max_loc = match_img(horse, 5)
     log_message.log_debug("上马匹配率："+str(max_val))
-    return max_val > fitness_threshold
+    # print("上马匹配率："+str(max_val))
+    return max_val > 0.9
 
 
 def reset_visual_field():

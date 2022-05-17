@@ -105,8 +105,8 @@ def move_map_correct(origin_coordinate, direct, width, height, callback_fun, try
             offset[0] += width
         if 3 > offset[0] > -3 and 3 > offset[1] > -3:
             return None
-        # elif abs(offset[0]) > 50:
-        #     return None
+        elif abs(offset[0]) > 200:
+            return None
         else:
             move(0, offset[1])
             x = 0
