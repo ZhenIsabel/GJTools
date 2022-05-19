@@ -72,7 +72,7 @@ def match_img(template, method=3):
 
 
 def deal_offline():
-    print('check offline')
+    # print('check offline')
     offline_tag = cv2.imread('img/offline.png')
     open_game_in_login = cv2.imread('img/open_game_in_login.png')
     open_game_in_role = cv2.imread('img/open_game_in_role.png')

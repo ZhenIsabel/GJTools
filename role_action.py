@@ -114,7 +114,7 @@ def clear_map(buy_count):
     if buy_count < count:
         count = buy_count
     if count < 20:
-        count = buy_count
+        count = 45
     for i in range(0, count):
         pyautogui.moveTo(first_map_pos[0], first_map_pos[1])
         pyautogui.rightClick()
@@ -179,7 +179,7 @@ def buy_map():
         # improve_direction.check_ping(try_times=20)
         pyautogui.press('enter')
         if config_model.config['is_extra_buy']:
-            pyautogui.click(x=None, y=None, clicks=20, interval=0.001,
+            pyautogui.click(x=None, y=None, clicks=11, interval=0.001,
                             button='right', duration=0.0, tween=pyautogui.linear)
         # max_val, max_loc = match_img(confirm_btn)
         # if max_val > fitness_threshold:
@@ -570,13 +570,13 @@ def reset_keys():
 
 def try_reset():
     if not deal_new_day():
-        # 检查是否掉线
-        if not utils.deal_offline():
-            send_message_with_loc("fail to restart game " + str(count))
         return
     count = 0
     while not reset_to_store():
         count += 1
+        # 检查是否掉线
+        if not utils.deal_offline():
+            send_message_with_loc("fail to restart game " + str(count))
         send_message_with_loc("Try reset count " + str(count))
         role_move.move(-10, -10)
         time.sleep(600)

@@ -147,6 +147,8 @@ def move_to_nearby(target_loc, target_direct=None, diff=move_min, try_time=2):
             res = True
             break
         this_loc = role_loc.get_current_loc()
+        if this_loc is None:
+            return False
         loc_bias = numpy.power(
             target_loc[0]-this_loc[0], 2)+numpy.power(target_loc[1]-this_loc[1], 2)
         if loc_bias<2:
