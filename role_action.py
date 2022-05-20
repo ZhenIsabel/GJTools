@@ -267,9 +267,11 @@ def avoid_open_interrupt():
         # 每5秒一测
         reset_times = 0
         i = 0
+        pre_rest=1
         while i < buy_count+extra_buy_count:
-            time.sleep(config_model.config['single_map_time'])
+            time.sleep(config_model.config['single_map_time']-pre_rest)
             i = i+1
+            pre_rest=0
             # 移除不对劲的buff
             remove_buff()
             # 匹配开图读条区域
@@ -310,6 +312,7 @@ def avoid_open_interrupt():
         # if not check_open_complete():
         #     send_message_with_loc("Open Map Error: cannot complete")
         #     # return False
+        time.sleep(1)
         pyautogui.moveRel(0, -100)
         up_horse()
         return extra_buy_count+buy_count
@@ -403,6 +406,12 @@ def prepare_to_find():
     loc = role_loc.get_current_loc()
     if loc is not None and abs(loc[0] - begin_find_loc_1[0]) < 5 and abs(loc[1] - begin_find_loc_1[1]) < 5:
         return True
+    # 城外区域1
+    elif loc is not None and -516>loc[1]>-640 and -770>loc[0]>-863:
+        if not role_move.move_to(begin_find_loc_1, None, 1, 5):
+            send_message_with_loc("Go to Find Box Error")
+            return False
+
     else:
         send_message_with_loc("Go to Find Box Error")
         return False
@@ -514,7 +523,7 @@ def reset_to_store():
     pyautogui.sleep(5)
     log_message.log_debug("对话")
     pyautogui.press(config_model.config['key_commu'])
-    #  pyautogui.press('f')
+    # pyautogui.press('g')
     pyautogui.moveRel(-100, -100)
     time.sleep(1)
 
@@ -543,7 +552,8 @@ def reset_to_store():
     pyautogui.sleep(40)
 
     reset_visual_field()
-
+    time.sleep(0.5)
+    reset_visual_field()
     loc = role_loc.get_current_loc()
     up_horse()
     if loc is not None and abs(-803 - loc[0]) < 5 and abs(-715 - loc[1]) < 5:
@@ -601,13 +611,12 @@ def is_on_horse():
     # print("上马匹配率："+str(max_val))
     return max_val > 0.9
 
-
 def reset_visual_field():
     x, y = 1000, 300
     win32api.SetCursorPos((x, y))
-    time.sleep(0.5)
+    time.sleep(0.2)
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, x, y)
-    time.sleep(0.5)
+    time.sleep(0.2)
     win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, 0, 300)
     time.sleep(0.5)
     win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, 0, -200)
