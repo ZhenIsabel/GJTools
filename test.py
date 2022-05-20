@@ -1,7 +1,7 @@
 import time
 
 import cv2
-import role_action
+import role_move
 import find_box
 # time.sleep(3)
 # role_action.reset_visual_field()
@@ -52,4 +52,7 @@ time.sleep(2)
 # print(max_val_count_check)
 # if max_val_count_check < 0.95 :
 #     extra_buy_count = 10
-role_action.reset_visual_field()
+begin_find_loc_1 = [-825, -540]
+role_move.move_to(begin_find_loc_1, None, 1, 5)
+for i in range(0,len(role_move.move_log)):
+    print(role_move.move_log[i]) 

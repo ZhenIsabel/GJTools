@@ -14,6 +14,7 @@ def calc111():
     time.sleep(1)
     role_action.is_on_horse()
 
+
 def calc():
     time.sleep(1)
     role_action.reset_visual_field()
@@ -46,10 +47,12 @@ def calc():
             role_action.try_reset()
             continue
         on_way_time = time.time()
+        if on_way_time-open_time > 45:
+            role_action.send_message_with_loc('出城时间太长')
         # 检测天气
-        weather=get_weather.get_weather_name()
+        weather = get_weather.get_weather_name()
         # utils.auto_switch(weather)
-        find_count,region_1_time,region_2_time = role_action.find_boxs()
+        find_count, region_1_time, region_2_time = role_action.find_boxs()
         if not find_count >= 0:
             role_action.try_reset()
             continue
@@ -71,14 +74,14 @@ def calc():
             '清理数': clear_count,
             '天气': weather,
             # '买图耗时': buy_time-start_time,
-            '开图耗时': open_time-buy_time,
-            '寻路去程耗时': on_way_time-open_time,
-            '寻路返程耗时': back_time-clear_time,
-            '找盒耗时': (find_time-on_way_time)/60,
-            '区域1开盒耗时':region_1_time/60,
-            '区域2开盒耗时':region_2_time/60,
-            '清图耗时': clear_time-find_time,
-            '总耗时': (back_time-start_time)/60
+            '开图耗时': round(open_time-buy_time, 2),
+            '寻路去程耗时': round(on_way_time-open_time, 2),
+            '寻路返程耗时': round(back_time-clear_time, 2),
+            '找盒耗时': round((find_time-on_way_time)/60, 2),
+            '区域1开盒耗时': round(region_1_time/60, 2),
+            '区域2开盒耗时': round(region_2_time/60, 2),
+            '清图耗时': round(clear_time-find_time, 2),
+            '总耗时': round((back_time-start_time)/60, 2)
         }
 
         send_message.send_procedure_report(report_data, i+1)

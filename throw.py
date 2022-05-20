@@ -43,15 +43,10 @@ def clear_map(buy_count):
     return True
 
 
-def buy_map():
+def buy_map(buy_count_string,purple=False):
     
     map_in_store = cv2.imread('img/map_in_store.png')
-    open_map_btn = cv2.imread('img/open_map.png')
-    map_title = cv2.imread('img/map_title.png')
     buy_map_tip = cv2.imread('img/buy_map_tip.png')
-    confirm_btn = cv2.imread('img/confirm_btn.png')
-    bag_left = cv2.imread('img/bag_left.png')
-    store_npc = cv2.imread('img/store_npc.png')
     max_val = 0
     fitness_threshold=0.95
     pyautogui.press('g')
@@ -61,21 +56,20 @@ def buy_map():
     if max_val <= fitness_threshold:
         return False
     pyautogui.moveTo(max_loc[0] + 24, max_loc[1] + 24)
+    if purple:
+        pyautogui.moveTo(max_loc[0] + 24, max_loc[1] + 124)
     pyautogui.keyDown('shift')
     pyautogui.rightClick()
     pyautogui.keyUp('shift')
     max_val, max_loc = match_img(buy_map_tip)
     # 确定买图数量
-    buy_count = int(
-        config_model.config['count_yuanbo'] if config_model.config['is_yuanbo'] else config_model.config['count_no_yuanbo'])
-    buy_count_string = str(buy_count)
     if max_val > 0.95:
-        pyautogui.press('3')
-        pyautogui.press('9')
+        # pyautogui.press('3')
+        # pyautogui.press('9')
         # 增加延迟
         # # improve_direction.check_ping(try_times=20)
-        # for i in range(len(buy_count_string)):
-        #     pyautogui.press(buy_count_string[i])
+        for i in range(len(buy_count_string)):
+            pyautogui.press(buy_count_string[i])
         # improve_direction.check_ping(try_times=20)
         pyautogui.press('enter')
         pyautogui.click(x=None, y=None, clicks=50, interval=0.001,
@@ -92,5 +86,7 @@ buy_count=input('count of throw\n')
 time.sleep(2)
 clear_map(int(buy_count))
 
+
+# buy_count=input('count of buy\n')
 time.sleep(1)
-buy_map()
+buy_map(39,True)

@@ -267,11 +267,11 @@ def avoid_open_interrupt():
         # 每5秒一测
         reset_times = 0
         i = 0
-        pre_rest=1
+        pre_rest = 1
         while i < buy_count+extra_buy_count:
             time.sleep(config_model.config['single_map_time']-pre_rest)
             i = i+1
-            pre_rest=0
+            pre_rest = 0
             # 移除不对劲的buff
             remove_buff()
             # 匹配开图读条区域
@@ -407,10 +407,12 @@ def prepare_to_find():
     if loc is not None and abs(loc[0] - begin_find_loc_1[0]) < 5 and abs(loc[1] - begin_find_loc_1[1]) < 5:
         return True
     # 城外区域1
-    elif loc is not None and -516>loc[1]>-640 and -770>loc[0]>-863:
+    elif loc is not None and -516 > loc[1] > -640 and -770 > loc[0] > -863:
         if not role_move.move_to(begin_find_loc_1, None, 1, 5):
             send_message_with_loc("Go to Find Box Error")
             return False
+        else:
+            role_move.turn_to(begin_find_direct_1)
 
     else:
         send_message_with_loc("Go to Find Box Error")
@@ -611,6 +613,7 @@ def is_on_horse():
     # print("上马匹配率："+str(max_val))
     return max_val > 0.9
 
+
 def reset_visual_field():
     x, y = 1000, 300
     win32api.SetCursorPos((x, y))
@@ -627,7 +630,13 @@ def reset_visual_field():
 def send_message_with_loc(message):
     loc = role_loc.get_current_loc()
     direct = role_loc.get_current_direction()
-    send_message.send_message(message + " " + str(loc) + " " + str(direct))
+    move_record = '\n move record:\n'
+    for i in range(0, len(role_move.move_log)):
+        record_i = 'loc:'+str(role_move.move_log[i][0])+','+str(
+            role_move.move_log[i][1])+' direct:'+str(role_move.move_log[i][2])+' move:'+str(role_move.move_log[i][3])+','+str(role_move.move_log[i][4])
+        move_record = move_record+record_i+'\n'
+    send_message.send_message(
+        message + " " + str(loc) + " " + str(direct)+move_record)
 
 
 def print_log_with_loc(message):

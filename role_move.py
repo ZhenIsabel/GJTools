@@ -27,6 +27,9 @@ move_min = 1
 # 最多移动多少距离后校准方向
 # max_move_distance = 50a
 
+# 移动历史
+move_log = []
+
 
 def move(x, y):
     if x > 0:
@@ -151,9 +154,9 @@ def move_to_nearby(target_loc, target_direct=None, diff=move_min, try_time=2):
             return False
         loc_bias = numpy.power(
             target_loc[0]-this_loc[0], 2)+numpy.power(target_loc[1]-this_loc[1], 2)
-        if loc_bias<2:
-            res=True
-            break 
+        if loc_bias < 2:
+            res = True
+            break
     if not res:
         move_bad_case(target_loc)
         if not move_directly(target_loc, diff):
@@ -195,6 +198,8 @@ def move_directly(target_loc, diff=move_min, try_times=5):
     turn_to(temp_direct)
     move(0, min(math.hypot(diff_loc[0], diff_loc[1]),
          config_model.config['max_move_distance']))
+    move_record(temp_direct, 0, min(math.hypot(diff_loc[0], diff_loc[1]),
+                                    config_model.config['max_move_distance']))
     return move_directly(target_loc, diff, try_times - 1)
 
 
@@ -206,11 +211,14 @@ def move_bad_case(target_loc):
     current_loc = role_loc.get_current_loc()
     if current_loc is not None and -682 >= current_loc[1] >= -683 and -799 >= current_loc[0] >= -806:
         move(current_loc[0] - 794, 0)
+        move_record(-100, current_loc[0] - 794, 0)
     elif current_loc is not None and -633 >= current_loc[1] >= -633 and -799 >= current_loc[0] >= -806:
         move(current_loc[0] - 794, 0)
+        move_record(-100, current_loc[0] - 794, 0)
     elif current_loc is not None and -689 >= current_loc[1] >= -690 and -789 >= current_loc[0] >= -789:
         move(0, -2)
         move(2, 0)
+        move_record(-100, 2, -2)
     # 无叶镇口
     # 房子
     elif current_loc is not None and -667 >= current_loc[1] >= -671 and -802 >= current_loc[0] >= -809:
@@ -223,6 +231,8 @@ def move_bad_case(target_loc):
         move(0, -678-current_loc[1])
         # 进入主路
         move(-794-current_loc[0], 0)
+        move_record(math.pi/2, -2, -678-current_loc[1])
+        move_record(math.pi/2, -794-current_loc[0], 0)
     # 柴堆
     elif current_loc is not None and -674 >= current_loc[1] >= -676 and -803 >= current_loc[0] >= -810:
         # 旋转镜头
@@ -232,12 +242,14 @@ def move_bad_case(target_loc):
         move(0, -678-current_loc[1])
         # 进入主路
         move(-794-current_loc[0], 0)
+        move_record(math.pi/2, -794-current_loc[0], -678-current_loc[1])
     # 柴堆前的棚子
     elif current_loc is not None and current_loc[1] == -674 and current_loc[0] == -802:
         turn_to(math.pi/2)
         move(0, -2)
         # 进入主路
         move(-794-current_loc[0], 0)
+        move_record(math.pi/2, -794-current_loc[0], -2)
     elif current_loc is not None and current_loc[1] == -672 and current_loc[0] == -800:
         # 没得救
         pass
@@ -249,3 +261,16 @@ def move_bad_case(target_loc):
             move_x = 2
         move(0, -1)
         move(move_x, 0)
+        move_record(-100, move_x, -1)
+
+
+def move_record(direct, x, y, times=8):
+    direct_angle = direct*180/3.1415926
+    loc = role_loc.get_current_loc()
+    record = [round(loc[0], 2), round(loc[1], 2), round(
+    direct_angle, 2), round(x, 2), round(y, 2)]
+    if len(move_log) < times:
+        move_log.append(record)
+    else:
+        move_log.pop(0)  # 删除队首
+        move_log.append(record)
