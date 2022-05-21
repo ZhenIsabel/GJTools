@@ -267,6 +267,8 @@ def move_bad_case(target_loc):
 def move_record(direct, x, y, times=8):
     direct_angle = direct*180/3.1415926
     loc = role_loc.get_current_loc()
+    if loc is None:
+        loc=[0,0]
     record = [round(loc[0], 2), round(loc[1], 2), round(
     direct_angle, 2), round(x, 2), round(y, 2)]
     if len(move_log) < times:

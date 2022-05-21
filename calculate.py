@@ -47,8 +47,8 @@ def calc():
             role_action.try_reset()
             continue
         on_way_time = time.time()
-        if on_way_time-open_time > 45:
-            role_action.send_message_with_loc('出城时间太长')
+        # if on_way_time-open_time > 45:
+        #     role_action.send_message_with_loc('出城时间太长')
         # 检测天气
         weather = get_weather.get_weather_name()
         # utils.auto_switch(weather)

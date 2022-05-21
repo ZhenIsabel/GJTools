@@ -406,14 +406,6 @@ def prepare_to_find():
     loc = role_loc.get_current_loc()
     if loc is not None and abs(loc[0] - begin_find_loc_1[0]) < 5 and abs(loc[1] - begin_find_loc_1[1]) < 5:
         return True
-    # 城外区域1
-    elif loc is not None and -516 > loc[1] > -640 and -770 > loc[0] > -863:
-        if not role_move.move_to(begin_find_loc_1, None, 1, 5):
-            send_message_with_loc("Go to Find Box Error")
-            return False
-        else:
-            role_move.turn_to(begin_find_direct_1)
-
     else:
         send_message_with_loc("Go to Find Box Error")
         return False
