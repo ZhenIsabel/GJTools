@@ -7,11 +7,9 @@ import win32api
 import win32con
 
 import cfg
-import find_box
-import log_message
-import role_loc
-import role_move
-import send_message
+from green_map import find_box
+from message import log_message, send_message
+from common import role_loc, role_move
 
 map_in_store = cv2.imread('img/map_in_store.png')
 open_map_btn = cv2.imread('img/open_map.png')
@@ -28,6 +26,7 @@ new_day_tip = cv2.imread('img/new_day_tip.png')
 close_btn = cv2.imread('img/close_btn.png')
 horse = cv2.imread('img/horse.png')
 flower_debuff = cv2.imread('img/flower_debuff.png')
+zhilingjing_btn = cv2.imread('img/zhilingjing_btn.png')
 
 
 def match_img(template):
@@ -37,7 +36,24 @@ def match_img(template):
     return max_val, max_loc
 
 
-def clear_map(count=46):
+def find_and_click(image, offset, level=0.98):
+    max_val, max_loc = match_img(image)
+    if max_val > level:
+        pyautogui.moveTo(max_loc[0] + offset, max_loc[1] + offset)
+        pyautogui.leftClick()
+        return True
+    return False
+
+
+def find_and_move(image, offset, level=0.98):
+    max_val, max_loc = match_img(image)
+    if max_val > level:
+        pyautogui.moveTo(max_loc[0] + offset, max_loc[1] + offset)
+        return True
+    return False
+
+
+def clear_map(count=36):
     pyautogui.press('m')
     time.sleep(0.5)
     max_val, max_loc = match_img(map_title)
@@ -86,9 +102,10 @@ def buy_map():
         pyautogui.keyUp('shift')
         max_val, max_loc = match_img(buy_map_tip)
         if max_val > 0.9:
-            pyautogui.press('4')
+            pyautogui.press('3')
             pyautogui.press('6')
             pyautogui.press('enter')
+            # pyautogui.click(clicks=15, interval=0.001, button='right')
             time.sleep(0.5)
             # max_val, max_loc = match_img(confirm_btn)
             # if max_val > 0.9:
@@ -128,10 +145,11 @@ def open_map():
         return False
 
 
-def down_horse():
+def down_horse(sleep_time=0.1):
     if cfg.judge_horse and not is_on_horse():
         return
     pyautogui.press('t')
+    time.sleep(sleep_time)
     pyautogui.press('shift')
     pyautogui.sleep(3)
 
@@ -168,6 +186,8 @@ def prepare_to_find():
 
 def find_boxs():
     count = 0
+    pyautogui.moveTo(1000, 400)
+    pyautogui.scroll(-2000)
     role_move.move_to(cfg.begin_find_loc_1, None, 1, 5)
     role_move.turn_to(cfg.begin_find_direct_1)
     count += role_move.move_map(cfg.find_area_1[0], cfg.find_area_1[1], find_box.find_box_under_footer)
@@ -264,7 +284,7 @@ def reset_keys():
     pyautogui.keyDown('shift')
     pyautogui.keyUp('shift')
     pyautogui.sleep(2)
-    pyautogui.moveTo(find_box.footer_pos[0], find_box.footer_pos[1])
+    pyautogui.moveTo(cfg.footer_pos[0], cfg.footer_pos[1])
     pyautogui.sleep(2)
     pyautogui.mouseDown(button='left')
     pyautogui.sleep(2)
@@ -306,16 +326,43 @@ def is_on_horse():
 
 
 def reset_visual_field():
-    x, y = 1000, 100
+    reset_look_down()
+
+    x, y = 1000, 700
     win32api.SetCursorPos((x, y))
-    time.sleep(0.5)
+    time.sleep(0.1)
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, x, y)
-    time.sleep(0.5)
-    win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, 0, 150)
-    time.sleep(0.5)
-    win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, 0, -100)
-    time.sleep(0.5)
+    time.sleep(0.1)
+    for i in range(0, 3):
+        win32api.SetCursorPos((x, y))
+        time.sleep(0.1)
+        win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, 0, -100)
+        time.sleep(0.1)
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0)
+    time.sleep(0.1)
+
+
+def reset_look_down():
+    x, y = 1000, 120
+    win32api.SetCursorPos((x, y))
+    time.sleep(0.1)
+    win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, x, y)
+    time.sleep(0.1)
+    for i in range(0, 9):
+        win32api.SetCursorPos((x, y))
+        time.sleep(0.1)
+        win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, 0, 100)
+        time.sleep(0.1)
+    win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0)
+    time.sleep(0.1)
+
+
+def goto_zhilingjing():
+    if find_and_click(zhilingjing_btn, 20):
+        pyautogui.moveRel(0, -100)
+        time.sleep(15)
+    else:
+        pyautogui.moveRel(0, -100)
 
 
 def send_message_with_loc(message):
