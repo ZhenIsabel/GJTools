@@ -36,7 +36,7 @@ flower_debuff = cv2.imread('img/flower_debuff.png')
 cost_220 = cv2.imread('img/cost_220.png')
 cost_20 = cv2.imread('img/cost_20.png')
 cost_800 = cv2.imread('img/cost_800.png')
-
+zhilingjing_btn = cv2.imread('img/zhilingjing_btn.png')
 
 def match_img(template, method=3):
     image = cv2.cvtColor(np.asarray(pyautogui.screenshot()), cv2.COLOR_RGB2BGR)
@@ -530,3 +530,27 @@ def print_log_with_loc(message):
     loc = role_loc.get_current_loc()
     direct = role_loc.get_current_direction()
     log_message.log_error(message + " " + str(loc) + " " + str(direct))
+
+
+def find_and_click(image, offset, level=0.98):
+    max_val, max_loc = match_img(image)
+    if max_val > level:
+        pyautogui.moveTo(max_loc[0] + offset, max_loc[1] + offset)
+        pyautogui.leftClick()
+        return True
+    return False
+
+
+def find_and_move(image, offset, level=0.98):
+    max_val, max_loc = match_img(image)
+    if max_val > level:
+        pyautogui.moveTo(max_loc[0] + offset, max_loc[1] + offset)
+        return True
+    return False
+
+def goto_zhilingjing():
+    if find_and_click(zhilingjing_btn, 20):
+        pyautogui.moveRel(0, -100)
+        time.sleep(15)
+    else:
+        pyautogui.moveRel(0, -100)

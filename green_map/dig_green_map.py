@@ -27,7 +27,7 @@ def goto_huanglangyuan():
 
 
 def init_to_store():
-    pyautogui.press('m')
+    pyautogui.press(cfg.key_map)
     time.sleep(2)
     max_val, max_loc = role_action.match_img(hide_all_mark)
     if max_val > 0.98:
@@ -40,7 +40,7 @@ def init_to_store():
         role_action.up_horse()
 
     role_move.turn_to(0)
-    role_action.reset_look_down()
+    # role_action.reset_look_down()
     pyautogui.keyDown('space')
     time.sleep(5)
     pyautogui.keyUp('space')

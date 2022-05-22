@@ -7,7 +7,7 @@ single_open_time=5
 # 买图量
 buy_map_count=36
 # 是否额外买图到50
-is_extra_buy=True
+is_extra_buy=False
 
 # 下马判断
 judge_horse = False

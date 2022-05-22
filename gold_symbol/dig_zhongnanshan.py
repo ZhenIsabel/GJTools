@@ -33,14 +33,14 @@ def goto_zhongnanshan():
 
 
 def hide_map_mark():
-    pyautogui.press('m')
+    pyautogui.press(cfg.key_map)
     time.sleep(2)
     max_val, max_loc = role_action.match_img(hide_all_mark_check)
     # print(max_val)
     if max_val > 0.99:
         pyautogui.moveTo(max_loc[0] + 10, max_loc[1] + 10)
         pyautogui.click()
-    pyautogui.press('m')
+    pyautogui.press(cfg.key_map)
 
 
 def try_dig_map():
