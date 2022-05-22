@@ -11,8 +11,8 @@ from message import log_message
 def send_message(message, images=None):
     try:
         # 填写真实的发邮件服务器用户名、密码
-        user = 'xilingyuli_test@163.com'
-        password = 'PECWVHHACWBVLSBA'
+        user = cfg.send_addr
+        password = cfg.send_password
         # 邮件内容
         msg = MIMEMultipart()
         msg["Subject"] = Header('GJTool', 'utf-8')

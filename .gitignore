@@ -7,3 +7,6 @@
 *.txt
 *.csv
 /gold_report
+__pycache__/
+log.txt
+config.txt

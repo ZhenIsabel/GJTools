@@ -9,3 +9,7 @@ def log_error(message):
 
 def log_info(message):
     logging.info(message)
+
+def log_debug(message):
+    # logging.debug(message)
+    pass

@@ -1,6 +1,7 @@
 import math
 import time
 import pyautogui
+import numpy
 
 import cfg
 from common import role_loc
@@ -57,7 +58,31 @@ def turn_to(direct, try_times=5):
         turn_to(direct, try_times - 1)
 
 
-def move_map(width, height, callback_fun=None):
+def move_map_correct(origin_coordinate, direct, width, height, callback_fun, try_times=2):
+    current_loc = role_loc.get_current_loc(2)
+    if not current_loc == None:
+        offset = [origin_coordinate[0]-current_loc[0],
+                  0
+                  ]  # 如果当前行走完后应回到x归零位置
+        if direct > 0:  # 如果当前行走完后应回到x终点位置
+            offset[0] += width
+        if 3 > offset[0] > -3 and 3 > offset[1] > -3:
+            return None
+        elif abs(offset[0]) > 200:
+            return None
+        else:
+            move(0, offset[1])
+            x = 0
+            while x < abs(offset[0]):
+                move(numpy.sign(offset[0]) *
+                     cfg.move_distance_x, 0)
+                x += cfg.move_distance_x
+                callback_fun()
+    if try_times > 0:
+        return move_map_correct(origin_coordinate, direct, width, height, callback_fun, try_times-1)
+
+
+def move_map(width, height, callback_fun=None, origin=None):
     x, y = 0, 0
     direct = 1
     count = 0
@@ -66,14 +91,41 @@ def move_map(width, height, callback_fun=None):
             move(direct * cfg.move_distance_x, 0)
             x += cfg.move_distance_x
             count += callback_fun()
-        if cfg.judge_horse:
-            role_action.up_horse()
+        if not origin == None and y > height/2:
+            move_map_correct([origin[0], origin[1]+y],
+                             direct, width, height, callback_fun)
+        role_action.up_horse()
         move(0, cfg.move_distance_y)
         y += cfg.move_distance_y
         count += callback_fun()
         x = 0
         direct = - direct
     return count
+
+
+def move_to_nearby(target_loc, target_direct=None, diff=cfg.move_min, try_time=2):
+    res = False
+    for i in range(0, try_time):
+        if move_directly(target_loc, diff):
+            res = True
+            break
+        this_loc = role_loc.get_current_loc()
+        if this_loc is None:
+            return False
+        loc_bias = numpy.power(
+            target_loc[0]-this_loc[0], 2)+numpy.power(target_loc[1]-this_loc[1], 2)
+        if loc_bias < 2:
+            res = True
+            break
+    if not res:
+        move_bad_case(target_loc)
+        if not move_directly(target_loc, diff):
+            role_action.print_log_with_loc(
+                "Move Failed to " + str(target_loc) + " with try times " + str(try_time))
+
+    current_direct = role_loc.get_current_direction()
+    if target_direct is not None and current_direct is not None:
+        turn_around(target_direct - current_direct)
 
 
 def move_to(target_loc, target_direct=None, diff=cfg.move_min, try_time=2):
