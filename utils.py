@@ -76,35 +76,34 @@ def deal_offline():
     offline_tag = cv2.imread('img/offline.png')
     open_game_in_login = cv2.imread('img/open_game_in_login.png')
     open_game_in_role = cv2.imread('img/open_game_in_role.png')
-    in_game_tip = cv2.imread('img/in_game_tip.png')
     # 确认是否掉线
     if find_and_click(offline_tag, [30, 30]):
         pyautogui.sleep(15)
-        # 重新登录
-        if find_and_click(open_game_in_login, [30, 30]):
-            pyautogui.sleep(50)
-            window_control.window_focus('古剑奇谭网络版')
-            pyautogui.sleep(2)
-            pyautogui.leftClick()
-            pyautogui.sleep(10)
-            find_and_click(open_game_in_role, [30, 30])
-            # 等待进入游戏
-            pyautogui.sleep(80)
+    # 重新登录
+    if find_and_click(open_game_in_login, [30, 30]):
+        pyautogui.sleep(50)
+        window_control.window_focus('古剑奇谭网络版')
+        pyautogui.sleep(2)
+        pyautogui.leftClick()
+        pyautogui.sleep(10)
+        find_and_click(open_game_in_role, [30, 30])
+        # 等待进入游戏
+        pyautogui.sleep(80)
 
-            # 取消勾选小地图标记
-            pyautogui.press('m')
-            pyautogui.sleep(2)
-            pyautogui.moveTo(496, 851)  # 勾选框位置
-            pyautogui.leftClick()
-            pyautogui.press('m')
-            pyautogui.sleep(2)
-            # 视角和上马
-            pyautogui.scroll(-20000)
-            pyautogui.press(config_model.config['key_horse'])
+        # 取消勾选小地图标记
+        pyautogui.press('m')
+        pyautogui.sleep(2)
+        pyautogui.moveTo(496, 851)  # 勾选框位置
+        pyautogui.leftClick()
+        pyautogui.press('m')
+        pyautogui.sleep(2)
+        # 视角和上马
+        pyautogui.scroll(-20000)
+        reset_visual_field()
+        time.sleep(0.5)
+        reset_visual_field()
+        pyautogui.press(config_model.config['key_horse'])
 
-            return True
-        else:
-            # 报错
-            return False
-    else:
         return True
+    else:
+        return False

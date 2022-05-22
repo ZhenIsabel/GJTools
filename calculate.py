@@ -28,9 +28,7 @@ def calc():
             time.sleep(16 * 60)  # 等到六点
             role_action.close_dialog()
         # 掉线检测
-        if not utils.deal_offline():
-            role_action.try_reset()
-            continue
+        utils.deal_offline()
         # 运行
         start_time = time.time()
         if not role_action.buy_map():
