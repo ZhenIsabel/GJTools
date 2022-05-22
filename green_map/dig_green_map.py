@@ -16,6 +16,7 @@ wuyezhen = cv2.imread('img/map/wuyezhen.png')
 
 
 def goto_huanglangyuan():
+    print('去荒狼原')
     if role_action.find_and_click(big_fly_btn, 20):
         time.sleep(1)
         role_action.find_and_click(huanglangyuan, 40)
@@ -27,6 +28,7 @@ def goto_huanglangyuan():
 
 
 def init_to_store():
+    print('去荒狼原商店')
     pyautogui.press(cfg.key_map)
     time.sleep(2)
     max_val, max_loc = role_action.match_img(hide_all_mark)
@@ -35,7 +37,7 @@ def init_to_store():
         if max_val > 0.99:
             pyautogui.moveTo(max_loc[0] + 10, max_loc[1] + 10)
             pyautogui.click()
-    pyautogui.press('m')
+    pyautogui.press(cfg.key_map)
     if not role_action.is_on_horse():
         role_action.up_horse()
 

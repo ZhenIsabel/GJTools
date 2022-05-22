@@ -4,6 +4,7 @@ import cv2
 import pyautogui
 
 import cfg
+import utils
 from green_map import role_action
 from message import send_message
 
@@ -25,6 +26,9 @@ role_current_region = None
 
 
 def close_role(wait_times=10):
+    if not is_in_game():
+        pyautogui.press(cfg.key_map)
+        time.sleep(1)
     if role_action.find_and_click(menu_btn, 11):
         if role_action.find_and_click(role_back_btn, 25):
             if role_action.find_and_click(confirm_btn, 15):
@@ -37,9 +41,11 @@ def close_role(wait_times=10):
 
 def open_role(index, wait_times=10):
     if index < cfg.role_page_count:
-        pyautogui.moveTo(cfg.first_role_loc[0], cfg.first_role_loc[1] + index * cfg.role_distance)
+        pyautogui.moveTo(
+            cfg.first_role_loc[0], cfg.first_role_loc[1] + index * cfg.role_distance)
     else:
-        pyautogui.moveTo(cfg.next_page_role_loc[0], cfg.next_page_role_loc[1] + (index - 3) * cfg.role_distance)
+        pyautogui.moveTo(
+            cfg.next_page_role_loc[0], cfg.next_page_role_loc[1] + (index - 3) * cfg.role_distance)
         pyautogui.scroll(-20000)
         time.sleep(1)
     pyautogui.leftClick()
@@ -59,6 +65,7 @@ def is_in_role_choose():
 
 def is_in_game():
     max_val, max_loc = role_action.match_img(in_game_tip)
+    print('在游戏检测：'+str(max_val))
     return max_val > 0.98
 
 
@@ -69,13 +76,14 @@ def is_in_login():
 
 def close_regional(wait_times=10):
     global role_current_region
-    width, height = pyautogui.size()
+    # width, height = pyautogui.size()
+    window_size = utils.get_window_size('古剑奇谭网络版')
     if is_in_role_choose():
-        pyautogui.moveTo(width - 15, 15)
+        pyautogui.moveTo(window_size[2] - 15, window_size[1]+15)
         pyautogui.leftClick()
         role_action.find_and_click(exit_confirm_btn, 15)
     elif is_in_game():
-        pyautogui.moveTo(width - 15, 15)
+        pyautogui.moveTo(window_size[2] - 15, window_size[1]+15)
         pyautogui.leftClick()
         role_action.find_and_click(leave_game_btn, 15)
     for i in range(0, wait_times):
@@ -97,18 +105,23 @@ def open_regional(line, column, wait_times=10):
     max_val, max_loc = role_action.match_img(open_game_in_login)
     if max_val < 0.9:
         return False
-    pyautogui.moveTo(max_loc[0] + cfg.choose_regional_distance[0], max_loc[1] + cfg.choose_regional_distance[1])
+    pyautogui.moveTo(max_loc[0] + cfg.choose_regional_distance[0],
+                     max_loc[1] + cfg.choose_regional_distance[1])
     pyautogui.leftClick()
     pyautogui.sleep(5)
     max_val, max_loc = role_action.match_img(first_regional_tip)
     if line < cfg.regional_page_line_count:
-        first_pos = [max_loc[0] + cfg.first_regional_loc[0], max_loc[1] + cfg.first_regional_loc[1]]
-        pyautogui.moveTo(first_pos[0] + column * cfg.regional_size[0], first_pos[1] + line * cfg.regional_size[1])
+        first_pos = [max_loc[0] + cfg.first_regional_loc[0],
+                     max_loc[1] + cfg.first_regional_loc[1]]
+        pyautogui.moveTo(first_pos[0] + column * cfg.regional_size[0],
+                         first_pos[1] + line * cfg.regional_size[1])
     else:
         pyautogui.moveTo(width / 2, height / 2)
         pyautogui.scroll(-20000)
-        first_pos = [max_loc[0] + cfg.next_page_regional_loc[0], max_loc[1] + cfg.next_page_regional_loc[1]]
-        pyautogui.moveTo(first_pos[0] + column * cfg.regional_size[0], first_pos[1] + (line - 2) * cfg.regional_size[1])
+        first_pos = [max_loc[0] + cfg.next_page_regional_loc[0],
+                     max_loc[1] + cfg.next_page_regional_loc[1]]
+        pyautogui.moveTo(first_pos[0] + column * cfg.regional_size[0],
+                         first_pos[1] + (line - 2) * cfg.regional_size[1])
     pyautogui.leftClick()
     role_action.find_and_click(regional_confirm_btn, 25)
     role_action.find_and_click(open_game_in_login, 40)
@@ -116,6 +129,7 @@ def open_regional(line, column, wait_times=10):
     in_game_start = False
     for i in range(0, wait_times):
         time.sleep(cfg.check_game_state_step)
+        utils.window_focus('古剑奇谭网络版')
         if role_action.find_and_move(game_start, 30):
             in_game_start = True
             break
@@ -158,11 +172,13 @@ def for_each_role(region_list, callback_fun=None):
 
 
 def try_open_role(region_index, role_index):
-    target_region = [cfg.region_list[region_index][0], cfg.region_list[region_index][1]]
+    target_region = [cfg.region_list[region_index]
+                     [0], cfg.region_list[region_index][1]]
     if target_region != role_current_region:
         if not close_regional():
             return False
     if is_in_game():
+        print('在游戏')
         if not close_role():
             return False
     if is_in_login():

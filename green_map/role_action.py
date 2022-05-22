@@ -512,6 +512,8 @@ def reset_visual_field():
     win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, 0, -200)
     time.sleep(0.5)
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0)
+    time.sleep(0.5)
+    pyautogui.scroll(-20000)
 
 
 def send_message_with_loc(message):
@@ -534,6 +536,7 @@ def print_log_with_loc(message):
 
 def find_and_click(image, offset, level=0.98):
     max_val, max_loc = match_img(image)
+    print(max_val)
     if max_val > level:
         pyautogui.moveTo(max_loc[0] + offset, max_loc[1] + offset)
         pyautogui.leftClick()
@@ -549,6 +552,7 @@ def find_and_move(image, offset, level=0.98):
     return False
 
 def goto_zhilingjing():
+    print('去纸灵境')
     if find_and_click(zhilingjing_btn, 20):
         pyautogui.moveRel(0, -100)
         time.sleep(15)

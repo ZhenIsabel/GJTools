@@ -123,7 +123,7 @@ role_page_count = 7
 
 # 区服选择界面参数
 # 区服选择按钮和开始游戏按钮距离
-choose_regional_distance = [-100, 45]
+choose_regional_distance = [-100, 25]
 first_regional_loc = [110, 95]
 # 翻页后第一个区的位置
 next_page_regional_loc = [110, 130]

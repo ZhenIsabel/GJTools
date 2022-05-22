@@ -8,10 +8,11 @@ from common import role_change
 from gold_symbol import role_action_gold, dig_changheshan, dig_huaixiucun, dig_huahai, dig_zhongnanshan
 from green_map import dig_green_map, role_action
 from message import csv_message, file_message, send_message
+import utils
 
 gold_box_images = []
 
-time.sleep(3)
+
 
 
 def do_dig_map(region_count, role_index):
@@ -35,6 +36,9 @@ def each_role_action(region_count, role_index):
         role_action.goto_zhilingjing()
     csv_message.set_gold_symbols(region_count, role_index, has_gold, int(datetime.datetime.now().timestamp()), dig_result)
 
+# 窗口置顶
+utils.window_focus('古剑奇谭网络版')
+time.sleep(1)
 
 for i in range(0, 200):
     current_time = datetime.datetime.now()
@@ -44,7 +48,6 @@ for i in range(0, 200):
         break
 
     csv_message.load_gold_symbols_record()
-
     last_time = csv_message.get_last_gold_symbols_time()
     target_time = last_time + cfg.gold_interval_time
 
@@ -52,6 +55,7 @@ for i in range(0, 200):
     current_time_stamp = datetime.datetime.now().timestamp()
     while target_time > current_time_stamp:
         region_index, role_index = file_message.get_next_dig_green_role()
+        print('start')
         if role_change.try_open_role(region_index, role_index):
             send_message.send_message('Begin dig region ' + str(region_index) + ', role ' + str(role_index))
             file_message.set_dig_green_role(region_index, role_index)

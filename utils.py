@@ -169,15 +169,25 @@ def get_window_from_name(name:string):
 
 def window_focus(name:string):
     handle = get_window_from_name(name)
-    print(win32gui.GetWindowText(handle))
+    # print(win32gui.GetWindowText(handle))
     # 发送还原最小化窗口的信息
     win32gui.SendMessage(handle, win32con.WM_SYSCOMMAND,
                          win32con.SC_RESTORE, 0)
-
+    if handle is None:
+        return False
     # 设为高亮
     win32gui.SetForegroundWindow(handle)
 
 def window_minimize(name:string):
     handle = get_window_from_name(name)
+    if handle is None:
+        return False
     win32gui.SendMessage(handle, win32con.WM_SYSCOMMAND,
                          win32con.SC_MINIMIZE, 0)
+
+def get_window_size(name:string):
+    handle = get_window_from_name(name)
+    if handle is None:
+        return False
+    size=win32gui.GetWindowRect(handle)
+    return size# x,y, width+x, height+y
