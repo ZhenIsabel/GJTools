@@ -179,7 +179,7 @@ def buy_map():
         # improve_direction.check_ping(try_times=20)
         pyautogui.press('enter')
         if config_model.config['is_extra_buy']:
-            pyautogui.click(x=None, y=None, clicks=50-buy_count+2, interval=0.001,
+            pyautogui.click(x=None, y=None, clicks=50-buy_count, interval=0.001,
                             button='right', duration=0.0, tween=pyautogui.linear)
         # max_val, max_loc = match_img(confirm_btn)
         # if max_val > fitness_threshold:
