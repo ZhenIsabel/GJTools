@@ -260,7 +260,7 @@ def avoid_open_interrupt():
         _, max_val_count_check, _, _ = cv2.minMaxLoc(
             matxh_res_800)
     if max_val_count_check < 0.98 and config_model.config['is_extra_buy']:
-        extra_buy_count = 10
+        extra_buy_count = 50-buy_count
 
     # log_message.log_debug("开图时间为："+str(wait_open_time))
     if max_val < fitness_threshold:
@@ -434,17 +434,24 @@ def find_boxs():
     role_move.turn_to(begin_find_direct_1)
     start_time = time.time()
     count += role_move.move_map(find_area_1[0],
-                                find_area_1[1], find_box.find_box_under_footer)
+                                find_area_1[1], find_box.find_box_under_footer,
+                                begin_find_loc_1,
+                                region=1
+                                )
     region_1_time = time.time()-start_time
     if count <= 0:
         reset_keys()
     log_message.log_info("出发犁第二片地")
+    # 增加位移中点
+    role_move.turn_around(0.99)
+    role_move.move(0,5)
     role_move.move_to(begin_find_loc_2, None, 1, 5)
     role_move.turn_to(begin_find_direct_2)
     start_time = time.time()
     count += role_move.move_map(find_area_2[0],
                                 find_area_2[1], find_box.find_box_under_footer,
-                                begin_find_loc_2
+                                begin_find_loc_2,
+                                region=2
                                 )
     region_2_time = time.time()-start_time
     role_move.move_to([-850, -560], None, 3, 3)
