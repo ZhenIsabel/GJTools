@@ -8,7 +8,6 @@ import win32api
 import win32con
 import time
 
-
 def switch_style(style: int):
     # 左上角风格化中心坐标
     style_loc = [434, 183]
@@ -86,7 +85,8 @@ def deal_offline():
         pyautogui.sleep(2)
         pyautogui.leftClick()
         pyautogui.sleep(10)
-        find_and_click(open_game_in_role, [30, 30])
+    
+    if find_and_click(open_game_in_role, [30, 30]):
         # 等待进入游戏
         pyautogui.sleep(80)
 
@@ -102,8 +102,5 @@ def deal_offline():
         reset_visual_field()
         time.sleep(0.5)
         reset_visual_field()
-        pyautogui.press(config_model.config['key_horse'])
-
         return True
-    else:
-        return False
+    return False

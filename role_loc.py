@@ -9,7 +9,7 @@ import math
 import re
 import pyautogui
 import role_move
-
+import utils
 
 # 获取绝对坐标的屏幕位置
 # current_loc_area = [1810, 35, 110, 30]
@@ -66,6 +66,7 @@ def get_current_loc(try_times=5):
     if try_times > 0:
         role_move.move(0, -1)
         return get_current_loc(try_times-1)
+    utils.deal_offline()
     return None
 
 # def get_current_loc(try_times=5):

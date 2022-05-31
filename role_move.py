@@ -122,7 +122,7 @@ def move_map_correct(origin_coordinate, direct, width, height, callback_fun, try
         return move_map_correct(origin_coordinate, direct, width, height, callback_fun, try_times-1)
 
 
-def move_map(width, height, callback_fun=None, origin=None,region=1):
+def move_map(width, height, callback_fun=None, origin=None, region=1):
     x, y = 0, 0
     direct = 1
     count = 0
@@ -131,12 +131,15 @@ def move_map(width, height, callback_fun=None, origin=None,region=1):
             move(direct * config_model.config['move_distance_x'], 0)
             x += config_model.config['move_distance_x']
             count += callback_fun()
-            if region==1 and y > height*0.7:  # 日树检查
+            if region == 1 and y > height*0.7:  # 日树检查
                 loc_after = role_loc.get_current_loc()
                 if loc_after is None:
                     continue
                 # 判断是否出界
-                if loc_after[1]<origin[1]:
+                # y=height*sin(theta),theta此处为默认0.6pi
+                # height_pi=height*math.sin(0.6*3.14)
+                # if loc_after[1] < origin[1]-height_pi:
+                if loc_after[1] < -575:
                     return count
                 if -867 > loc_after[0] > -879 and -564 > loc_after[1] > -575:
                     # 区域1遇树绕行
@@ -147,7 +150,7 @@ def move_map(width, height, callback_fun=None, origin=None,region=1):
                     move(direct * move_x, 0)
                     x += move_x
                     move(0, move_y*0.8)  # 因为正着走容易走多
-        if region==2 and y > height/2:
+        if region == 2 and y > height/2:
             move_map_correct([origin[0], origin[1]+y],
                              direct, width, height, callback_fun)
         role_action.up_horse()

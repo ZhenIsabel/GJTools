@@ -249,19 +249,10 @@ def avoid_open_interrupt():
     buy_count = int(
         config_model.config['count_yuanbo'] if config_model.config['is_yuanbo'] else config_model.config['count_no_yuanbo'])
     # wait_open_time = buy_count*config_model.config['single_map_time']
-    extra_buy_count = 0
+    extra_buy_count = 50-buy_count
     image_read = cv2.cvtColor(np.asarray(
         pyautogui.screenshot(region=[327, 1032, 402, 203])), cv2.COLOR_RGB2BGR)
-    match_res_20 = cv2.matchTemplate(cost_20, image_read, 3)
-    _, max_val_count_check, _, _ = cv2.minMaxLoc(
-        match_res_20)
-    if max_val_count_check < 0.98:
-        matxh_res_800 = cv2.matchTemplate(cost_800, image_read, 3)
-        _, max_val_count_check, _, _ = cv2.minMaxLoc(
-            matxh_res_800)
-    if max_val_count_check < 0.98 and config_model.config['is_extra_buy']:
-        extra_buy_count = 50-buy_count
-
+  
     # log_message.log_debug("开图时间为："+str(wait_open_time))
     if max_val < fitness_threshold:
         # 每5秒一测
@@ -583,14 +574,14 @@ def try_reset():
     if not deal_new_day():
         return
     count = 0
-    while not reset_to_store():
+    while not reset_to_store() and count<10:
         count += 1
         # 检查是否掉线
-        if not utils.deal_offline():
+        if utils.deal_offline():
             send_message_with_loc("restart game " + str(count))
         send_message_with_loc("Try reset count " + str(count))
         role_move.move(-10, -10)
-        time.sleep(600)
+        time.sleep(100)
         if not deal_new_day():
             return
 
