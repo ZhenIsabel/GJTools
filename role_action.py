@@ -14,7 +14,6 @@ import log_message
 import role_loc
 import role_move
 import send_message
-import get_weather
 import utils
 # import fucking_flower
 
@@ -231,8 +230,7 @@ def check_open_complete():
 def avoid_open_interrupt():
     # 开图读条左上角位置及长宽
     read_area = [1104, 999, 368, 50]
-    image_origin = cv2.cvtColor(np.asarray(
-        pyautogui.screenshot(region=read_area)), cv2.COLOR_RGB2BGR)
+
     # 原开图操作
     role_move.move_to([-802, -703])
     role_move.move_to([-791, -702])
@@ -242,6 +240,8 @@ def avoid_open_interrupt():
     log_message.log_debug("开图按钮匹配率："+str(max_val))
     pyautogui.moveTo(max_loc[0] + 24, max_loc[1] + 24)
     down_horse()
+    image_origin = cv2.cvtColor(np.asarray(
+    pyautogui.screenshot(region=read_area)), cv2.COLOR_RGB2BGR)
     log_message.log_debug("开始开图")
     pyautogui.leftClick()
     pyautogui.sleep(1)
@@ -250,8 +250,8 @@ def avoid_open_interrupt():
         config_model.config['count_yuanbo'] if config_model.config['is_yuanbo'] else config_model.config['count_no_yuanbo'])
     # wait_open_time = buy_count*config_model.config['single_map_time']
     extra_buy_count = 50-buy_count
-    image_read = cv2.cvtColor(np.asarray(
-        pyautogui.screenshot(region=[327, 1032, 402, 203])), cv2.COLOR_RGB2BGR)
+    # image_read = cv2.cvtColor(np.asarray(
+    #     pyautogui.screenshot(region=[327, 1032, 402, 203])), cv2.COLOR_RGB2BGR)
   
     # log_message.log_debug("开图时间为："+str(wait_open_time))
     if max_val < fitness_threshold:
@@ -507,7 +507,7 @@ def reset_to_store():
     log_message.log_debug("角色不在商店附近，尝试通过仙府重置")
     max_val, max_loc = match_img(home_door_btn)
     if max_val < fitness_threshold:
-        log_message.log_debug("找不到仙府图标，上马")
+        log_message.log_error("找不到仙府图标")
         up_horse()
         return False
     pyautogui.moveTo(max_loc[0] + 24, max_loc[1] + 24)
@@ -522,7 +522,7 @@ def reset_to_store():
     log_message.log_debug("找到仙府图标，回家")
     max_val, max_loc = match_img(home_main_btn)
     if max_val < fitness_threshold:
-        log_message.log_debug("找不到'枕剑仙乡·卧云'选项")
+        log_message.log_error("找不到'枕剑仙乡·卧云'选项")
         up_horse()
         return False
     pyautogui.moveTo(max_loc[0] + 30, max_loc[1] + 15)
@@ -536,7 +536,7 @@ def reset_to_store():
     time.sleep(1)
     max_val, max_loc = match_img(back_origin_btn)
     if max_val < fitness_threshold:
-        log_message.log_debug("找不到'回川入世符-返回荒狼原'选项")
+        log_message.log_error("找不到'回川入世符-返回荒狼原'选项")
         up_horse()
         return False
     pyautogui.moveTo(max_loc[0] + 30, max_loc[1] + 15)
@@ -581,7 +581,7 @@ def try_reset():
             send_message_with_loc("restart game " + str(count))
         send_message_with_loc("Try reset count " + str(count))
         role_move.move(-10, -10)
-        time.sleep(100)
+        time.sleep(150)
         if not deal_new_day():
             return
 

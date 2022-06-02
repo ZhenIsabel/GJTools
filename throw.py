@@ -89,4 +89,4 @@ clear_map(int(buy_count))
 
 # buy_count=input('count of buy\n')
 time.sleep(1)
-buy_map(39,True)
+buy_map(40,True)

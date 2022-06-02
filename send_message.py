@@ -3,6 +3,7 @@ from email.mime.text import MIMEText
 
 import config_model
 import log_message
+import traceback
 
 def send_message(message):
      try:
@@ -24,17 +25,8 @@ def send_message(message):
                           msg=msg.as_string())
      except:
         log_message.log_error(message)
-
-
-def send_procedure_report_test(open_count, weather_code, map_count):
-    weather = ['晴', '雨', '夜']
-    send_text = '''任务简报：{0}
-以下是本次执行的任务简报：
-开盒次数: {0}
-天气: {1}
-买图数量:{2}
-每天有个好心情~'''.format(open_count, weather[weather_code], map_count)
-    send_message(send_text)
+        error_log=traceback.format_exc()
+        log_message.log_error(error_log)
 
 
 def send_procedure_report(message: dict, index=0):

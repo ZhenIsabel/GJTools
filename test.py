@@ -3,8 +3,6 @@ import time
 import cv2
 import role_move
 import find_box
-import numpy as np
-import pyautogui
 # time.sleep(3)
 # role_action.reset_visual_field()
 
@@ -62,15 +60,4 @@ time.sleep(2)
 # role_move.move_to(begin_find_loc_1, None, 1, 5)
 # for i in range(0,len(role_move.move_log)):
 #     print(role_move.move_log[i])
-read_area = [1104, 999, 368, 50]
-image_origin = cv2.cvtColor(np.asarray(
-    pyautogui.screenshot(region=read_area)), cv2.COLOR_RGB2BGR)
-# show_imag(image_origin)
-for i in range(0, 5):
-    time.sleep(2)
-    # 匹配开图读条区域
-    image_read = cv2.cvtColor(np.asarray(
-        pyautogui.screenshot(region=read_area)), cv2.COLOR_RGB2BGR)
-    match_res = cv2.matchTemplate(image_origin, image_read, 3)
-    _, max_val, _, _ = cv2.minMaxLoc(match_res)
-    print(max_val)
+
