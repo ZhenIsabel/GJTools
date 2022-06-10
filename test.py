@@ -7,6 +7,8 @@ import pyautogui
 import config
 
 time.sleep(0.5)
-template=cv2.imread('img/blue.png')
-image = cv2.cvtColor(np.asarray(pyautogui.screenshot(region=config.config['card_pool_region'])), cv2.COLOR_RGB2BGR)
-utils.show_match_image(template,  image)
+# template=cv2.imread('img/blue.png')
+# image = cv2.cvtColor(np.asarray(pyautogui.screenshot(region=config.config['card_pool_region'])), cv2.COLOR_RGB2BGR)
+# utils.show_match_image(template,  image)
+if utils.save_screen():
+    print('success')

@@ -61,6 +61,10 @@ def show_match_image(template, image):
     cv2.rectangle(image, top_left, bottom_right, 255, 2)
     show_imag(image)
 
+def save_screen():
+    screen=np.asarray(pyautogui.screenshot())
+    time_str=time.strftime('%m-%d-%H-%M-%S')
+    return cv2.imwrite('./error_screenshot/'+time_str+'.png',screen)
 
 def deal_offline():
     # print('check offline')

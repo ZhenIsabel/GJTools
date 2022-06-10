@@ -12,7 +12,7 @@ time.sleep(0.5)
 card_play.close_game()
 card_play.start_game()
 
-for i in range(0,2000):
+for i in range(0,5000):
     try:
         current_time = datetime.datetime.now()
         if 10 > current_time.hour > 5 and current_time.isoweekday() == 4:
