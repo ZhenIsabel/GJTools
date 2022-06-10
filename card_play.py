@@ -6,6 +6,7 @@ import config
 import datetime
 import win32api
 import win32con
+import time
 
 new_day_tip = cv2.imread('img/new_day_tip.png')
 close_btn = cv2.imread('img/close_btn.png')
@@ -32,7 +33,12 @@ def is_my_turn():
 
 
 def play_card():
+    start_time=time.time()
     for i in range(0,100):
+        time_spent=time.time()-start_time
+        if time_spent>80:
+            print(time_spent)
+            break
         # 等待到出牌环节
         for i in range(0, 20):
             if is_my_turn():
@@ -52,7 +58,7 @@ def play_card():
         if not success_find:
             for i in range(0, 4):
                 if utils.find_and_click_region(color_pic[i], offset=[5, 5], region=config.config['my_card_region']):
-                    for j in range(0,8):
+                    for j in range(0,9):
                         pyautogui.moveTo(config.config['first_card_loc_in_pool'][0]+j*config.config['card_space_in_pool'],config.config['first_card_loc_in_pool'][1])
                         pyautogui.leftClick()
                         pyautogui.sleep(0.2)
