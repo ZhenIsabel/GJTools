@@ -8,7 +8,7 @@ import time
 import string
 
 def find_and_click(img, offset, threshold=0.95):
-    image = cv2.cvtColor(np.asarray(pyautogui.screenshot(), cv2.COLOR_RGB2BGR))
+    image = cv2.cvtColor(np.asarray(pyautogui.screenshot()), cv2.COLOR_RGB2BGR)
     match_res = cv2.matchTemplate(image, img, 3)
     _, max_val, _, max_loc = cv2.minMaxLoc(match_res)
     if max_val > threshold:
