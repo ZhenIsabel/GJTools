@@ -4,74 +4,92 @@ import cv2
 import pyautogui
 import config
 import datetime
+import win32api
+import win32con
 
 new_day_tip = cv2.imread('img/new_day_tip.png')
 close_btn = cv2.imread('img/close_btn.png')
-play_card_btn=cv2.imread('img/play_card_btn.png')
-mode_sel_btn=cv2.imread('img/mode_sel_btn.png')
-easy_mode=cv2.imread('img/easy_mode.png')
-prepare_btn=cv2.imread('img/prepare_btn.png')
-exit_btn=cv2.imread('img/exit_btn.png')
-confirm_exit=cv2.imread('img/confirm_exit.png')
-continue_btn=cv2.imread('img/continue_btn.png')
-in_turn = cv2.imread('img/in_turn.png')
-color_pic=[cv2.imread('img/red.jpg'),
-cv2.imread('img/green.jpg'),
-cv2.imread('img/blue.jpg'),
-cv2.imread('img/yellow.jpg')
-]
+play_card_btn = cv2.imread('img/play_card_btn.png')
+mode_sel_btn = cv2.imread('img/mode_sel_btn.png')
+easy_mode = cv2.imread('img/easy_mode.png')
+prepare_btn = cv2.imread('img/prepare_btn.png')
+exit_btn = cv2.imread('img/exit_btn.png')
+confirm_exit = cv2.imread('img/confirm_exit.png')
+continue_btn = cv2.imread('img/continue_btn.png')
+not_turn = cv2.imread('img/in_turn.png')
+color_pic = [cv2.imread('img/not_turn.png'),
+             cv2.imread('img/green.png'),
+             cv2.imread('img/blue.png'),
+             cv2.imread('img/yellow.png')
+             ]
 
 
 def is_my_turn():
-    return utils.match_img(in_turn) > 0.95
+    max_val, _ = utils.match_img(not_turn,method=5)
+    return max_val < 0.95
 
 
 def play_card():
-    # 等待到出牌环节
-    for i in range(0, 20):
-        if is_my_turn():
-            break
-        pyautogui.sleep(1)
-
-    # 出牌
-    for i in range(0, 3):
-        if utils.find_and_click(color_pic[i], [5, 5], config.config['my_card_region']):
-            pyautogui.sleep(0.5)
-            if utils.find_and_click(color_pic[i], [5, 5], config.config['card_pool_region']):
+    for i in range(0,30):
+        # 等待到出牌环节
+        for i in range(0, 20):
+            if is_my_turn():
                 break
+            pyautogui.sleep(1)
+
+        # 出牌
+        for i in range(0, 4):
+            if utils.find_and_click(color_pic[i], offset=[5, 5], region=config.config['my_card_region']):
+                pyautogui.sleep(1)
+                if utils.find_and_click(color_pic[i], offset=[5, 5], region=config.config['card_pool_region']):
+                    pyautogui.sleep(1)
+                    break
+        max_val,_=utils.match_img(continue_btn)
+        if max_val>0.95:
+            return True
+    return False
+
 
 def start_game():
     pyautogui.moveTo(config.config['longxing_pos'])
-    pyautogui.click()
     pyautogui.sleep(0.5)
-    if not utils.find_and_click(play_card_btn,[5,5]):
+    # pyautogui.leftClick()
+    win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 
+    config.config['longxing_pos'][0], config.config['longxing_pos'][1])
+    pyautogui.sleep(0.5)
+    win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0)
+    pyautogui.sleep(0.5)
+    if not utils.find_and_click(play_card_btn, [5, 5]):
         return False
-    if not utils.find_and_click(mode_sel_btn,[5,5]):
+    if not utils.find_and_click(mode_sel_btn, [5, 5]):
         return False
-    if not utils.find_and_click(easy_mode,[5,5]):
+    if not utils.find_and_click(easy_mode, [5, 5]):
         return False
     pyautogui.sleep(0.5)
-    if not utils.find_and_click(prepare_btn,[5,5]):
+    if not utils.find_and_click(prepare_btn, [5, 5]):
         return False
     pyautogui.sleep(5)
     return True
+
 
 def next_game():
-    if not utils.find_and_click(continue_btn,[5,5]):
+    if not utils.find_and_click(continue_btn, [5, 5]):
         return False
     pyautogui.sleep(0.5)
-    if not utils.find_and_click(prepare_btn,[5,5]):
+    if not utils.find_and_click(prepare_btn, [5, 5]):
         return False
     pyautogui.sleep(5)
     return True
 
+
 def close_game():
-    if not utils.find_and_click(exit_btn,[5,5]):
+    if not utils.find_and_click(exit_btn, [5, 5]):
         return True
     pyautogui.sleep(0.5)
-    if not utils.find_and_click(confirm_exit,[5,5]):
+    if not utils.find_and_click(confirm_exit, [5, 5]):
         return False
     return True
+
 
 def restart_game():
     if not close_game():
@@ -80,11 +98,12 @@ def restart_game():
         return False
     return True
 
+
 def try_reset():
     if not deal_new_day():
         return
     count = 0
-    while not restart_game() and count<10:
+    while not restart_game() and count < 10:
         count += 1
         # 检查是否掉线
         if utils.deal_offline():
@@ -104,5 +123,5 @@ def deal_new_day():
     max_val, _ = utils.match_img(new_day_tip)
     if max_val > 0.95:
         # close_dialog
-        utils.find_and_click(close_btn,[6,6])
+        utils.find_and_click(close_btn, [6, 6])
     return True
