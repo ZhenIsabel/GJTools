@@ -1,6 +1,6 @@
-import ui
+import utils
+import time
+import card_play
 
-ui.ui_main()
-
-
-
+utils.window_focus('古剑奇谭网络版')
+time.sleep(0.5)
