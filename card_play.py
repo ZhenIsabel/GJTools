@@ -16,8 +16,8 @@ prepare_btn = cv2.imread('img/prepare_btn.png')
 exit_btn = cv2.imread('img/exit_btn.png')
 confirm_exit = cv2.imread('img/confirm_exit.png')
 continue_btn = cv2.imread('img/continue_btn.png')
-not_turn = cv2.imread('img/in_turn.png')
-color_pic = [cv2.imread('img/not_turn.png'),
+not_turn = cv2.imread('img/not_turn.png')
+color_pic = [cv2.imread('img/red.png'),
              cv2.imread('img/green.png'),
              cv2.imread('img/blue.png'),
              cv2.imread('img/yellow.png')
@@ -26,6 +26,7 @@ color_pic = [cv2.imread('img/not_turn.png'),
 
 def is_my_turn():
     max_val, _ = utils.match_img(not_turn,method=5)
+    # print (max_val)
     return max_val < 0.95
 
 
@@ -39,13 +40,14 @@ def play_card():
 
         # 出牌
         for i in range(0, 4):
-            if utils.find_and_click(color_pic[i], offset=[5, 5], region=config.config['my_card_region']):
-                pyautogui.sleep(1)
-                if utils.find_and_click(color_pic[i], offset=[5, 5], region=config.config['card_pool_region']):
-                    pyautogui.sleep(1)
+            if utils.find_and_click_region(color_pic[i], offset=[5, 5], region=config.config['my_card_region']):
+                pyautogui.sleep(0.5)
+                if utils.find_and_click_region(color_pic[i], offset=[5, 5], region=config.config['card_pool_region']):
+                    pyautogui.sleep(0.5)
                     break
         max_val,_=utils.match_img(continue_btn)
         if max_val>0.95:
+            print('complete')
             return True
     return False
 

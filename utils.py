@@ -7,8 +7,17 @@ import win32con
 import time
 import string
 
+def find_and_click(img, offset, threshold=0.95):
+    image = cv2.cvtColor(np.asarray(pyautogui.screenshot(), cv2.COLOR_RGB2BGR))
+    match_res = cv2.matchTemplate(image, img, 3)
+    _, max_val, _, max_loc = cv2.minMaxLoc(match_res)
+    if max_val > threshold:
+        pyautogui.moveTo(max_loc[0] + offset[0], max_loc[1] + offset[1])
+        pyautogui.leftClick()
+        return True
+    return False
 
-def find_and_click(img, offset,region=[0,0,2560,1440], threshold=0.95):
+def find_and_click_region(img, offset,region, threshold=0.95):
     image = cv2.cvtColor(np.asarray(pyautogui.screenshot(region=region)), cv2.COLOR_RGB2BGR)
     match_res = cv2.matchTemplate(image, img, 3)
     _, max_val, _, max_loc = cv2.minMaxLoc(match_res)
