@@ -38,6 +38,7 @@ def play_card():
         time_spent=time.time()-start_time
         if time_spent>80:
             # 截图保存
+            utils.save_screen()
             print('break a game')
             break
         # 等待到出牌环节
