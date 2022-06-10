@@ -27,8 +27,7 @@ color_pic = [cv2.imread('img/red.png'),
 
 
 def is_my_turn():
-    max_val, _ = utils.match_img(not_turn,method=5)
-    # print (max_val)
+    max_val, _ = utils.match_img(not_turn)
     return max_val < 0.95
 
 
@@ -38,8 +37,8 @@ def play_card():
         time_spent=time.time()-start_time
         if time_spent>80:
             # 截图保存
-            utils.save_screen()
             print('break a game')
+            utils.save_screen()
             break
         # 等待到出牌环节
         for i in range(0, 20):
@@ -151,7 +150,8 @@ def deal_new_day():
         return False
     max_val, _ = utils.match_img(new_day_tip)
     if max_val > 0.95:
-        # close_dialog
-        utils.find_and_click(close_btn, [6, 6])
-        utils.find_and_click(leave_game_btn,[15,15])
+        close_dialog()
     return True
+
+def close_dialog():
+    utils.find_and_click(close_btn, [6, 6])
