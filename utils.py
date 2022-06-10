@@ -2,40 +2,10 @@ import pyautogui
 import cv2
 import numpy as np
 import pyautogui
-import window_control
-import config_model
-import win32api
+import win32gui
 import win32con
 import time
-
-def switch_style(style: int):
-    # 左上角风格化中心坐标
-    style_loc = [434, 183]
-    # 自定义位置
-    style_custom_loc = [398, 336]
-    custom_confirm_loc = [1374, 893]
-    # 推荐位置
-    style_default_loc = [404, 215]
-
-    pyautogui.moveTo(style_loc)
-    pyautogui.click()
-    if style == 0:
-        pyautogui.moveTo(style_default_loc[0], style_default_loc[1])
-        pyautogui.click()
-    elif style == 1:
-        pyautogui.moveTo(style_custom_loc[0], style_custom_loc[1])
-        pyautogui.click()
-        pyautogui.moveTo(custom_confirm_loc[0], custom_confirm_loc[1])
-        pyautogui.click()
-        pyautogui.move(400, 400)
-        pyautogui.click()
-
-
-def auto_switch(weather_name):
-    if weather_name == '雨':
-        switch_style(1)
-    else:
-        switch_style(0)
+import string
 
 
 def find_and_click(img, offset, threshold=0.95):
@@ -49,25 +19,27 @@ def find_and_click(img, offset, threshold=0.95):
     return False
 
 
-def reset_visual_field():
-    x, y = 1000, 300
-    win32api.SetCursorPos((x, y))
-    time.sleep(0.5)
-    win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, x, y)
-    time.sleep(0.5)
-    win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, 0, 300)
-    time.sleep(0.5)
-    win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, 0, -200)
-    time.sleep(0.5)
-    win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0)
-
-
 def match_img(template, method=3):
     image = cv2.cvtColor(np.asarray(pyautogui.screenshot()), cv2.COLOR_RGB2BGR)
     match_res = cv2.matchTemplate(image, template, method)
     _, max_val, _, max_loc = cv2.minMaxLoc(match_res)
     # test.show_match_image(match_res,template,image)
     return max_val, max_loc
+
+
+def show_imag(image, name='test'):
+    cv2.imshow(name, image)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
+
+def show_match_image(match_res, template, image):
+    min_val, max_val, min_loc, max_loc = cv2.dminMaxLoc(match_res)
+    top_left = max_loc
+    h, w = template.shape[:2]
+    bottom_right = (top_left[0]+w, top_left[1]+h)
+    cv2.rectangle(image, top_left, bottom_right, 255, 2)
+    show_imag('temp', image)
 
 
 def deal_offline():
@@ -81,26 +53,55 @@ def deal_offline():
     # 重新登录
     if find_and_click(open_game_in_login, [30, 30]):
         pyautogui.sleep(50)
-        window_control.window_focus('古剑奇谭网络版')
+        window_focus('古剑奇谭网络版')
         pyautogui.sleep(2)
         pyautogui.leftClick()
         pyautogui.sleep(10)
     
     if find_and_click(open_game_in_role, [30, 30]):
         # 等待进入游戏
-        pyautogui.sleep(80)
-
-        # 取消勾选小地图标记
-        pyautogui.press('m')
-        pyautogui.sleep(2)
-        pyautogui.moveTo(496, 851)  # 勾选框位置
-        pyautogui.leftClick()
-        pyautogui.press('m')
-        pyautogui.sleep(2)
-        # 视角和上马
-        pyautogui.scroll(-20000)
-        reset_visual_field()
-        time.sleep(0.5)
-        reset_visual_field()
+        pyautogui.sleep(50)
         return True
     return False
+
+
+# 查找含有关键字的窗口，返回该窗口的handle
+def get_window_names(keyword: string):
+    hWndList = []
+    win32gui.EnumWindows(lambda hWnd, param: param.append(hWnd), hWndList)
+    for hwnd in hWndList:
+        if win32gui.IsWindowVisible(hwnd):
+            # class_name = win32gui.GetClassName(hwnd)
+            title = win32gui.GetWindowText(hwnd)
+            if not title:
+                continue
+            if str.find(title, keyword) != -1:
+                # print(title)
+                return hwnd
+
+            # print(class_name)
+            # print('------------------------------------')
+
+
+def get_window_from_name(name:string):
+    target_handle = get_window_names(name)
+    # print(target_handle)
+    if target_handle == 0:
+        return None
+    else:
+        return target_handle
+
+def window_focus(name:string):
+    handle = get_window_from_name(name)
+    print(win32gui.GetWindowText(handle))
+    # 发送还原最小化窗口的信息
+    win32gui.SendMessage(handle, win32con.WM_SYSCOMMAND,
+                         win32con.SC_RESTORE, 0)
+
+    # 设为高亮
+    win32gui.SetForegroundWindow(handle)
+
+def window_minimize(name:string):
+    handle = get_window_from_name(name)
+    win32gui.SendMessage(handle, win32con.WM_SYSCOMMAND,
+                         win32con.SC_MINIMIZE, 0)
