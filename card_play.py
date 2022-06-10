@@ -32,7 +32,7 @@ def is_my_turn():
 
 
 def play_card():
-    for i in range(0,30):
+    for i in range(0,100):
         # 等待到出牌环节
         for i in range(0, 20):
             if is_my_turn():
