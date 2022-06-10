@@ -4,6 +4,7 @@ import numpy as np
 import pyautogui
 import win32gui
 import win32con
+import win32api
 import time
 import string
 
@@ -66,6 +67,19 @@ def save_screen():
     time_str=time.strftime('%m-%d-%H-%M-%S')
     return cv2.imwrite('./error_screenshot/'+time_str+'.png',screen)
 
+def reset_visual_field():
+    x, y = 1000, 300
+    win32api.SetCursorPos((x, y))
+    time.sleep(0.5)
+    win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, x, y)
+    time.sleep(0.5)
+    win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, 0, 300)
+    time.sleep(0.5)
+    win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, 0, -200)
+    time.sleep(0.5)
+    win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0)
+
+
 def deal_offline():
     # print('check offline')
     offline_tag = cv2.imread('img/offline.png')
@@ -85,6 +99,9 @@ def deal_offline():
     if find_and_click(open_game_in_role, [30, 30]):
         # 等待进入游戏
         pyautogui.sleep(40)
+        reset_visual_field()
+        pyautogui.sleep(0.5)
+        reset_visual_field()
         return True
     return False
 
