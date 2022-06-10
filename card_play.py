@@ -37,7 +37,8 @@ def play_card():
     for i in range(0,100):
         time_spent=time.time()-start_time
         if time_spent>80:
-            print(time_spent)
+            # 截图保存
+            print('break a game')
             break
         # 等待到出牌环节
         for i in range(0, 20):
@@ -54,7 +55,7 @@ def play_card():
                     pyautogui.sleep(0.5)
                     success_find=True
                     break
-        # 顺序出牌纠错
+        # 如果出牌失败，顺序出牌纠错
         if not success_find:
             for i in range(0, 4):
                 if utils.find_and_click_region(color_pic[i], offset=[5, 5], region=config.config['my_card_region']):
@@ -65,6 +66,8 @@ def play_card():
                         if not is_my_turn():
                             success_find=True
                             break
+                if success_find:
+                    break
         max_val,_=utils.match_img(continue_btn)
         if max_val>0.95:
             return True
