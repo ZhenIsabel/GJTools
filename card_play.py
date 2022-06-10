@@ -7,6 +7,7 @@ import datetime
 import win32api
 import win32con
 import time
+import numpy as np
 
 new_day_tip = cv2.imread('img/new_day_tip.png')
 close_btn = cv2.imread('img/close_btn.png')
@@ -39,6 +40,7 @@ def play_card():
             # 截图保存
             print('break a game')
             utils.save_screen()
+            send_message.send_message('game_break')
             break
         # 等待到出牌环节
         for i in range(0, 20):
@@ -55,15 +57,19 @@ def play_card():
                     pyautogui.sleep(0.5)
                     success_find=True
                     break
+                else:
+                    pyautogui.leftClick()# 取消选择卡片
         # 如果出牌失败，顺序出牌纠错
         if not success_find:
             for i in range(0, 4):
                 if utils.find_and_click_region(color_pic[i], offset=[5, 5], region=config.config['my_card_region']):
                     for j in range(0,9):
+                        origin_score=cv2.cvtColor(np.asarray(pyautogui.screenshot(region=config.config['score_region'])), cv2.COLOR_RGB2BGR)
                         pyautogui.moveTo(config.config['first_card_loc_in_pool'][0]+j*config.config['card_space_in_pool'],config.config['first_card_loc_in_pool'][1])
                         pyautogui.leftClick()
                         pyautogui.sleep(0.2)
-                        if not is_my_turn():
+                        score_change_val,_=utils.match_img_region(origin_score,config.config['score_region'])
+                        if score_change_val<0.95:
                             success_find=True
                             break
                 if success_find:

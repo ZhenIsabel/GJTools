@@ -21,6 +21,7 @@ def find_and_click(img, offset, threshold=0.95):
 def find_and_click_region(img, offset,region, threshold=0.95):
     image = cv2.cvtColor(np.asarray(pyautogui.screenshot(region=region)), cv2.COLOR_RGB2BGR)
     match_res = cv2.matchTemplate(image, img, 3)
+    # show_imag(image)
     _, max_val, _, max_loc = cv2.minMaxLoc(match_res)
     if max_val > threshold:
         pyautogui.moveTo(max_loc[0] + offset[0]+region[0], max_loc[1] + offset[1]+region[1])
@@ -63,9 +64,10 @@ def show_match_image(template, image):
     show_imag(image)
 
 def save_screen():
-    screen=np.asarray(pyautogui.screenshot())
+    image = cv2.cvtColor(np.asarray(
+        pyautogui.screenshot()), cv2.COLOR_RGB2BGR)
     time_str=time.strftime('%m-%d-%H-%M-%S')
-    return cv2.imwrite('./error_screenshot/'+time_str+'.png',screen)
+    return cv2.imwrite('./error_screenshot/'+time_str+'.png',image)
 
 def reset_visual_field():
     x, y = 1000, 300

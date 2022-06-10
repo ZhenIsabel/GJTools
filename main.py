@@ -21,8 +21,8 @@ def init_config():
     config.config['card_pool_region'] =[
         window_pos[0]+265,
         window_pos[1]+392,
-        config.config['my_card_region'][2],
-        config.config['my_card_region'][3]
+        config.config['card_pool_region'][2],
+        config.config['card_pool_region'][3]
     ]
     config.config['longxing_pos']=[
         int((window_pos[0]+window_pos[2])/2),
@@ -31,6 +31,13 @@ def init_config():
     config.config['first_card_loc_in_pool']=[
         int(window_pos[0]+350),
         int(window_pos[1]+483)
+    ]
+    config.config['score_region']=[
+        window_pos[0]+305,
+        window_pos[1]+690,
+        config.config['score_region'][2],
+        config.config['score_region'][3]
+
     ]
 
 init_config()
@@ -58,4 +65,4 @@ for i in range(0, 5000):
             send_message.send_message('card success: '+str(i)+' times')
             print('card success: '+str(i)+' times')
     except Exception as e:
-        send_message.send_procedure_report(str(e), i+1)
+        send_message.send_message(str(e))
