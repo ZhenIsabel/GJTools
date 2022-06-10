@@ -2,7 +2,7 @@
 
 ## Preperations
 1. make sure **龙星阵** is already at the center of screen
-2. if your environment is not 1920*1080, replace all the screenshots of icons in the gold **img**
+2. if your environment is not 1920*1080, replace all the screenshots of icons in the fold **img**
 3. change parameters in file **config**, photoshop will be helpful
 
 ## Remarks
