@@ -1,14 +1,14 @@
 from smtplib import SMTP_SSL
 from email.mime.text import MIMEText
 
-import config_model
+import config
 import log_message
 import traceback
 
 def send_message(message):
      try:
         # 填写真实的发邮件服务器用户名、密码
-        receive_addr = config_model.config['email_add']
+        receive_addr = config.config['email_add']
         user = 'code_test_message@163.com'
         password = 'RYXVVTELHMNPHJUY'
         # 邮件内容

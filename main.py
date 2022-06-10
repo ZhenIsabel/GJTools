@@ -5,6 +5,7 @@ import card_play
 utils.window_focus('古剑奇谭网络版')
 time.sleep(0.5)
 
+card_play.close_game()
 card_play.start_game()
 
 for i in range(0,1000):
