@@ -40,12 +40,25 @@ def play_card():
             pyautogui.sleep(1)
 
         # 出牌
+        success_find=False
         for i in range(0, 4):
             if utils.find_and_click_region(color_pic[i], offset=[5, 5], region=config.config['my_card_region']):
                 pyautogui.sleep(0.5)
                 if utils.find_and_click_region(color_pic[i], offset=[5, 5], region=config.config['card_pool_region']):
                     pyautogui.sleep(0.5)
+                    success_find=True
                     break
+        # 顺序出牌纠错
+        if not success_find:
+            for i in range(0, 4):
+                if utils.find_and_click_region(color_pic[i], offset=[5, 5], region=config.config['my_card_region']):
+                    for j in range(0,8):
+                        pyautogui.moveTo(config.config['first_card_loc_in_pool'][0]+j*config.config['card_space_in_pool'],config.config['first_card_loc_in_pool'][1])
+                        pyautogui.leftClick()
+                        pyautogui.sleep(0.2)
+                        if not is_my_turn():
+                            success_find=True
+                            break
         max_val,_=utils.match_img(continue_btn)
         if max_val>0.95:
             return True
