@@ -8,8 +8,8 @@ import time
 import string
 
 
-def find_and_click(img, offset, threshold=0.95):
-    image = cv2.cvtColor(np.asarray(pyautogui.screenshot()), cv2.COLOR_RGB2BGR)
+def find_and_click(img, offset,region=[0,0,2560,1440], threshold=0.95):
+    image = cv2.cvtColor(np.asarray(pyautogui.screenshot(region=region)), cv2.COLOR_RGB2BGR)
     match_res = cv2.matchTemplate(image, img, 3)
     _, max_val, _, max_loc = cv2.minMaxLoc(match_res)
     if max_val > threshold:
@@ -27,19 +27,30 @@ def match_img(template, method=3):
     return max_val, max_loc
 
 
+def match_img_region(template, region, method=3):
+    image = cv2.cvtColor(np.asarray(
+        pyautogui.screenshot(region=region)), cv2.COLOR_RGB2BGR)
+    match_res = cv2.matchTemplate(image, template, method)
+    min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(match_res)
+    # test.show_match_image(match_res,template,image)
+    return max_val, max_loc
+
+
 def show_imag(image, name='test'):
     cv2.imshow(name, image)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
 
-def show_match_image(match_res, template, image):
-    min_val, max_val, min_loc, max_loc = cv2.dminMaxLoc(match_res)
+def show_match_image(template, image):
+    match_res = cv2.matchTemplate(image, template, 3)
+    min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(match_res)
+    print(max_val)
     top_left = max_loc
     h, w = template.shape[:2]
     bottom_right = (top_left[0]+w, top_left[1]+h)
     cv2.rectangle(image, top_left, bottom_right, 255, 2)
-    show_imag('temp', image)
+    show_imag(image)
 
 
 def deal_offline():
@@ -60,7 +71,7 @@ def deal_offline():
     
     if find_and_click(open_game_in_role, [30, 30]):
         # 等待进入游戏
-        pyautogui.sleep(50)
+        pyautogui.sleep(40)
         return True
     return False
 
