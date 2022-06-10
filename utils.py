@@ -125,3 +125,15 @@ def window_minimize(name:string):
     handle = get_window_from_name(name)
     win32gui.SendMessage(handle, win32con.WM_SYSCOMMAND,
                          win32con.SC_MINIMIZE, 0)
+
+def get_window_size(name:string):
+    handle = get_window_from_name(name)
+    if handle is None:
+        return False
+    size=win32gui.GetWindowRect(handle)
+    return size# x,y, width+x, height+y
+
+def close_window(name:string):
+    window_size=get_window_size(name)
+    pyautogui.moveTo(window_size[2] - 15, window_size[1]+15)
+    pyautogui.leftClick()

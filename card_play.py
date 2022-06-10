@@ -16,6 +16,7 @@ prepare_btn = cv2.imread('img/prepare_btn.png')
 exit_btn = cv2.imread('img/exit_btn.png')
 confirm_exit = cv2.imread('img/confirm_exit.png')
 continue_btn = cv2.imread('img/continue_btn.png')
+leave_game_btn=cv2.imread('img/leave_game_btn.png')
 not_turn = cv2.imread('img/not_turn.png')
 color_pic = [cv2.imread('img/red.png'),
              cv2.imread('img/green.png'),
@@ -47,7 +48,6 @@ def play_card():
                     break
         max_val,_=utils.match_img(continue_btn)
         if max_val>0.95:
-            print('complete')
             return True
     return False
 
@@ -115,6 +115,10 @@ def try_reset():
         pyautogui.sleep(150)
         if not deal_new_day():
             return
+    
+    if count>=10:
+        # 关游戏保点卡
+        utils.close_window('古剑奇谭网络版')
 
 
 def deal_new_day():
@@ -126,4 +130,5 @@ def deal_new_day():
     if max_val > 0.95:
         # close_dialog
         utils.find_and_click(close_btn, [6, 6])
+        utils.find_and_click(leave_game_btn,[15,15])
     return True

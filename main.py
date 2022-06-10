@@ -28,7 +28,8 @@ for i in range(0,2000):
         if not card_play.next_game():
             card_play.try_reset()
             continue
-        if mod(i,5)==0:
+        if mod(i,10)==0:
             send_message.send_message('card success: '+str(i)+' times')
+            print('card success: '+str(i)+' times')
     except Exception as e:
         send_message.send_procedure_report(str(e), i+1)
