@@ -70,6 +70,14 @@ def match_img(template, method=3):
     return max_val, max_loc
 
 
+def match_img_region(template, region, method=3):
+    image = cv2.cvtColor(np.asarray(
+        pyautogui.screenshot(region=region)), cv2.COLOR_RGB2BGR)
+    match_res = cv2.matchTemplate(image, template, method)
+    min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(match_res)
+    # test.show_match_image(match_res,template,image)
+    return max_val, max_loc
+
 def deal_offline():
     # print('check offline')
     offline_tag = cv2.imread('img/offline.png')

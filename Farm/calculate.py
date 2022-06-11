@@ -6,14 +6,8 @@ import send_message
 # import config_model
 import get_weather
 import utils
-
-# import config_model
-
-
-def calc111():
-    time.sleep(1)
-    role_action.is_on_horse()
-
+import cv2
+import Cards.main
 
 def calc():
     time.sleep(1)
@@ -37,6 +31,12 @@ def calc():
                 continue
             buy_time = time.time()
             # if not role_action.open_map():
+            # 如果检测到中奖debuff，就地挖宝
+            buff_region=[858, 1005, 230, 55]
+            forbid_buff=cv2.imread('img/forbid_buff.png')
+            buff_val,_=utils.match_img_region(forbid_buff,buff_region)
+            if buff_val>0.9:
+                Cards.main.card_main()
             open_count = role_action.avoid_open_interrupt()
             if not open_count >= 0:
                 role_action.try_reset()
