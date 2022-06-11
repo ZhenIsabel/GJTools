@@ -9,5 +9,7 @@
 1. turn-off your monitor will not have influence on the procedure, but turn-on may inturrupt it
 2. a game usually ends within 1 min, not longer than 80s. If it does not work expectedly, something may be wrong
 3. run it at administrator mode, no matter cmd or ide
+4. special cards that need to select cards from opponent's owns my
+ay cause problem. Such as switch-card and disable-card
 
 ### NEVER share it without permission
