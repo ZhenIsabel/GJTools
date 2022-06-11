@@ -91,6 +91,7 @@ def deal_offline():
     if find_and_click(offline_tag, [30, 30]):
         pyautogui.sleep(15)
     # 重新登录
+    window_focus('古剑奇谭网络版')
     if find_and_click(open_game_in_login, [30, 30]):
         pyautogui.sleep(50)
         window_focus('古剑奇谭网络版')
@@ -136,6 +137,8 @@ def get_window_from_name(name:string):
 
 def window_focus(name:string):
     handle = get_window_from_name(name)
+    if handle is None:
+        return
     print(win32gui.GetWindowText(handle))
     # 发送还原最小化窗口的信息
     win32gui.SendMessage(handle, win32con.WM_SYSCOMMAND,

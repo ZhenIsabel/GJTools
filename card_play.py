@@ -1,3 +1,4 @@
+from operator import mod
 import send_message
 import utils
 import cv2
@@ -8,6 +9,7 @@ import win32api
 import win32con
 import time
 import numpy as np
+import log_message
 
 new_day_tip = cv2.imread('img/new_day_tip.png')
 close_btn = cv2.imread('img/close_btn.png')
@@ -25,7 +27,7 @@ color_pic = [cv2.imread('img/red.png'),
              cv2.imread('img/blue.png'),
              cv2.imread('img/yellow.png')
              ]
-
+color=['red','green','blue','yellow']
 
 def is_my_turn():
     max_val, _ = utils.match_img(not_turn)
@@ -40,42 +42,52 @@ def play_card():
             # 截图保存
             print('break a game')
             utils.save_screen()
-            send_message.send_message('game_break')
+            record=log_message.print_record()
+            send_message.send_message(record)
+            log_message.log_warning(record)
             break
         # 等待到出牌环节
         for i in range(0, 20):
             if is_my_turn():
                 break
             pyautogui.sleep(1)
+            if mod(i,3)==0 and i>0:
+                log_message.record(['wait',i+1])
 
         # 出牌
         success_find=False
         for i in range(0, 4):
             if utils.find_and_click_region(color_pic[i], offset=[5, 5], region=config.config['my_card_region']):
-                pyautogui.sleep(0.5)
+                pyautogui.sleep(0.3)
                 if utils.find_and_click_region(color_pic[i], offset=[5, 5], region=config.config['card_pool_region']):
-                    pyautogui.sleep(0.5)
+                    pyautogui.sleep(0.3)
                     success_find=True
+                    # 记录操作
+                    log_message.record(['find',color[i]])
                     break
                 else:
                     pyautogui.leftClick()# 取消选择卡片
+                    log_message.record(['unselect',color[i]])
         # 如果出牌失败，顺序出牌纠错
         if not success_find:
             for i in range(0, 4):
                 if utils.find_and_click_region(color_pic[i], offset=[5, 5], region=config.config['my_card_region']):
-                    for j in range(0,9):
+                    log_message.record(['order',color[i]])
+                    for j in range(0,10):
                         origin_score=cv2.cvtColor(np.asarray(pyautogui.screenshot(region=config.config['score_region'])), cv2.COLOR_RGB2BGR)
                         pyautogui.moveTo(config.config['first_card_loc_in_pool'][0]+j*config.config['card_space_in_pool'],config.config['first_card_loc_in_pool'][1])
                         pyautogui.leftClick()
                         pyautogui.sleep(0.2)
                         score_change_val,_=utils.match_img_region(origin_score,config.config['score_region'])
                         if score_change_val<0.95:
+                            log_message.record(['order','pair '+str(j)])
                             success_find=True
                             break
                 if success_find:
                     break
         max_val,_=utils.match_img(continue_btn)
         if max_val>0.95:
+            log_message.record(['info','finish'])
             return True
     return False
 

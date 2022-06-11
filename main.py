@@ -50,10 +50,10 @@ for i in range(0, 5000):
         current_time = datetime.datetime.now()
         if 10 > current_time.hour > 5 and current_time.isoweekday() == 4:
             break
-        elif current_time.hour == 5 and current_time.minute > 45:
+        elif current_time.hour == 5 and current_time.minute > 57:
             if current_time.isoweekday() == 4:  # 周四退出
                 break
-            time.sleep(16 * 60)  # 等到六点
+            time.sleep(4 * 60)  # 等到六点
             card_play.close_dialog()
         if not card_play.play_card():
             card_play.try_reset()
