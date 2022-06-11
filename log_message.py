@@ -24,7 +24,7 @@ def log_warning(message):
     pass
 
 def record(message:list, times=8):
-    print(message[0]+':'+message[1])
+    # print(message[0]+':'+message[1])
     if len(log_record) < times:
         log_record.append(message)
     else:
