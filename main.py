@@ -41,12 +41,12 @@ def init_config():
     ]
 
 init_config()
-# card_play.close_game()
-# card_play.start_game()
+card_play.close_game()
+card_play.start_game()
 
 
 for i in range(0, 5000):
-    # try:
+    try:
         current_time = datetime.datetime.now()
         if 10 > current_time.hour > 5 and current_time.isoweekday() == 4:
             break
@@ -64,5 +64,5 @@ for i in range(0, 5000):
         if mod(i, 10) == 0:
             send_message.send_message('card success: '+str(i)+' times')
             print('card success: '+str(i)+' times')
-    # except Exception as e:
-    #     send_message.send_message(str(e))
+    except Exception as e:
+        send_message.send_message(str(e))
