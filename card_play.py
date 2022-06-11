@@ -42,7 +42,7 @@ def play_card():
             # 截图保存
             print('break a game')
             utils.save_screen()
-            record=log_message.print_record()
+            record='break a game'+log_message.print_record()
             send_message.send_message(record)
             log_message.log_warning(record)
             break
@@ -59,15 +59,44 @@ def play_card():
         for i in range(0, 4):
             if utils.find_and_click_region(color_pic[i], offset=[5, 5], region=config.config['my_card_region']):
                 pyautogui.sleep(0.3)
-                if utils.find_and_click_region(color_pic[i], offset=[5, 5], region=config.config['card_pool_region']):
+                origin_score=cv2.cvtColor(np.asarray(pyautogui.screenshot(region=config.config['score_region'])), cv2.COLOR_RGB2BGR)
+                if utils.find_and_click_region(color_pic[i], offset=[5, 5], region=config.config['card_pool_region'],threshold=0.96):
                     pyautogui.sleep(0.3)
-                    success_find=True
-                    # 记录操作
-                    log_message.record(['find',color[i]])
-                    break
+                    score_change_val,_=utils.match_img_region(origin_score,config.config['score_region'])
+                    if score_change_val<0.95 or not is_my_turn():
+                        success_find=True
+                        # 记录操作
+                        log_message.record(['find',color[i]])
+                        break
                 else:
                     pyautogui.leftClick()# 取消选择卡片
                     log_message.record(['unselect',color[i]])
+
+        # 如果出牌失败，按颜色出牌
+        # 效率比较低，不采用
+        # if not success_find:
+        #     for i in range(0, 4):
+        #         if utils.find_and_click_region(color_pic[i], offset=[5, 5], region=config.config['my_card_region']):
+        #             log_message.record(['color',color[i]])
+        #             find_region= cv2.cvtColor(np.asarray(pyautogui.screenshot(region=config.config['card_pool_region'])), cv2.COLOR_RGB2BGR)
+        #             color_centers=utils.find_color_center(color[i],find_region)
+        #             origin_score=cv2.cvtColor(np.asarray(pyautogui.screenshot(region=config.config['score_region'])), cv2.COLOR_RGB2BGR)
+        #             for index,center in enumerate(color_centers):
+        #                 pyautogui.moveTo(config.config['card_pool_region'][0]+center[0],
+        #                 config.config['card_pool_region'][1]+center[1])
+        #                 pyautogui.leftClick()
+        #                 score_change_val,_=utils.match_img_region(origin_score,config.config['score_region'])
+        #                 if score_change_val<0.95 or not is_my_turn():
+        #                     success_find=True
+        #                     # 记录操作
+        #                     log_message.record(['find by color',color[i]])
+        #                     break
+        #             if not success_find:
+        #                 utils.find_and_click_region(color_pic[i], offset=[5, 5], region=config.config['my_card_region'])# 取消选择卡片
+        #                 log_message.record(['unselect',color[i]])
+        #             else:
+        #                 break
+
         # 如果出牌失败，顺序出牌纠错
         if not success_find:
             for i in range(0, 4):

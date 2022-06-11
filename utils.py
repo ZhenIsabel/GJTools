@@ -18,9 +18,9 @@ def find_and_click(img, offset, threshold=0.95):
         return True
     return False
 
-def find_and_click_region(img, offset,region, threshold=0.95):
+def find_and_click_region(img, offset,region,method=3, threshold=0.95):
     image = cv2.cvtColor(np.asarray(pyautogui.screenshot(region=region)), cv2.COLOR_RGB2BGR)
-    match_res = cv2.matchTemplate(image, img, 3)
+    match_res = cv2.matchTemplate(image, img, method)
     # show_imag(image)
     _, max_val, _, max_loc = cv2.minMaxLoc(match_res)
     if max_val > threshold:
@@ -53,8 +53,8 @@ def show_imag(image, name='test'):
     cv2.destroyAllWindows()
 
 
-def show_match_image(template, image):
-    match_res = cv2.matchTemplate(image, template, 3)
+def show_match_image(template, image,method=3):
+    match_res = cv2.matchTemplate(image, template, method)
     min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(match_res)
     print(max_val)
     top_left = max_loc
@@ -62,6 +62,35 @@ def show_match_image(template, image):
     bottom_right = (top_left[0]+w, top_left[1]+h)
     cv2.rectangle(image, top_left, bottom_right, 255, 2)
     show_imag(image)
+
+
+def find_color_center(color_name, image):
+    color = {
+    "blue": {"color_lower": np.array([100, 43, 106]), "color_upper": np.array([125, 180, 200])},
+    "red": {"color_lower": np.array([156, 43, 46]), "color_upper": np.array([180, 255, 255])},
+    "yellow": {"color_lower": np.array([21, 43, 46]), "color_upper": np.array([34, 100, 255])},
+    "green": {"color_lower": np.array([35, 43, 46]), "color_upper": np.array([77, 255, 255])},
+         }
+    img = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)         #转成HSV
+    img = cv2.GaussianBlur(img, (5, 5), 0)              #高斯滤波降噪，模糊图片
+    # img = cv2.threshold(img, 127,255, cv2.THRESH_BINARY)[1]
+    color_img = cv2.inRange(img, color[color_name]["color_lower"], color[color_name]["color_upper"])#筛选出符合的颜色
+    kernel = np.ones((3, 3), np.uint8)              #核定义
+    color_img = cv2.erode(color_img, kernel, iterations=2)  #腐蚀除去相关性小的颜色
+    color_img = cv2.GaussianBlur(color_img, (5, 5), 0)      #模糊图像
+    cnts = cv2.findContours(color_img.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[0] #找出轮廓
+    centers=[]
+    for cnt in cnts:                #遍历所有符合的轮廓
+        x, y, w, h = cv2.boundingRect(cnt)
+        if w*h<15*20:
+            continue
+        cv2.rectangle(image, (x, y), (x+w, y+h), (0, 0, 255), 2)
+        centers.append([int((x+w)/2),int((y+h)/2)])
+    return centers
+
+
+
+
 
 def save_screen():
     image = cv2.cvtColor(np.asarray(
