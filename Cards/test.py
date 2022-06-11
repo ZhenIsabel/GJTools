@@ -1,10 +1,10 @@
 import time
 
-import utils
+from Cards import utils
 import cv2
 import numpy as np
 import pyautogui
-import config
+from Cards import config
 import math
 
 color_pic = [cv2.imread('img/red.png'),
