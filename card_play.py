@@ -61,7 +61,7 @@ def play_card():
         # 如果出牌失败，按颜色出牌
         # 效率比较低，不采用
         # if not success_find:
-        #   col_match_show_card()
+        #   success_find = col_match_show_card()
 
         # 如果出牌失败，顺序出牌纠错
         if not success_find:
@@ -73,9 +73,7 @@ def play_card():
     return False
 
 # 图像匹配出牌
-
-
-def pic_match_show_card(try_times=3):
+def pic_match_show_card(try_times=2):
     if try_times <= 0:
         return False
     for i in range(0, 4):
@@ -84,7 +82,7 @@ def pic_match_show_card(try_times=3):
             origin_score = cv2.cvtColor(np.asarray(pyautogui.screenshot(
                 region=config.config['score_region'])), cv2.COLOR_RGB2BGR)
             if utils.find_and_click_region(color_pic[i], offset=[5, 5], region=config.config['card_pool_region']):
-                pyautogui.sleep(0.3)
+                pyautogui.sleep(0.2)
                 score_change_val, _ = utils.match_img_region(
                     origin_score, config.config['score_region'])
                 if score_change_val < 0.95 or not is_my_turn():
@@ -97,8 +95,6 @@ def pic_match_show_card(try_times=3):
     return pic_match_show_card(try_times-1)
 
 # 颜色识别出牌
-
-
 def col_match_show_card(try_times=2):
     if try_times <= 0:
         return False
