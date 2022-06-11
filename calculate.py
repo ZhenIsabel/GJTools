@@ -1,15 +1,18 @@
 import datetime
 import time
 
-import role_action
-import send_message
+from Farm import role_action
+from Farm import send_message
 # import config_model
-import get_weather
-import utils
+from Farm import get_weather
+from Farm import utils
 import cv2
-import Cards.main
+from Cards import Card_Main
 
 def calc():
+    Card_Main.card_main()
+
+def calc111():
     time.sleep(1)
     role_action.reset_visual_field()
     for i in range(0, 200):
@@ -36,7 +39,7 @@ def calc():
             forbid_buff=cv2.imread('img/forbid_buff.png')
             buff_val,_=utils.match_img_region(forbid_buff,buff_region)
             if buff_val>0.9:
-                Cards.main.card_main()
+                Card_Main.card_main()
             open_count = role_action.avoid_open_interrupt()
             if not open_count >= 0:
                 role_action.try_reset()

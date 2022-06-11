@@ -2,10 +2,10 @@ import time
 
 import pyautogui
 
-import role_loc
-import role_move
+from Farm import role_loc
+from Farm import role_move
 import math
-import improve_direction
+from Farm import improve_direction
 
 time.sleep(3)
 

@@ -9,7 +9,7 @@ import numpy as np
 import time
 import string
 
-import window_control
+from Farm import window_control
 
 
 def fetch_game_region():

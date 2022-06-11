@@ -1,5 +1,5 @@
 import logging
-import config_model
+from Farm import config_model
 
 
 logging.basicConfig(

@@ -3,10 +3,10 @@ import time
 import pyautogui
 import numpy
 
-import role_action
-import role_loc
+from Farm import role_action
+from Farm import role_loc
 
-import config_model
+from Farm import config_model
 
 # 速度值
 # move_speed = 0.095169

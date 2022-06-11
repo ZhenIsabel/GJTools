@@ -8,13 +8,13 @@ import win32api
 import win32con
 # import pyperclip
 
-import config_model
-import find_box
-import log_message
-import role_loc
-import role_move
-import send_message
-import utils
+from Farm import config_model
+from Farm import find_box
+from Farm import log_message
+from Farm import role_loc
+from Farm import role_move
+from Farm import send_message
+from Farm import utils
 # import fucking_flower
 
 map_in_store = cv2.imread('img/map_in_store.png')

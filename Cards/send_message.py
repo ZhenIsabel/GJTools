@@ -1,8 +1,8 @@
 from smtplib import SMTP_SSL
 from email.mime.text import MIMEText
 
-import config
-import log_message
+from Cards import config
+from Cards import log_message
 import traceback
 
 def send_message(message):

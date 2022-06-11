@@ -1,6 +1,6 @@
 from functools import singledispatch
 # import numpy as np
-import config_model
+from Farm import config_model
 
 # 读取并写入config_model
 

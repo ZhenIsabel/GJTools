@@ -8,8 +8,8 @@ import imutils
 import math
 import re
 import pyautogui
-import role_move
-import utils
+from Farm import role_move
+from Farm import utils
 
 # 获取绝对坐标的屏幕位置
 # current_loc_area = [1810, 35, 110, 30]

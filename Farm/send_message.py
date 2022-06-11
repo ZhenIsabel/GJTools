@@ -1,8 +1,8 @@
 from smtplib import SMTP_SSL
 from email.mime.text import MIMEText
 
-import config_model
-import log_message
+from Farm import config_model
+from Farm import log_message
 import traceback
 
 def send_message(message):

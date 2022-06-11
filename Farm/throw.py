@@ -1,5 +1,5 @@
 import pyautogui
-import config_model
+from Farm import config_model
 import time
 import cv2
 import numpy as np

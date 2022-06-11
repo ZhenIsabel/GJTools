@@ -1,10 +1,8 @@
-from operator import mod
-import utils
-import time
-import card_play
-import send_message
-import config
 import datetime
+import time
+from operator import mod
+
+from Cards import card_play, config, send_message, utils
 
 utils.window_focus('古剑奇谭网络版')
 time.sleep(0.5)
@@ -26,7 +24,7 @@ def init_config():
     ]
     config.config['longxing_pos']=[
         int((window_pos[0]+window_pos[2])/2),
-        int((window_pos[1]+window_pos[3])/2-30)
+        int((window_pos[1]+window_pos[3])/2)
     ]
     config.config['first_card_loc_in_pool']=[
         int(window_pos[0]+350),

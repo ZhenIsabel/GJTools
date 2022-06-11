@@ -1,9 +1,8 @@
 import pyautogui
 import cv2
 import numpy as np
-import pyautogui
-import window_control
-import config_model
+from Farm import window_control
+from Farm import config_model
 import win32api
 import win32con
 import time

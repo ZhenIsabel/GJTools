@@ -4,14 +4,14 @@ from functools import singledispatch
 from tkinter import ttk
 from tkinter.messagebox import askokcancel
 
-import test_weather
+from Farm import test_weather
 
-import window_control
+from Farm import window_control
 import pyautogui
 
 import calculate
-import config_io
-import config_model
+from Farm import config_io
+from Farm import config_model
 
 # 是否允许鼠标挪出界自动关闭
 pyautogui.FAILSAFE = False
@@ -616,7 +616,7 @@ class App(ttk.Frame):
 # if __name__ == "__main__":
 def ui_main():
     root = tk.Tk()
-    root.title("猫猫挖宝")
+    root.title("猫猫")
 
     # Simply set the theme
     root.tk.call("source", "ui\sun-valley.tcl")

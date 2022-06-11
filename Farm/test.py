@@ -1,8 +1,8 @@
 import time
 
 import cv2
-import role_move
-import find_box
+from Farm import role_move
+from Farm import find_box
 # time.sleep(3)
 # role_action.reset_visual_field()
 

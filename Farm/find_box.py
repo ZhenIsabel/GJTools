@@ -5,8 +5,8 @@ import numpy as np
 import imutils
 import pyautogui
 
-import role_move
-import config_model
+from Farm import role_move
+from Farm import config_model
 
 find_tip = cv2.imread('img/find_tip.png')
 find_tip_night = cv2.imread('img/find_tip_night.png')
