@@ -223,6 +223,7 @@ def try_reset():
     if count >= 10:
         # 关游戏保点卡
         utils.close_window('古剑奇谭网络版')
+        utils.find_and_click(leave_game_btn)
 
 
 def deal_new_day():
