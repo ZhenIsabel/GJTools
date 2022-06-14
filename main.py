@@ -10,37 +10,7 @@ utils.window_focus('古剑奇谭网络版')
 time.sleep(0.5)
 
 
-def init_config():
-    window_pos = utils.get_window_size('古剑奇谭网络版')
-    config.config['my_card_region'] = [
-        window_pos[0]+config.config['my_card_to_edge'][0],
-        window_pos[1]+config.config['my_card_to_edge'][1],
-        config.config['my_card_region'][2],
-        config.config['my_card_region'][3]
-    ]
-    config.config['card_pool_region'] =[
-        window_pos[0]+config.config['card_pool_to_edge'][0],
-        window_pos[1]+config.config['card_pool_to_edge'][1],
-        config.config['card_pool_region'][2],
-        config.config['card_pool_region'][3]
-    ]
-    config.config['longxing_pos']=[
-        int((window_pos[0]+window_pos[2])/2),
-        int((window_pos[1]+window_pos[3])/2-10)
-    ]
-    config.config['first_card_loc_in_pool']=[
-        int(window_pos[0]+350),
-        int(window_pos[1]+483)
-    ]
-    config.config['score_region']=[
-        window_pos[0]+305,
-        window_pos[1]+690,
-        config.config['score_region'][2],
-        config.config['score_region'][3]
-
-    ]
-
-init_config()
+config.init_config()
 card_play.close_game()
 card_play.start_game()
 

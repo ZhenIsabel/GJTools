@@ -40,11 +40,24 @@ def FlannBasedShowMatch(template,img):
     utils.show_imag(im_show)
     pass
 
+def show_every_check_region():
+    image = cv2.cvtColor(np.asarray(
+        pyautogui.screenshot()), cv2.COLOR_RGB2BGR)
+    bottom_right = (config.config['my_card_region'][0]+config.config['my_card_region'][2], config.config['my_card_region'][1]+config.config['my_card_region'][3])
+    cv2.rectangle(image, config.config['my_card_region'][:2], bottom_right, 255, 2)
+    bottom_right = (config.config['score_region'][0]+config.config['score_region'][2], config.config['score_region'][1]+config.config['score_region'][3])
+    cv2.rectangle(image, config.config['score_region'][:2], bottom_right, 255, 2)
+    bottom_right = (config.config['card_pool_region'][0]+config.config['card_pool_region'][2], config.config['card_pool_region'][1]+config.config['card_pool_region'][3])
+    cv2.rectangle(image, config.config['card_pool_region'][:2], bottom_right, 255, 2)
+    bottom_right = (config.config['first_card_loc_in_pool'][0]+20, config.config['first_card_loc_in_pool'][1]+20)
+    cv2.rectangle(image, config.config['first_card_loc_in_pool'][:2], bottom_right, 255, 2)
+    bottom_right = (config.config['opponent_count_region'][0]+config.config['opponent_count_region'][2], config.config['opponent_count_region'][1]+config.config['opponent_count_region'][3])
+    cv2.rectangle(image, config.config['opponent_count_region'][:2], bottom_right, 255, 2)
+    
+    utils.show_imag(image)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
 time.sleep(1)
-def test(fun,*args):
-    fun(*args)
-
-def inside(x,y):
-    print(str(x)+','+str(y))
-
-test(inside,1,0)
+config.init_config()
+show_every_check_region()
