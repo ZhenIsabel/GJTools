@@ -22,6 +22,7 @@ confirm_exit = cv2.imread('img/confirm_exit.png')
 continue_btn = cv2.imread('img/continue_btn.png')
 leave_game_btn = cv2.imread('img/leave_game_btn.png')
 not_turn = cv2.imread('img/not_turn.png')
+opponent_count_tag=cv2.imread('img/opponent_count.png')
 color_pic = [cv2.imread('img/red.png'),
              cv2.imread('img/green.png'),
              cv2.imread('img/blue.png'),
@@ -56,7 +57,7 @@ def play_card():
                 log_message.record(['wait', i+1])
 
         # 出牌
-        success_find = pic_match_show_card()
+        success_find = pic_match_show_card(try_times=2)
 
         # 如果出牌失败，按颜色出牌
         # 效率比较低，不采用
@@ -73,12 +74,14 @@ def play_card():
     return False
 
 # 图像匹配出牌
+
+
 def pic_match_show_card(try_times=2):
     if try_times <= 0:
         return False
     for i in range(0, 4):
         if utils.find_and_click_region(color_pic[i], offset=[5, 5], region=config.config['my_card_region']):
-            pyautogui.sleep(0.3)
+            pyautogui.sleep(0.2)
             origin_score = cv2.cvtColor(np.asarray(pyautogui.screenshot(
                 region=config.config['score_region'])), cv2.COLOR_RGB2BGR)
             if utils.find_and_click_region(color_pic[i], offset=[5, 5], region=config.config['card_pool_region']):
@@ -95,6 +98,8 @@ def pic_match_show_card(try_times=2):
     return pic_match_show_card(try_times-1)
 
 # 颜色识别出牌
+
+
 def col_match_show_card(try_times=2):
     if try_times <= 0:
         return False
@@ -168,6 +173,10 @@ def start_game(try_times=3):
     if not utils.find_and_click(easy_mode, [5, 5]):
         return start_game(try_times-1)
     pyautogui.sleep(0.5)
+    # 刷对手珍稀卡
+    pair_val,_=utils.match_img_region(opponent_count_tag,config.config['opponent_count_region'])
+    if pair_val<0.95:
+        return restart_game(try_times)
     if not utils.find_and_click(prepare_btn, [5, 5]):
         return start_game(try_times-1)
     pyautogui.sleep(5)
@@ -189,6 +198,7 @@ def next_game(try_times=3):
 def close_game(try_times=3):
     if try_times <= 0:
         return False
+    pyautogui.moveTo(config.config['longxing_pos'][0],config.config['longxing_pos'][1])
     if not utils.find_and_click(exit_btn, [5, 5]):
         return True
     pyautogui.sleep(0.5)
@@ -197,15 +207,18 @@ def close_game(try_times=3):
     return True
 
 
-def restart_game():
-    if not close_game():
+def restart_game(try_times=3):
+    if try_times <= 0:
         return False
-    if not start_game():
-        return False
+    if not close_game(try_times):
+        return restart_game(try_times-1)
+    if not start_game(try_times):
+        return restart_game(try_times-1)
     return True
 
 
 def try_reset():
+    utils.save_screen()
     if not deal_new_day():
         return
     count = 0
@@ -224,6 +237,7 @@ def try_reset():
         # 关游戏保点卡
         utils.close_window('古剑奇谭网络版')
         utils.find_and_click(leave_game_btn)
+        send_message('exit game')
 
 
 def deal_new_day():
