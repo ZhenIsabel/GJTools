@@ -6,11 +6,9 @@ import send_message
 import config
 import datetime
 
-utils.window_focus('古剑奇谭网络版')
 time.sleep(0.5)
-
-
 config.init_config()
+utils.window_focus('古剑奇谭网络版')
 card_play.close_game()
 card_play.start_game()
 
@@ -34,7 +32,7 @@ for i in range(0, 5000):
         if not card_play.next_game():
             card_play.try_reset()
             continue
-        if mod(i, 10) == 0:
+        if mod(i, 20) == 0:
             send_message.send_message('card success: '+str(i)+' times')
             print('card success: '+str(i)+' times')
     except Exception as e:

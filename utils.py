@@ -151,7 +151,7 @@ def deal_offline():
 
 
 # 查找含有关键字的窗口，返回该窗口的handle
-def get_window_names(keyword: string):
+def get_window_from_name(keyword: string):
     hWndList = []
     win32gui.EnumWindows(lambda hWnd, param: param.append(hWnd), hWndList)
     for hwnd in hWndList:
@@ -166,16 +166,7 @@ def get_window_names(keyword: string):
 
             # print(class_name)
             # print('------------------------------------')
-
-
-def get_window_from_name(name: string):
-    target_handle = get_window_names(name)
-    # print(target_handle)
-    if target_handle == 0:
-        return None
-    else:
-        return target_handle
-
+    return None
 
 def window_focus(name: string):
     handle = get_window_from_name(name)
