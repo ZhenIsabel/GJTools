@@ -209,12 +209,12 @@ def close_game(try_times=3):
     return True
 
 
-def restart_game(try_times=3):
+def restart_game(try_times=3,refresh_times=0):
     if try_times <= 0:
         return False
     if not close_game(try_times):
         return restart_game(try_times-1)
-    if not start_game(try_times):
+    if not start_game(try_times,refresh_times):
         return restart_game(try_times-1)
     return True
 
