@@ -155,8 +155,8 @@ def move_click(x, y, sleep=0):
     pyautogui.sleep(sleep)
 
 
-def start_game(try_times=3,refresh_times=0):
-    if try_times <= 0 and refresh_times<=0:
+def start_game(try_times=3):
+    if try_times <= 0 :
         return False
     pyautogui.moveTo(config.config['longxing_pos'])
     pyautogui.sleep(0.5)
@@ -176,8 +176,7 @@ def start_game(try_times=3,refresh_times=0):
     # 刷对手珍稀卡
     pair_val,_=utils.match_img_region(opponent_count_tag,config.config['opponent_count_region'])
     if pair_val<0.95:
-        if refresh_times<20:
-            return restart_game(try_times-1,refresh_times+1)
+        return restart_game(try_times)
     if not utils.find_and_click(prepare_btn, [5, 5]):
         return start_game(try_times-1)
     pyautogui.sleep(5)
@@ -208,13 +207,13 @@ def close_game(try_times=3):
     return True
 
 
-def restart_game(try_times=3,refresh_times=0):
+def restart_game(try_times=3):
     if try_times <= 0:
         return False
     if not close_game(try_times):
-        return restart_game(try_times-1,refresh_times)
-    if not start_game(try_times,refresh_times):
-        return restart_game(try_times-1,refresh_times)
+        return restart_game(try_times-1)
+    if not start_game(try_times):
+        return restart_game(try_times-1)
     return True
 
 
