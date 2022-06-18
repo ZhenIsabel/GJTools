@@ -9,10 +9,10 @@ from Farm import utils
 import cv2
 from Cards import Card_Main
 
-def calc():
+def calc222():
     Card_Main.card_main()
 
-def calc111():
+def calc():
     time.sleep(1)
     role_action.reset_visual_field()
     for i in range(0, 200):
