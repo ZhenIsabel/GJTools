@@ -224,20 +224,23 @@ def try_reset():
     count = 0
     while not restart_game() and count < 10:
         count += 1
+        utils.reset_visual_field()
         # 检查是否掉线
         if utils.deal_offline():
             send_message.send_message("restart game " + str(count))
             restart_game()
         send_message.send_message("Try reset count " + str(count))
         pyautogui.sleep(150)
+        
+        if count >= 5:
+            # 关游戏保点卡
+            utils.close_window('古剑奇谭网络版')
+            utils.find_and_click(leave_game_btn,[5,5])
+            send_message('exit game')
+
         if not deal_new_day():
             return
 
-    if count >= 10:
-        # 关游戏保点卡
-        utils.close_window('古剑奇谭网络版')
-        utils.find_and_click(leave_game_btn)
-        send_message('exit game')
 
 
 def deal_new_day():
