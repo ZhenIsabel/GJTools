@@ -10,7 +10,7 @@ time.sleep(0.5)
 
 
 
-def card_main(runtime=60*60):
+def card_main(runtime=60):
     config.init_config()
     card_play.close_game()
     card_play.start_game()
@@ -18,7 +18,7 @@ def card_main(runtime=60*60):
     for i in range(0, 5000):
         try:
             this_time=time.time()
-            if this_time-start_time>runtime*60:
+            if this_time-start_time>runtime*60*60:
                 break
             current_time = datetime.datetime.now()
             if 10 > current_time.hour > 5 and current_time.isoweekday() == 4:
@@ -39,3 +39,4 @@ def card_main(runtime=60*60):
                 print('card success: '+str(i)+' times')
         except Exception as e:
             send_message.send_message(str(e))
+            return False

@@ -226,20 +226,29 @@ def check_open_complete():
     log_message.log_error("complete check:"+str(max_complete_val))
     return max_complete_val > 0.7
 
+def move_to_open():
+    role_move.move_to([-802, -703])
+    role_move.move_to([-791, -702])
+    role_move.move_to([-777, -701])
+    role_move.move_to_nearby([-756, -703], None, 0, 5)
+    after_loc= role_loc.get_current_loc()
+    role_move.turn_to(0)
+    down_horse()
+    loc_bias = np.power(
+            -756-after_loc[0], 2)+np.power(-703-after_loc[1], 2)
+    if loc_bias < 2:
+        return True
+    else:
+        return False
 
 def avoid_open_interrupt():
     # 开图读条左上角位置及长宽
     read_area = [1104, 999, 368, 50]
 
     # 原开图操作
-    role_move.move_to([-802, -703])
-    role_move.move_to([-791, -702])
-    role_move.move_to([-777, -701])
-    role_move.move_to_nearby([-756, -703], None, 0, 5)
     max_val, max_loc = match_img(open_map_btn)
     log_message.log_debug("开图按钮匹配率："+str(max_val))
     pyautogui.moveTo(max_loc[0] + 24, max_loc[1] + 24)
-    down_horse()
     image_origin = cv2.cvtColor(np.asarray(
     pyautogui.screenshot(region=read_area)), cv2.COLOR_RGB2BGR)
     log_message.log_debug("开始开图")

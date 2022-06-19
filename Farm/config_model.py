@@ -14,7 +14,7 @@ config = {
     'move_distance_x': 4.5,      # 地图搜索时x轴步距
     'move_distance_y': 3,      # 地图搜索时y轴步距
     'email_add': 'vice_president@whitehouse.gov',  # 接收报错邮件的地址
-    'key_commu': 'f',  # 交互键
+    'key_commu': 'g',  # 交互键
     'key_map': 'm',  # 地图键
     'key_horse': 't',  # 坐骑键
 
