@@ -10,4 +10,3 @@ __pycache__/
 dataset.txt
 gold_report/dig_green_log.txt
 gold_report/gold_symbols.csv
-error_screenshot/*.png

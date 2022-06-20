@@ -236,7 +236,7 @@ def try_reset():
             # 关游戏保点卡
             utils.close_window('古剑奇谭网络版')
             utils.find_and_click(leave_game_btn,[5,5])
-            send_message('exit game')
+            send_message.send_message('exit game')
 
         if not deal_new_day():
             return
