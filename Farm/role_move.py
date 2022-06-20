@@ -68,18 +68,18 @@ def turn_around(num):
     if abs(num) <= turn_min:
         return
     if num > 0:
-        pyautogui.keyDown(']')
+        pyautogui.keyDown('.')
         wait_include_pause(
             num * config_model.config['turn_speed']
             # *(1+improve_direction.check_ping())
         )
-        pyautogui.keyUp(']')
+        pyautogui.keyUp('.')
     elif num < 0:
-        pyautogui.keyDown('[')
+        pyautogui.keyDown(',')
         wait_include_pause(- num * config_model.config['turn_speed']
                            # *(1+improve_direction.check_ping())
                            )
-        pyautogui.keyUp('[')
+        pyautogui.keyUp(',')
 
 
 def turn_to(direct, try_times=5):

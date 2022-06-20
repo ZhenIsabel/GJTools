@@ -42,7 +42,9 @@ def calc():
             buff_region=[858, 1005, 230, 55]
             forbid_buff=cv2.imread('img/forbid_buff.png')
             buff_val,_=utils.match_img_region(forbid_buff,buff_region)
-            if buff_val>0.9 or mod(i+1,12)==0:
+            if buff_val>0.9:
+                Card_Main.card_main(1)
+            if current_time.hour>5 and current_time.hour<8:
                 Card_Main.card_main(1)
             open_count = role_action.avoid_open_interrupt()
             if not open_count >= 0:
