@@ -104,7 +104,7 @@ def clear_map(buy_count):
         # 切换到挖宝地图
         log_message.log_info("切换到挖宝地图")
         log_message.log_debug("匹配率："+str(max_val))
-        pyautogui.moveTo(open_box_map_pos[0], open_box_map_pos[1])
+        av(open_box_map_pos[0], open_box_map_pos[1])
         pyautogui.leftClick()
     # buy_count = int(
     #     config_model.config['count_yuanbo'] if config_model.config['is_yuanbo'] else config_model.config['count_no_yuanbo'])
@@ -115,9 +115,9 @@ def clear_map(buy_count):
     if count < 20:
         count = 45
     for i in range(0, count):
-        pyautogui.moveTo(first_map_pos[0], first_map_pos[1])
+        pyautogui.moveTo(first_map_pos[0], first_map_pos[1],pyautogui.easeInOutQuad)
         pyautogui.rightClick()
-        pyautogui.moveTo(first_map_pos[0] + 50, first_map_pos[1] + 30)
+        pyautogui.moveTo(first_map_pos[0] + 50, first_map_pos[1] + 30,pyautogui.easeInOutQuad)
         pyautogui.leftClick()
         pyautogui.press('enter')
         # pyautogui.moveTo(confirm_pos[0], confirm_pos[1])
@@ -136,7 +136,7 @@ def buy_map():
     for i in range(0, 10):
         time.sleep(0.2)
         # 鼠标挪到角落以防误触
-        pyautogui.moveTo(first_map_pos[0], first_map_pos[1])
+        pyautogui.moveTo(first_map_pos[0], first_map_pos[1],pyautogui.easeInOutQuad)
         max_val, max_loc = match_img(store_npc)
         # print(max_val)
         if max_val > fitness_threshold:
@@ -156,7 +156,7 @@ def buy_map():
         send_message_with_loc("Open Map Store Error")
         return False
     clear_bag()
-    pyautogui.moveTo(max_loc[0] + 24, max_loc[1] + 24)
+    pyautogui.moveTo(max_loc[0] + 24, max_loc[1] + 24,pyautogui.easeInOutQuad)
     pyautogui.keyDown('shift')
     pyautogui.rightClick()
     pyautogui.keyUp('shift')
@@ -196,7 +196,7 @@ def remove_buff():
         match_res)
     # print(max_loc)
     if max_val > 0.92:
-        pyautogui.moveTo(858+max_loc[0] + 13, 1005+max_loc[1] + 13)
+        pyautogui.moveTo(858+max_loc[0] + 13, 1005+max_loc[1] + 13,pyautogui.easeInOutQuad)
         pyautogui.rightClick()
         # # 打字嘲讽饼哥
         # pyautogui.moveTo(417, 1220)
@@ -248,7 +248,7 @@ def avoid_open_interrupt():
     # 原开图操作
     max_val, max_loc = match_img(open_map_btn)
     log_message.log_debug("开图按钮匹配率："+str(max_val))
-    pyautogui.moveTo(max_loc[0] + 24, max_loc[1] + 24)
+    pyautogui.moveTo(max_loc[0] + 24, max_loc[1] + 24,pyautogui.easeInOutQuad)
     image_origin = cv2.cvtColor(np.asarray(
     pyautogui.screenshot(region=read_area)), cv2.COLOR_RGB2BGR)
     log_message.log_debug("开始开图")
@@ -330,7 +330,7 @@ def open_map():
     role_move.move_to([-756, -703], None, 0, 5)
     max_val, max_loc = match_img(open_map_btn)
     log_message.log_debug("开图按钮匹配率："+str(max_val))
-    pyautogui.moveTo(max_loc[0] + 24, max_loc[1] + 24)
+    pyautogui.moveTo(max_loc[0] + 24, max_loc[1] + 24,pyautogui.easeInOutQuad)
     down_horse()
     log_message.log_debug("开始开图")
     pyautogui.leftClick()
@@ -390,7 +390,7 @@ def up_horse():
 def close_dialog():
     max_val, max_loc = match_img(close_btn)
     if max_val > fitness_threshold:
-        pyautogui.moveTo(max_loc[0] + 6, max_loc[1] + 6)
+        pyautogui.moveTo(max_loc[0] + 6, max_loc[1] + 6,pyautogui.easeInOutQuad)
         pyautogui.leftClick()
 
 
@@ -492,7 +492,7 @@ def clear_bag():
     for j in range(0, 3):
         for i in range(0, bag_width):
             pyautogui.moveTo(
-                first_loc[0] + i * bag_item_size, first_loc[1] + j * bag_item_size)
+                first_loc[0] + i * bag_item_size, first_loc[1] + j * bag_item_size,pyautogui.easeInOutQuad)
             pyautogui.rightClick()
     # for i in range(0, 10):
     #     pyautogui.moveTo(first_loc[0] + i * bag_item_size,
@@ -519,7 +519,7 @@ def reset_to_store():
         log_message.log_error("找不到仙府图标")
         up_horse()
         return False
-    pyautogui.moveTo(max_loc[0] + 24, max_loc[1] + 24)
+    pyautogui.moveTo(max_loc[0] + 24, max_loc[1] + 24,pyautogui.easeInOutQuad)
     pyautogui.leftClick()
     pyautogui.sleep(5)
     log_message.log_debug("对话")
@@ -534,7 +534,7 @@ def reset_to_store():
         log_message.log_error("找不到'枕剑仙乡·卧云'选项")
         up_horse()
         return False
-    pyautogui.moveTo(max_loc[0] + 30, max_loc[1] + 15)
+    pyautogui.moveTo(max_loc[0] + 30, max_loc[1] + 15,pyautogui.easeInOutQuad)
     pyautogui.leftClick()
     pyautogui.sleep(36)
 
@@ -548,7 +548,7 @@ def reset_to_store():
         log_message.log_error("找不到'回川入世符-返回荒狼原'选项")
         up_horse()
         return False
-    pyautogui.moveTo(max_loc[0] + 30, max_loc[1] + 15)
+    pyautogui.moveTo(max_loc[0] + 30, max_loc[1] + 15,pyautogui.easeInOutQuad)
     pyautogui.leftClick()
     pyautogui.sleep(40)
 
@@ -567,7 +567,7 @@ def reset_keys():
     pyautogui.keyDown('shift')
     pyautogui.keyUp('shift')
     pyautogui.sleep(2)
-    pyautogui.moveTo(find_box.footer_pos[0], find_box.footer_pos[1])
+    pyautogui.moveTo(find_box.footer_pos[0], find_box.footer_pos[1],pyautogui.easeInOutQuad)
     pyautogui.sleep(2)
     pyautogui.mouseDown(button='left')
     pyautogui.sleep(2)

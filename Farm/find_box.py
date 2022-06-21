@@ -84,7 +84,7 @@ def find_box_in_area_color(region, weather_code=0):
                 cZ = 1
             cX = int(M["m10"] / cZ)
             cY = int(M["m01"] / cZ)
-            pyautogui.moveTo(region[0] + cX, region[1] + cY)
+            pyautogui.moveTo(region[0] + cX, region[1] + cY,pyautogui.easeInOutQuad)
             if is_on_box_by_tip([region[0], region[1] - 50, region[2] + 150, region[3] + 50], weather_code > 0):
                 pyautogui.rightClick()
                 time.sleep(open_box_time)
