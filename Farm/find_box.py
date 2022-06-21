@@ -125,21 +125,6 @@ def is_on_box_by_color():
 
 
 def find_box_under_footer():
-    # image = cv2.cvtColor(np.asarray(pyautogui.screenshot(region=weather_area)), cv2.COLOR_RGB2BGR)
-    # match_res = cv2.matchTemplate(image, night_tip, 3)
-    # min_val, max_val_night, min_loc, max_loc = cv2.minMaxLoc(match_res)
-    # is_night = max_val_night > 0.92
-    # image = cv2.cvtColor(np.asarray(pyautogui.screenshot(region=weather_area)), cv2.COLOR_RGB2BGR)
-    # match_res = cv2.matchTemplate(image, rain_tip, 3)
-    # min_val, max_val_rain, min_loc, max_loc = cv2.minMaxLoc(match_res)
-    # is_rain = max_val_rain > 0.92
-    # if max_val_rain-max_val_night>0.04:
-    #     is_night=False
-    # weather_code = 0
-    # if is_night:
-    #     weather_code = 2
-    # elif is_rain:
-    #     weather_code = 1
     weather_code = get_weather.get_weather_code()
     first_check = find_box_in_area_color(box_under_footer_area, weather_code)
     if not first_check:
@@ -164,8 +149,6 @@ def find_box_under_footer():
 
 
 def find_box_under_footer_passageway():
-    #走廊脚下可开盒子区域
-    [1280, 790]
     box_under_footer_area_passageway = [1165, 740, 230, 200]
     weather_code=get_weather.get_weather_code()
     first_check = find_box_in_area_color(box_under_footer_area_passageway, weather_code)
