@@ -7,4 +7,5 @@
 log.txt
 config.txt
 dataset.txt
-__pycache__/
+gold_report/dig_green_log.txt
+gold_report/gold_symbols.csv

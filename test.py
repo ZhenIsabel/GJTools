@@ -1,17 +1,19 @@
 import time
 
 import cv2
-import role_move
-import find_box
+from Farm import role_action, role_move
+from Farm import find_box
 # time.sleep(3)
 # role_action.reset_visual_field()
 
-def show_imag(name, image):
+
+def show_imag(image, name='test'):
     cv2.imshow(name, image)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
-def show_match_image(match_res,template,image):
+
+def show_match_image(match_res, template, image):
     min_val, max_val, min_loc, max_loc = cv2.dminMaxLoc(match_res)
     top_left = max_loc
     h, w = template.shape[:2]
@@ -22,20 +24,24 @@ def show_match_image(match_res,template,image):
 
 def move_test():
     begin_find_loc_2 = [-980, -530]
-    begin_find_loc_1 = [-825, -525]
+    begin_find_loc_1 = [-825, -540]
     find_area_2 = [55, 30]
     begin_find_direct_1 = 0.6
-    find_area_1 = [55, 47]
+    find_area_1 = [65, 42]
     begin_find_direct_2 = -0.5
     role_move.move_to(begin_find_loc_1, None, 1, 5)
     role_move.turn_to(begin_find_direct_1)
     role_move.move_map(find_area_1[0],
-                                find_area_1[1], find_box.find_box_under_footer,
-                                begin_find_loc_1
-                                )
+                       find_area_1[1], find_box.find_box_under_footer,
+                       origin=begin_find_loc_1,
+                       region=1
+                       )
+
+
 # cost_20 = cv2.imread('img/cost_20.png')
 # cost_800 = cv2.imread('img/cost_800.png')
-# time.sleep(2)
+time.sleep(2)
+role_action.reset_visual_field()
 # import pyautogui
 # import numpy as np
 # clear_finish = cv2.imread('img/clear_finish.png')
@@ -52,27 +58,7 @@ def move_test():
 # print(max_val_count_check)
 # if max_val_count_check < 0.95 :
 #     extra_buy_count = 10
-def prepare_to_find():
-    count = 0
-    # 走廊挖宝坐标方向和大小
-    begin_find_loc_passageway1 = [-794, -720]
-    begin_find_loc_passageway2 = [-793, -681]
-    begin_find_direct_passageway1 = -0.49
-    begin_find_direct_passageway2 = -0.51
-    find_area_passageway1 = [0, 39]
-    find_area_passageway2 = [0, 24]
-    role_move.move_to([-779, -701])
-    role_move.move_to([-793, -703])
-    role_move.move_to(begin_find_loc_passageway1, None, 1, 5)
-    role_move.turn_to(begin_find_direct_passageway1)
-    count += role_move.move_map(
-        find_area_passageway1[0], find_area_passageway1[1], find_box.find_box_under_footer_passageway)
-    role_move.move_to(begin_find_loc_passageway2, None, 1, 5)
-    role_move.turn_to(begin_find_direct_passageway2)
-    count += role_move.move_map(
-        find_area_passageway2[0], find_area_passageway2[1], find_box.find_box_under_footer_passageway)
-    role_move.move_to([-795, -655])
+# role_move.move_to(begin_find_loc_1, None, 1, 5)
+# for i in range(0,len(role_move.move_log)):
+#     print(role_move.move_log[i])
 
-prepare_to_find()
-# time.sleep(1)
-# find_box.find_box_under_footer_passageway()
