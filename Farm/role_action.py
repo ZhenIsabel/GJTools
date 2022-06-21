@@ -104,7 +104,7 @@ def clear_map(buy_count):
         # 切换到挖宝地图
         log_message.log_info("切换到挖宝地图")
         log_message.log_debug("匹配率："+str(max_val))
-        av(open_box_map_pos[0], open_box_map_pos[1])
+        pyautogui.moveTo(open_box_map_pos[0], open_box_map_pos[1],pyautogui.easeInOutQuad)
         pyautogui.leftClick()
     # buy_count = int(
     #     config_model.config['count_yuanbo'] if config_model.config['is_yuanbo'] else config_model.config['count_no_yuanbo'])
